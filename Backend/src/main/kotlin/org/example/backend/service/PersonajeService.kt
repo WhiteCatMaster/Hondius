@@ -22,17 +22,22 @@ class PersonajeService(private val personajeRepo: PersonajeRepository) {
     }
 
     @Transactional
-    fun updatePersonaje(id: Long, updatedPersonaje: Personaje): Personaje? {
+    fun updateNombrePersonaje(id: Long, updatedPersonaje: Personaje): Personaje? {
         val existingPersonaje = personajeRepo.findById(id).orElse(null) ?: return null
         existingPersonaje.nombre = updatedPersonaje.nombre
-        existingPersonaje.jugadorJuego = updatedPersonaje.jugadorJuego
-        // Actualiza otros campos según sea necesario
         return personajeRepo.save(existingPersonaje)
     }
 
     @Transactional
     fun deletePersonaje(id: Long) {
         personajeRepo.deleteById(id)
+    }
+
+    @Transactional
+    fun actualizarEstadisticaPersonaje(id: Long, updatedPersonaje: Personaje): Personaje? {
+        val personaje = personajeRepo.findById(id).orElse(null) ?: return null
+        personaje.estadisticas = updatedPersonaje.estadisticas
+        return personajeRepo.save(personaje)
     }
 
 }
