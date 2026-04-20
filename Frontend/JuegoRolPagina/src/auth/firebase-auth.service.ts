@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+/*import { Injectable } from '@angular/core';
 import { GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
 import { auth } from '../firebase';
 
@@ -16,3 +16,4 @@ export class FirebaseAuthService {
     return signOut(auth);
   }
 }
+*/

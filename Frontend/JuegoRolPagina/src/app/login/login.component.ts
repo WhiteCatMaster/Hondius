@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+/*import { Component } from '@angular/core';
 import { FirebaseAuthService } from '../auth/firebase-auth.service';
 
 @Component({
@@ -14,3 +14,4 @@ export class LoginComponent {
     // Next step: send token to backend
   }
 }
+*/
