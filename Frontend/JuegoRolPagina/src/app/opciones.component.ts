@@ -104,19 +104,17 @@ export class OpcionesComponent {
       console.log(this.estadisticas);
     }
 
-    if(this.paso == 3) {
-        for(let ataque of this.ataques) {
-            if(this.ataques.length === 0) {
-            if(ataque.nombre == '' || ataque.dadoBase == null || ataque.ratioDado == null) {
-               this.faltasAtaques = true; 
-            }
+    if (this.paso == 3) {
+      for (let personaje of this.personajes) {
+        if (personaje.estadisticasDelPersonaje[0].nombreEstadistica == '') {
+          personaje.estadisticasDelPersonaje = []; 
+          for (let estGlobal of this.estadisticas) {
+            personaje.estadisticasDelPersonaje.push({nombreEstadistica: estGlobal.nombre, valorPropio: 0, consumible: estGlobal.consumible
+            });
+          }
         }
-        if(this.faltasAtaques == true) {
-            this.faltasAtaques = false;
-        }
-        //console.log(this.ataques);
+      }
     }
-  }
 
     if (this.paso < 4) {
       this.paso = this.paso + 1;
@@ -153,6 +151,11 @@ export class OpcionesComponent {
   }
 
   agregarPersonaje() {
+    let estadisticasNuevas = [];
+    for(let est of this.estadisticas) {
+      estadisticasNuevas.push({nombreEstadistica: est.nombre, valorPropio: 0, consumible: est.consumible
+      });
+    }
     this.personajes.push({
       nombre: '', urlSprite: 'https://i.pinimg.com/474x/9c/0f/06/9c0f06b14aba220811331c49718d6b93.jpg', vida: 0, ataquesDelPersonaje: [{
         nombre: '', dadoBase: 0, ratioDado: [], statReducePropio: [{ estadistica: '', valor: 0 }], statReduceRival: [{ estadistica: '', valor: 0 }],

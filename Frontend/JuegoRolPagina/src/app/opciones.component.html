@@ -132,18 +132,13 @@
 
       <div>
         <p>Estadisticas y valor:</p>
-        <div class="EstadisticasPersonaje" *ngFor="let estPersonaje of personaje.estadisticasDelPersonaje; let j = index; trackBy: trackByFn">    
-          <select class="Opcion" [(ngModel)]="estPersonaje.nombreEstadistica" (ngModelChange)="alCambiarEstadistica($event, i, j)">
-            <option *ngFor="let estadisticaCreada of estadisticas" [value]="estadisticaCreada.nombre">
-              {{ estadisticaCreada.nombre }}
-            </option>
-          </select>
+        <div class="EstadisticasPersonaje" *ngFor="let estPersonaje of personaje.estadisticasDelPersonaje">
+          
+          <p>{{ estPersonaje.nombreEstadistica }}</p> 
           <p>:</p>
           <input class="CajaTexto" type="number" [(ngModel)]="estPersonaje.valorPropio" style="width: 60px; margin-left: 10px;">
-          <input type="button" value="X" (click)="eliminarEstadisticaDePersonaje(i, j)">
+        
         </div>
-
-        <input type="button" value="+" (click)="agregarEstadisticaAPersonaje(i)">
       </div>
       
       <br>
