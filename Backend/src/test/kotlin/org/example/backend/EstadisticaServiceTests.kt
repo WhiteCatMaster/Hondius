@@ -1,6 +1,7 @@
 package org.example.backend
 
 import org.example.backend.entity.Estadistica
+import org.example.backend.entity.Personaje
 import org.example.backend.repository.EstadisticaRepository
 import org.example.backend.service.EstadisticaService
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -54,13 +55,20 @@ class EstadisticaServiceTests {
     @Test
     fun testBuscarEstadisticaPorNombre() {
         //Debería devolver la estadistica agilidad falsificada por mockito, con su valor correspondiente
-        val estadisticaFalsa = Estadistica(1L, "Agilidad", 15, false)
-        `when`(estadisticaRepository.findByNombre("Agilidad")).thenReturn(estadisticaFalsa)
+        val personajeFalso = Personaje(
+            id = 99L,
+            nombre = "Personaje",
+            vida = 100,
+            fotoUrl = "url",
+        )
 
-        val resultado = estadisticaService.getEstadisticaByNombre("Agilidad")
+        val estadisticaFalsa = Estadistica(1L, "Agilidad", 15, false, personaje = personajeFalso)
+        `when`(estadisticaRepository.findByNombreAndPersonajeId("Agilidad", personajeFalso.id ?: 0L)).thenReturn(estadisticaFalsa)
 
-        assertEquals(15, resultado.valor)
-        verify(estadisticaRepository).findByNombre("Agilidad")
+        val resultado = estadisticaService.getEstadisticaById(estadisticaFalsa.id ?: 0L)
+
+        assertEquals(15, resultado?.valor ?: 0)
+        verify(estadisticaRepository).findByNombreAndPersonajeId("Agilidad", personajeFalso.id ?: 0L)
     }
 
     @Test
