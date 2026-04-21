@@ -18,26 +18,8 @@ export class ServicioAPI {
     return this.http.post<any>(`${this.apiUrl}/partida`, payload);
   }
 
+  recogerPartidas(): Observable<any[]>{
+    return this.http.get<any[]>(`${this.apiUrl}/partida`);
+  }
 
-  mandarPersonaje(personaje: Personaje):Observable<Personaje> {
-    return this.http.post<Personaje>(`${this.apiUrl}/personajes`, personaje);
-  }
-  mandarAtaque(ataque: Ataque):Observable<Ataque> {
-    return this.http.post<Ataque>(`${this.apiUrl}/ataques`, ataque);
-  }
-  mandarEstadistica(estadistica: Estadistica):Observable<Estadistica> {
-    return this.http.post<Estadistica>(`${this.apiUrl}/estadisticas`, estadistica);
-  }
-  mandarPersonajes(personajes: Personaje[]):Observable<Personaje[]> {
-    return this.http.post<Personaje[]>(`${this.apiUrl}/personajes/batch`, personajes);
-  }
-  mandarAtaques(ataques: Ataque[]):Observable<Ataque[]> {
-    return this.http.post<Ataque[]>(`${this.apiUrl}/ataques/batch`, ataques);
-  }
-  mandarEstadisticas(estadisticas: Estadistica[]):Observable<Estadistica[]> {
-    return this.http.post<Estadistica[]>(`${this.apiUrl}/estadisticas/batch`, estadisticas);
-  }
-  mandarDatosPartida(datos: any):Observable<any>{
-    return this.http.post<any>(`${this.apiUrl}/partidas`, datos);
-  }
 }

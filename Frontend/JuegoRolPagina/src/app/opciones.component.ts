@@ -387,7 +387,7 @@ export class OpcionesComponent {
       let personajePayload = {
         "personajeNombre": personaje.nombre,
         "personajeVida": personaje.vida,
-        "personajeFotoUrl": personaje.fotoUrl,
+        "personajeFotoUrl": personaje.urlSprite,
         "personajeEstadisticas": estadisticasPersonaje,
         "personajeAtaques": ataquesPersonaje
       }

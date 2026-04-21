@@ -19,11 +19,11 @@
 
 
 
-        @if (partidas.length === 0) {
+        @if (partidas().length === 0) {
           <p>No hay partidas disponibles</p>
         } @else {
 
-          @for (partida of partidas; track partida.nombre) {
+          @for (partida of partidas(); track partida.id) {
             <div class="card">
               <h2>{{ partida.nombre }}</h2>
               <p>{{ partida.descripcion }}</p>
