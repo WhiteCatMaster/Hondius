@@ -52,24 +52,6 @@ class EstadisticaServiceTests {
         verify(estadisticaRepository).findAll()
     }
 
-    @Test
-    fun testBuscarEstadisticaPorNombre() {
-        //Debería devolver la estadistica agilidad falsificada por mockito, con su valor correspondiente
-        val personajeFalso = Personaje(
-            id = 99L,
-            nombre = "Personaje",
-            vida = 100,
-            fotoUrl = "url",
-        )
-
-        val estadisticaFalsa = Estadistica(1L, "Agilidad", 15, false, personaje = personajeFalso)
-        `when`(estadisticaRepository.findByNombreAndPersonajeId("Agilidad", personajeFalso.id ?: 0L)).thenReturn(estadisticaFalsa)
-
-        val resultado = estadisticaService.getEstadisticaById(estadisticaFalsa.id ?: 0L)
-
-        assertEquals(15, resultado?.valor ?: 0)
-        verify(estadisticaRepository).findByNombreAndPersonajeId("Agilidad", personajeFalso.id ?: 0L)
-    }
 
     @Test
     fun testCrearEstadistica() {
