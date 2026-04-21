@@ -1,6 +1,6 @@
 package org.example.backend.facade
 
-import org.example.backend.dto.JuegoDto
+import org.example.backend.dto.CrearPartidaDto
 import org.example.backend.dto.PartidaDto
 import org.example.backend.service.JuegoService
 import org.springframework.http.HttpStatus
@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 // DTO para la solicitud de crear partida (es un alias de JuegoDto)
-typealias CrearPartidaDto = JuegoDto
+//typealias CrearPartidaDto = JuegoDto
 
 // Clase wrapper para coincidir exactamente con el JSON de entrada
 data class CrearPartidaRequest(

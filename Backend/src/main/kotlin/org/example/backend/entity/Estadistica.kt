@@ -27,5 +27,9 @@ class Estadistica(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "personaje_id")
     var personaje: Personaje? = null
-)
+) {
+    override fun toString(): String {
+        return "Estadistica(id=$id, nombre='$nombre', valor=$valor, consumible=$consumible, personaje=$personaje)"
+    }
+}
 

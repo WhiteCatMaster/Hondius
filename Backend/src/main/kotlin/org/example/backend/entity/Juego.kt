@@ -27,5 +27,9 @@ class Juego(
 
     @OneToMany(mappedBy = "juego", fetch = FetchType.LAZY)
     var jugadores: MutableList<JugadorJuego> = mutableListOf()
-)
+) {
+    override fun toString(): String {
+        return "Juego(id=$id, nombre='$nombre', descripcion=$descripcion, idioma=$idioma, maximoJugadores=$maximoJugadores, jugadores=$jugadores)"
+    }
+}
 
