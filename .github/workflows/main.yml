@@ -1,6 +1,6 @@
-name: CI Pipeline Juego Rol (Solo Main)
+name: CI Pipeline Juego Rol
 
-# Se ejecuta cada vez que haces un commit (push) a la rama main
+# Se ejecuta solo en la rama main cada vez que haces un push (commit)
 on:
   push:
     branches: [ "main" ]
@@ -26,13 +26,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-          cache: 'npm'
-          cache-dependency-path: 'frontend/JuegoRolPagina/package-lock.json'
+          # Nota: Se ha quitado el cache-dependency-path para evitar errores de ruta
 
       # --- BACKEND ---
 
       - name: Iniciar Base de Datos (Docker)
         working-directory: ./backend
+        # En GitHub Actions no es necesario usar 'sudo' para docker-compose
         run: docker-compose up -d
 
       - name: Permisos de ejecución para Gradlew
@@ -45,11 +45,10 @@ jobs:
 
       - name: Iniciar Backend (bootRun)
         working-directory: ./backend
-        # En GitHub Actions, bootRun se quedaría bloqueado al 85% (esperando peticiones).
-        # Usamos '&' para lanzarlo, esperamos un minuto para validar que arranca bien y seguimos.
+        # Usamos '&' para que corra en segundo plano, ya que bootRun no termina por sí solo
         run: |
           ./gradlew bootRun & 
-          echo "Esperando arranque del backend..."
+          echo "Esperando a que el backend arranque..."
           sleep 60 
 
       # --- FRONTEND ---
@@ -63,8 +62,8 @@ jobs:
 
       - name: Iniciar Frontend (ng serve)
         working-directory: ./frontend/JuegoRolPagina
-        # Lanzamos en segundo plano para verificar que la compilación de Angular es correcta.
+        # ng serve también es persistente, lo lanzamos en background para validar compilación
         run: |
           ng serve &
-          echo "Frontend lanzado y verificado"
+          echo "Frontend lanzado correctamente"
           sleep 30
