@@ -29,19 +29,19 @@ jobs:
       # --- BACKEND ---
 
       - name: Iniciar Base de Datos (Docker)
-        working-directory: ./backend
+        working-directory: ./Backend
         run: docker-compose up -d
 
       - name: Permisos de ejecución para Gradlew
-        working-directory: ./backend
+        working-directory: ./Backend
         run: chmod +x gradlew
 
       - name: Ejecutar Gradle Tasks
-        working-directory: ./backend
+        working-directory: ./Backend
         run: ./gradlew tasks
 
       - name: Iniciar Backend (bootRun)
-        working-directory: ./backend
+        working-directory: ./Backend
         # Usamos '&' para que corra en segundo plano y no bloquee la Action
         run: |
           ./gradlew bootRun & 
