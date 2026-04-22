@@ -1,0 +1,15 @@
+<h1>SELECTOR A ELIMINAR</h1>
+<p>Este selector solo está mientras no haya sistema que detecte si eres admin o jugador</p>
+
+<button>Soy admin, bro</button>
+<button routerLink="/selector-personaje">Yo? Jugador, siempre</button>
+
+@if (partidaActual() === null) {
+    <p>Cargando datos del combate...</p>
+} @else {
+    <div class="card">            
+        @for (personaje of $any(partidaActual())?.personajes; track personaje.nombre) {
+            <button>{{ personaje.nombre }}</button>
+        }
+    </div>
+}

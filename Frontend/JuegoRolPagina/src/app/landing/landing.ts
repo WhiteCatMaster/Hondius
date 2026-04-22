@@ -17,12 +17,12 @@ export class Landing implements OnInit {
   partidas = signal<Partida[]>([]);
 
   ngOnInit(): void {
-    //this.cargarPartidasMock();
+    this.cargarPartidasMock();
     this.cargarPartidasBD();
   }
-  /* 
+   
 cargarPartidasMock() {
-  this.partidas = [
+  this.partidas.set([
     {
       nombre: 'Aventura en el bosque',
       descripcion: 'Exploración y misterio',
@@ -37,9 +37,9 @@ cargarPartidasMock() {
       maxJugadores: 8,
       id: null
     }
-  ];
+  ]);
 }
-*/
+
   cargarPartidasBD() {
     //Se deberian de cargar las partidas que hay en DB
 

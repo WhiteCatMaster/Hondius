@@ -1,0 +1,322 @@
+.PantallaPartida {
+    height: 70vh; 
+    background-color: red;
+    padding-left: 60px;
+    padding-top: 15px;
+}
+
+.PantallaDatos {
+    height: 30vh; 
+    display: flex;
+    background-color: rgb(32, 31, 31);
+}
+
+.Ataques {
+    color: white;
+}
+
+.ClaseIzquierda {
+    width: 50%;
+    background-color: rebeccapurple;
+}
+
+.ClaseDerecha {
+    width: 50%;
+    background-color: greenyellow;
+}
+
+.ClaseDerecha:hover {
+    cursor: pointer;
+}
+
+.AtaqueBoton {
+    width: 200px;
+    padding: 20px;
+    border-radius: 6px;
+}
+
+h1 {
+    margin: 0px;
+}
+
+p {
+    margin: 0px;
+}
+
+.PersonajeTuyo {
+    height: 80%;
+}
+
+.BarraVidaTuya {
+    accent-color: green;
+}
+
+.AtaqueBoton:hover {
+    cursor: pointer;
+}
+
+/* CÓDIGO (DE AQUÍ HASTA EL FINAL) SACADO DE CODEOPEN.IO */
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    flex-direction: column;
+    gap: 30px;
+    background-color: #aaa;
+}
+
+.info {
+    font-size: 14px;
+    text-align: center;
+    line-height: 1.5;
+    color: #ccc;
+}
+
+.d20dice-content {
+    padding-left: 40px;
+    height: 200px;
+    perspective: 1500px;
+    position: relative;
+    transform: scale(.7);
+    width: 60px
+}
+
+.d20dice {
+    cursor: pointer;
+    height: 100%;
+    position: absolute;
+    transform: rotateX(-53deg);
+    transform-style: preserve-3d;
+    transition: transform 1.8s ease-out;
+    width: 100%
+}
+
+.d20dice.rolling {
+    animation: roll3 15s linear infinite
+}
+
+.d20dice[data-face="1"] {
+    transform: rotateX(-53deg) rotateY(0deg)
+}
+
+.d20dice[data-face="2"] {
+    transform: rotateX(-53deg) rotateY(72deg)
+}
+
+.d20dice[data-face="3"] {
+    transform: rotateX(-53deg) rotateY(144deg)
+}
+
+.d20dice[data-face="4"] {
+    transform: rotateX(-53deg) rotateY(216deg)
+}
+
+.d20dice[data-face="5"] {
+    transform: rotateX(-53deg) rotateY(288deg)
+}
+
+.d20dice[data-face="6"] {
+    transform: rotateX(11deg) rotate(180deg) rotateY(0deg)
+}
+
+.d20dice[data-face="7"] {
+    transform: rotateX(11deg) rotate(180deg) rotateY(72deg);
+}
+
+.d20dice[data-face="8"] {
+    transform: rotateX(11deg) rotate(180deg) rotateY(144deg)
+}
+
+.d20dice[data-face="9"] {
+    transform: rotateX(11deg) rotate(180deg) rotateY(216deg)
+}
+
+.d20dice[data-face="10"] {
+    transform: rotateX(11deg) rotate(180deg) rotateY(288deg)
+}
+
+.d20dice[data-face="11"] {
+    transform: rotateX(11deg) rotateY(-252deg)
+}
+
+.d20dice[data-face="12"] {
+    transform: rotateX(11deg) rotateY(-324deg)
+}
+
+.d20dice[data-face="13"] {
+    transform: rotateX(11deg) rotateY(-396deg)
+}
+
+.d20dice[data-face="14"] {
+    transform: rotateX(11deg) rotateY(-468deg)
+}
+
+.d20dice[data-face="15"] {
+    transform: rotateX(11deg) rotateY(-540deg)
+}
+
+.d20dice[data-face="16"] {
+    transform: rotateX(127deg) rotateY(-72deg)
+}
+
+.d20dice[data-face="17"] {
+    transform: rotateX(127deg) rotateY(-144deg)
+}
+
+.d20dice[data-face="18"] {
+    transform: rotateX(127deg) rotateY(-216deg)
+}
+
+.d20dice[data-face="19"] {
+    transform: rotateX(127deg) rotateY(-288deg)
+}
+
+.d20dice[data-face="20"] {
+    transform: rotateX(127deg) rotateY(-1turn)
+}
+
+.d20dice .face {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    border-bottom: 86px solid #000000d9;
+    border-left: 50px solid #0000;
+    border-right: 50px solid #0000;
+    counter-increment: steps 1;
+    cursor: default;
+    height: 0;
+    left: 50%;
+    margin: 0 -50px;
+    position: absolute;
+    top: 0;
+    transform-style: preserve-3d;
+    transition: .2s linear;
+    width: 0
+}
+
+.d20dice.success .face {
+    border-bottom: 86px solid #035203d9;
+    transition: .2s linear;
+}
+
+.d20dice.fail .face {
+    border-bottom: 86px solid #680202d9;
+    transition: .2s linear
+}
+
+.d20dice .face.active:before {
+    font-size: 43px;
+    font-weight: 700;
+    transition: .2s linear
+}
+
+.d20dice .face:before {
+    color: #fff;
+    content: counter(steps);
+    font-size: 33px;
+    height: 86px;
+    left: -100px;
+    line-height: 77.4px;
+    position: absolute;
+    text-align: center;
+    text-shadow: 1px 1px 3px #000;
+    top: 21.5px;
+    transition: .2s linear;
+    width: 200px
+}
+
+.d20dice .face:first-child {
+    transform: rotateY(0deg) translateZ(33.5px) translateY(-12.9px) rotateX(53deg)
+}
+
+.d20dice .face:nth-child(2) {
+    transform: rotateY(-72deg) translateZ(33.5px) translateY(-12.9px) rotateX(53deg)
+}
+
+.d20dice .face:nth-child(3) {
+    transform: rotateY(-144deg) translateZ(33.5px) translateY(-12.9px) rotateX(53deg)
+}
+
+.d20dice .face:nth-child(4) {
+    transform: rotateY(-216deg) translateZ(33.5px) translateY(-12.9px) rotateX(53deg)
+}
+
+.d20dice .face:nth-child(5) {
+    transform: rotateY(-288deg) translateZ(33.5px) translateY(-12.9px) rotateX(53deg)
+}
+
+.d20dice .face:nth-child(6) {
+    transform: rotateY(1turn) translateZ(75px) translateY(54.18px) rotate(180deg) rotateX(-11deg)
+}
+
+.d20dice .face:nth-child(7) {
+    transform: rotateY(288deg) translateZ(75px) translateY(54.18px) rotate(180deg) rotateX(-11deg)
+}
+
+.d20dice .face:nth-child(8) {
+    transform: rotateY(216deg) translateZ(75px) translateY(54.18px) rotate(180deg) rotateX(-11deg)
+}
+
+.d20dice .face:nth-child(9) {
+    transform: rotateY(144deg) translateZ(75px) translateY(54.18px) rotate(180deg) rotateX(-11deg)
+}
+
+.d20dice .face:nth-child(10) {
+    transform: rotateY(72deg) translateZ(75px) translateY(54.18px) rotate(180deg) rotateX(-11deg)
+}
+
+.d20dice .face:nth-child(11) {
+    transform: rotateY(252deg) translateZ(75px) translateY(54.18px) rotateX(-11deg)
+}
+
+.d20dice .face:nth-child(12) {
+    transform: rotateY(324deg) translateZ(75px) translateY(54.18px) rotateX(-11deg)
+}
+
+.d20dice .face:nth-child(13) {
+    transform: rotateY(396deg) translateZ(75px) translateY(54.18px) rotateX(-11deg)
+}
+
+.d20dice .face:nth-child(14) {
+    transform: rotateY(468deg) translateZ(75px) translateY(54.18px) rotateX(-11deg)
+}
+
+.d20dice .face:nth-child(15) {
+    transform: rotateY(540deg) translateZ(75px) translateY(54.18px) rotateX(-11deg)
+}
+
+.d20dice .face:nth-child(16) {
+    transform: rotateY(-108deg) translateZ(33.5px) translateY(121.26px) rotate(180deg) rotateX(53deg)
+}
+
+.d20dice .face:nth-child(17) {
+    transform: rotateY(-36deg) translateZ(33.5px) translateY(121.26px) rotate(180deg) rotateX(53deg)
+}
+
+.d20dice .face:nth-child(18) {
+    transform: rotateY(36deg) translateZ(33.5px) translateY(121.26px) rotate(180deg) rotateX(53deg)
+}
+
+.d20dice .face:nth-child(19) {
+    transform: rotateY(108deg) translateZ(33.5px) translateY(121.26px) rotate(180deg) rotateX(53deg)
+}
+
+.d20dice .face:nth-child(20) {
+    transform: rotateY(180deg) translateZ(33.5px) translateY(121.26px) rotate(180deg) rotateX(53deg)
+}
+
+@keyframes roll3 {
+    0% {
+        transform: rotateX(1000deg) rotateY(1400deg) rotate(600deg)
+    }
+
+    50% {
+        transform: rotateX(0) rotateY(0) rotate(0)
+    }
+
+    to {
+        transform: rotateX(1000deg) rotateY(1400deg) rotate(600deg)
+    }
+}
