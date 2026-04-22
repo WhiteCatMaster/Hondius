@@ -1,4 +1,29 @@
-<H1>EDER</H1>
-<p>mete cosas aqui, la página siguiente no va a hacer ni puto caso del personaje que elijas. En el ts tienes unos datos de prueba.</p>
+<div class="selector-container">
+  <h1 class="titulo-selector">Selecciona tu Personaje</h1>
 
-<button routerLink="/jugar-combate">Siguiente</button>
+  @if (partidaActual() === null) {
+    <p class="cargando">Descifrando antiguos pergaminos... (Cargando)</p>
+  } @else {
+    <div class="personajes-grid">
+      
+      @for (personaje of $any(partidaActual())?.personajes; track personaje.nombre) {
+        <div class="personaje-card">
+          
+          <div class="card-header">
+            <h2>{{ personaje.nombre }}</h2>
+          </div>
+          
+          <div class="card-imagen">
+            <img [src]="personaje.fotoUrl" alt="Retrato de {{ personaje.nombre }}">
+          </div>
+          
+          <div class="card-footer">
+            <button class="btn-seleccionar" routerLink="/jugar-combate">Elegir Personaje</button>
+          </div>
+          
+        </div>
+      }
+
+    </div>
+  }
+</div>

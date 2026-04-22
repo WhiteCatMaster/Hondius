@@ -29,31 +29,31 @@ export class SelectorPersonajeComponent implements OnInit {
       nombre: 'La gran batalla del bosque',
       descripcion: 'El combate final está a punto de empezar...',
       idioma: 'ES',
-      maxJugadores: 4,
+      maxJugadores: 6,
       personajes: [
         {
-          id: null,
+          id: 1,
           nombre: 'Guerrero Valiente',
           fotoUrl: 'https://upload.wikimedia.org/wikipedia/commons/f/fb/Serinus_canaria_gelb.JPG',
           urlSprite: 'https://upload.wikimedia.org/wikipedia/commons/f/fb/Serinus_canaria_gelb.JPG',
-          vida: 100,
+          vida: 120,
           estadisticasDelPersonaje: [
-            { nombreEstadistica: 'Fuerza', valorPropio: 15, consumible: false },
-            { nombreEstadistica: 'Maná', valorPropio: 50, consumible: true }
+            { nombreEstadistica: 'Fuerza', valorPropio: 18, consumible: false },
+            { nombreEstadistica: 'Fuerza', valorPropio: 18, consumible: false },
+            { nombreEstadistica: 'Fuerza', valorPropio: 18, consumible: false },
+            { nombreEstadistica: 'Defensa', valorPropio: 15, consumible: false },
+            { nombreEstadistica: 'Energía', valorPropio: 50, consumible: true }
           ],
           ataquesDelPersonaje: [
             {
-              id: null,
-              nombre: 'Golpe Rompecráneos',
-              dadoBase: 20,
-              ratioDado: [1, 20],
-              statReducePropio: [{ estadistica: 'Maná', valor: 10 }], 
+              id: null, nombre: 'Golpe Rompecráneos', dadoBase: 20, ratioDado: [19, 20],
+              statReducePropio: [{ estadistica: 'Energía', valor: 10 }], 
               statReduceRival: [{ estadistica: 'Vida', valor: 25 }]  
             }
           ]
         },
         {
-          id: null,
+          id: 2,
           nombre: 'Mago Oscuro',
           fotoUrl: 'https://upload.wikimedia.org/wikipedia/commons/f/fb/Serinus_canaria_gelb.JPG',
           urlSprite: 'https://upload.wikimedia.org/wikipedia/commons/f/fb/Serinus_canaria_gelb.JPG',
@@ -64,12 +64,83 @@ export class SelectorPersonajeComponent implements OnInit {
           ],
           ataquesDelPersonaje: [
             {
-              id: null,
-              nombre: 'Bola de Fuego',
-              dadoBase: 20,
-              ratioDado: [1, 20],
+              id: null, nombre: 'Bola de Fuego', dadoBase: 20, ratioDado: [18, 20],
               statReducePropio: [{ estadistica: 'Maná', valor: 30 }], 
               statReduceRival: [{ estadistica: 'Vida', valor: 45 }]  
+            }
+          ]
+        },
+        {
+          id: 3,
+          nombre: 'Pícaro Sombrío',
+          fotoUrl: 'https://upload.wikimedia.org/wikipedia/commons/f/fb/Serinus_canaria_gelb.JPG',
+          urlSprite: 'https://upload.wikimedia.org/wikipedia/commons/f/fb/Serinus_canaria_gelb.JPG',
+          vida: 85,
+          estadisticasDelPersonaje: [
+            { nombreEstadistica: 'Agilidad', valorPropio: 19, consumible: false },
+            { nombreEstadistica: 'Sigilo', valorPropio: 16, consumible: false },
+            { nombreEstadistica: 'Energía', valorPropio: 80, consumible: true }
+          ],
+          ataquesDelPersonaje: [
+            {
+              id: null, nombre: 'Puñalada Trapera', dadoBase: 20, ratioDado: [15, 20],
+              statReducePropio: [{ estadistica: 'Energía', valor: 15 }], 
+              statReduceRival: [{ estadistica: 'Vida', valor: 35 }]  
+            }
+          ]
+        },
+        {
+          id: 4,
+          nombre: 'Clérigo de la Luz',
+          fotoUrl: 'https://upload.wikimedia.org/wikipedia/commons/f/fb/Serinus_canaria_gelb.JPG',
+          urlSprite: 'https://upload.wikimedia.org/wikipedia/commons/f/fb/Serinus_canaria_gelb.JPG',
+          vida: 100,
+          estadisticasDelPersonaje: [
+            { nombreEstadistica: 'Sabiduría', valorPropio: 17, consumible: false },
+            { nombreEstadistica: 'Fe', valorPropio: 100, consumible: true }
+          ],
+          ataquesDelPersonaje: [
+            {
+              id: null, nombre: 'Castigo Divino', dadoBase: 20, ratioDado: [19, 20],
+              statReducePropio: [{ estadistica: 'Fe', valor: 20 }], 
+              statReduceRival: [{ estadistica: 'Vida', valor: 30 }]  
+            }
+          ]
+        },
+        {
+          id: 5,
+          nombre: 'Bárbaro Furioso',
+          fotoUrl: 'https://upload.wikimedia.org/wikipedia/commons/f/fb/Serinus_canaria_gelb.JPG',
+          urlSprite: 'https://upload.wikimedia.org/wikipedia/commons/f/fb/Serinus_canaria_gelb.JPG',
+          vida: 150,
+          estadisticasDelPersonaje: [
+            { nombreEstadistica: 'Fuerza Bruta', valorPropio: 22, consumible: false },
+            { nombreEstadistica: 'Furia', valorPropio: 50, consumible: true }
+          ],
+          ataquesDelPersonaje: [
+            {
+              id: null, nombre: 'Hachazo Salvaje', dadoBase: 20, ratioDado: [17, 20],
+              statReducePropio: [{ estadistica: 'Furia', valor: 15 }], 
+              statReduceRival: [{ estadistica: 'Vida', valor: 40 }]  
+            }
+          ]
+        },
+        {
+          id: 6,
+          nombre: 'Arquero Élfico',
+          fotoUrl: 'https://upload.wikimedia.org/wikipedia/commons/f/fb/Serinus_canaria_gelb.JPG',
+          urlSprite: 'https://upload.wikimedia.org/wikipedia/commons/f/fb/Serinus_canaria_gelb.JPG',
+          vida: 90,
+          estadisticasDelPersonaje: [
+            { nombreEstadistica: 'Destreza', valorPropio: 20, consumible: false },
+            { nombreEstadistica: 'Percepción', valorPropio: 18, consumible: false },
+            { nombreEstadistica: 'Carcaj', valorPropio: 30, consumible: true }
+          ],
+          ataquesDelPersonaje: [
+            {
+              id: null, nombre: 'Flecha Perforante', dadoBase: 20, ratioDado: [16, 20],
+              statReducePropio: [{ estadistica: 'Carcaj', valor: 1 }], 
+              statReduceRival: [{ estadistica: 'Vida', valor: 28 }]  
             }
           ]
         }

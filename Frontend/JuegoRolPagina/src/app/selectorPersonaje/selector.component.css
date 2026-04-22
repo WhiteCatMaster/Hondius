@@ -1,0 +1,137 @@
+.selector-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.172), rgba(255, 255, 255, 0.172)), url('https://i.imgur.com/L6ux5lw.jpeg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  font-family: 'Almendra', system-ui;
+  overflow-y: auto;
+  height: 100vh;
+  padding: 10px 20px 80px 20px;
+  box-sizing: border-box;
+}
+
+.selector-container::-webkit-scrollbar {
+  width: 10px;
+}
+
+.selector-container::-webkit-scrollbar-track {
+  background: rgba(91, 49, 36, 0.2);
+  border-radius: 10px;
+}
+
+.selector-container::-webkit-scrollbar-thumb {
+  background: #5B3124;
+  border-radius: 10px;
+  border: 2px solid #f4e4bc;
+}
+
+.selector-container::-webkit-scrollbar-thumb:hover {
+  background: #8c450f; 
+}
+
+/* Titulo*/
+.titulo-selector {
+  font-family: 'Pirata One', system-ui;
+  font-size: 4.5rem;
+  color: #4e3522;
+  text-shadow: 2px 2px 5px rgba(0,0,0,0.4);
+  margin-top: 0px;
+  margin-bottom: 20px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.cargando {
+  font-size: 1.8rem;
+  color: #5B3124;
+  font-weight: bold;
+}
+
+/* Personajes */
+.personajes-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  justify-content: center;
+  max-width: 1200px;
+  width: 100%;
+  margin-bottom: 10%;
+}
+
+.personaje-card {
+  background-color: #f4e4bc; 
+  border: 4px solid #5B3124;
+  border-radius: 15px;
+  width: 320px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0px 10px 20px rgba(0,0,0,0.6);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.personaje-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0px 15px 30px rgba(0,0,0,0.8);
+}
+
+.card-header {
+  background-color: #5B3124;
+  color: #f4e4bc;
+  padding: 15px;
+  text-align: center;
+  border-bottom: 2px solid #392919;
+}
+
+.card-header h2 {
+  margin: 0;
+  font-family: 'Pirata One', system-ui;
+  font-size: 2.2rem;
+  letter-spacing: 2px;
+}
+
+.card-imagen {
+  width: 100%;
+  height: 300px;
+  background-color: #3e2723;
+  border-bottom: 4px solid #5B3124;
+}
+
+.card-imagen img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card-footer {
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  background-color: rgba(0,0,0,0.05);
+  border-top: 2px solid rgba(91, 49, 36, 0.2);
+}
+
+/* Botón Seleccionar */
+.btn-seleccionar {
+  background: linear-gradient(90deg, #8c450f, #f18c09);
+  color: white;
+  border: 2px solid #4e3522;
+  padding: 12px 30px;
+  font-size: 1.5rem;
+  font-family: 'Pirata One', system-ui;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.4);
+  width: 100%;
+}
+
+.btn-seleccionar:hover {
+ transform: scale(1.05);
+ color: #fff;
+}
