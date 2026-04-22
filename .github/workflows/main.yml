@@ -28,9 +28,12 @@ jobs:
 
       # --- BACKEND ---
 
-      - name: Iniciar Base de Datos (Docker)
+        - name: Iniciar Base de Datos (Docker)
         working-directory: ./Backend
-        run: docker-compose up -d
+        run: |
+        docker --version
+        docker compose version
+        docker compose up -d
 
       - name: Permisos de ejecución para Gradlew
         working-directory: ./Backend
