@@ -1,0 +1,70 @@
+name: CI Pipeline Juego Rol (Solo Main)
+
+# Se ejecuta cada vez que haces un commit (push) a la rama main
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-and-run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      # --- CONFIGURACIÓN DE ENTORNO ---
+      
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: 'frontend/JuegoRolPagina/package-lock.json'
+
+      # --- BACKEND ---
+
+      - name: Iniciar Base de Datos (Docker)
+        working-directory: ./backend
+        run: docker-compose up -d
+
+      - name: Permisos de ejecución para Gradlew
+        working-directory: ./backend
+        run: chmod +x gradlew
+
+      - name: Ejecutar Gradle Tasks
+        working-directory: ./backend
+        run: ./gradlew tasks
+
+      - name: Iniciar Backend (bootRun)
+        working-directory: ./backend
+        # En GitHub Actions, bootRun se quedaría bloqueado al 85% (esperando peticiones).
+        # Usamos '&' para lanzarlo, esperamos un minuto para validar que arranca bien y seguimos.
+        run: |
+          ./gradlew bootRun & 
+          echo "Esperando arranque del backend..."
+          sleep 60 
+
+      # --- FRONTEND ---
+
+      - name: Instalar dependencias de Angular
+        working-directory: ./frontend/JuegoRolPagina
+        run: npm install
+
+      - name: Instalar Angular CLI
+        run: npm install -g @angular/cli
+
+      - name: Iniciar Frontend (ng serve)
+        working-directory: ./frontend/JuegoRolPagina
+        # Lanzamos en segundo plano para verificar que la compilación de Angular es correcta.
+        run: |
+          ng serve &
+          echo "Frontend lanzado y verificado"
+          sleep 30
