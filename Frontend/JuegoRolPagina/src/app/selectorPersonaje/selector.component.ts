@@ -1,12 +1,12 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Partida } from '../models/partida';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-combate',
   standalone: true,
-  imports: [CommonModule, RouterLink], 
+  imports: [CommonModule], 
   templateUrl: './selector.component.html',
   styleUrl: './selector.component.css'
 })
@@ -16,11 +16,39 @@ export class SelectorPersonajeComponent implements OnInit {
   // Dado
   estaRodando = true;
   caraDelDado = 20;
+  heroeSeleccionado: any = null;
+  enemigoSeleccionado: any = null;
 
+  constructor(private router: Router) {}
 
   // Lo otro, lo de la base de datos temporal
   ngOnInit(): void {
     this.cargarPartidaDePrueba();
+  }
+
+  seleccionarHeroe(personaje: any) {
+    this.heroeSeleccionado = personaje;
+    console.log('Héroe elegido:', personaje.nombre);
+  }
+
+  seleccionarEnemigo(personaje: any) {
+    if (!this.heroeSeleccionado) {
+      alert('¡Por favor, selecciona primero a tu Héroe!');
+      return;
+    }
+    
+    // Evitamos que el enemigo sea el mismo que el héroe
+    if (personaje === this.heroeSeleccionado) {
+      alert('No puedes luchar contra ti mismo, elige a otro rival.');
+      return;
+    }
+
+    this.enemigoSeleccionado = personaje;
+    console.log('Enemigo elegido:', personaje.nombre);
+    
+    // NAVEGACIÓN AUTOMÁTICA
+    // Aquí podrías guardar las selecciones en un servicio antes de irte
+    this.router.navigate(['/jugar-combate']);
   }
 
   cargarPartidaDePrueba() {

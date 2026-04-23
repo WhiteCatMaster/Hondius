@@ -1,28 +1,59 @@
 <div class="selector-container">
-  <h1 class="titulo-selector">Selecciona tu Personaje</h1>
+  <h1 class="titulo-selector">Escoje personajes</h1>
 
   @if (partidaActual() === null) {
-    <p class="cargando">Descifrando antiguos pergaminos... (Cargando)</p>
+    <p class="cargando">No existe la partida actual</p>
   } @else {
-    <div class="personajes-grid">
+    
+    <div class="columnas-wrapper">
       
-      @for (personaje of $any(partidaActual())?.personajes; track personaje.nombre) {
-        <div class="personaje-card">
-          
-          <div class="card-header">
-            <h2>{{ personaje.nombre }}</h2>
-          </div>
-          
-          <div class="card-imagen">
-            <img [src]="personaje.fotoUrl" alt="Retrato de {{ personaje.nombre }}">
-          </div>
-          
-          <div class="card-footer">
-            <button class="btn-seleccionar" routerLink="/jugar-combate">Elegir Personaje</button>
-          </div>
-          
+      <div class="columna">
+        <h2 class="titulo-columna">Tu Héroe</h2>
+        <div class="personajes-grid">
+          @for (personaje of $any(partidaActual())?.personajes; track personaje.nombre) {
+            <div class="personaje-card" [class.selected]="heroeSeleccionado === personaje">
+              <div class="card-header">
+                <h2>{{ personaje.nombre }}</h2>
+              </div>
+              <div class="card-imagen">
+                <img [src]="personaje.fotoUrl">
+              </div>
+              <div class="card-footer">
+                <button class="btn-seleccionar" 
+                  (click)="seleccionarHeroe(personaje)"
+                  [disabled]="heroeSeleccionado === personaje">
+                  {{ heroeSeleccionado === personaje ? 'Héroe Elegido' : 'Elegir Héroe' }}
+                </button>
+              </div>
+            </div>
+          }
         </div>
-      }
+      </div>
+
+      <div class="columna">
+        <h2 class="titulo-columna">Tu Enemigo</h2>
+        <div class="personajes-grid">
+          @for (enemigo of $any(partidaActual())?.personajes; track enemigo.nombre) {
+            <div class="personaje-card" 
+                 [class.selected]="enemigoSeleccionado === enemigo"
+                 [class.disabled-card]="enemigo === heroeSeleccionado"> 
+              <div class="card-header" style="background-color: #3b0b0b;">
+                <h2>{{ enemigo.nombre }}</h2>
+              </div>
+              <div class="card-imagen">
+                <img [src]="enemigo.fotoUrl">
+              </div>
+              <div class="card-footer">
+                <button class="btn-seleccionar btn-enemigo" 
+                        (click)="seleccionarEnemigo(enemigo)"
+                        [disabled]="!heroeSeleccionado">
+                  Elegir Enemigo
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
 
     </div>
   }

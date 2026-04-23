@@ -7,4 +7,5 @@ export interface Ataque {
     ratioDado: (number | null)[];
     statReducePropio: {estadistica: string, valor: number}[];
     statReduceRival: {estadistica: string, valor: number}[];
+    danoAtaque: number;
 }
