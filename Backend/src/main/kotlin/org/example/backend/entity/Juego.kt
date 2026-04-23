@@ -26,6 +26,8 @@ class Juego(
     var maximoJugadores: Int? = null,
 
     @OneToMany(mappedBy = "juego", fetch = FetchType.LAZY)
-    var jugadores: MutableList<JugadorJuego> = mutableListOf()
-)
+    var jugadores: MutableList<JugadorJuego> = mutableListOf(),
 
+    @OneToMany(mappedBy = "juego", fetch = FetchType.LAZY)
+    var combates: MutableList<Combate> = mutableListOf(),
+)
