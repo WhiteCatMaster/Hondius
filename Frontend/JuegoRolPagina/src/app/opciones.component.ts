@@ -10,13 +10,7 @@ import { Usuario } from './models/usuario';
 import { JugadorJuego, Rol } from './models/jugador-juego';
 import { Partida } from './models/partida';
 import { ServicioAPI } from './servicio-api';
-
-export interface Dado {
-  nombre: string;
-  caras: number;
-  cantidad: number;
-  imagen?: string;
-}
+import { Dado } from './models/dado';
 
 @Component({
   selector: 'app-opciones',
