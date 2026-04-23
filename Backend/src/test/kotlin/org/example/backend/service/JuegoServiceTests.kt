@@ -1,4 +1,4 @@
-package org.example.backend;
+package org.example.backend.service
 
 import org.example.backend.dto.CrearPartidaDto
 import org.example.backend.entity.Juego
@@ -9,13 +9,12 @@ import org.example.backend.repository.JuegoRepository
 import org.example.backend.repository.JugadorJuegoRepository
 import org.example.backend.repository.PersonajeRepository
 import org.example.backend.repository.UsuarioRepository
-import org.example.backend.service.EstadisticaService
-import org.example.backend.service.JuegoService
 import org.example.backend.entity.Ataque
 import org.example.backend.entity.Estadistica
 import org.example.backend.entity.Personaje
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.mockito.Mockito
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
@@ -107,7 +106,7 @@ class JuegoServiceTests {
         assertEquals(null, resultado)
         verify(juegoRepository).findById(99L)
         // Comprobación de seguridad: Nunca debe intentar guardar si no existe
-        verify(juegoRepository, org.mockito.Mockito.never()).save(org.mockito.Mockito.any())
+        verify(juegoRepository, Mockito.never()).save(Mockito.any())
     }
 
     @Test
@@ -154,20 +153,20 @@ class JuegoServiceTests {
         //Mocks para las llamadas a la BD
         val juegoSimulado = Juego(1L, "Partida Test", "Desc", "ES", 4, mutableListOf())
 
-        `when`(juegoRepository.save(org.mockito.Mockito.any(Juego::class.java))).thenReturn(juegoSimulado)
-        `when`(personajeRepository.saveAll(org.mockito.Mockito.anyList())).thenReturn(listOf() as List<Personaje?>)
-        `when`(estadisticaRepository.saveAll(org.mockito.Mockito.anyList())).thenReturn(listOf() as List<Estadistica?>)
-        `when`(ataqueRepository.saveAll(org.mockito.Mockito.anyList())).thenReturn(listOf() as List<Ataque?>)
+        `when`(juegoRepository.save(Mockito.any(Juego::class.java))).thenReturn(juegoSimulado)
+        `when`(personajeRepository.saveAll(Mockito.anyList())).thenReturn(listOf() as List<Personaje?>)
+        `when`(estadisticaRepository.saveAll(Mockito.anyList())).thenReturn(listOf() as List<Estadistica?>)
+        `when`(ataqueRepository.saveAll(Mockito.anyList())).thenReturn(listOf() as List<Ataque?>)
 
         val resultado = juegoService.crearJuegoxDTO(partidaDto)
 
         assertEquals(1L, resultado.id)
         assertEquals("Partida Test", resultado.nombre)
 
-        verify(juegoRepository).save(org.mockito.Mockito.any(Juego::class.java))
-        verify(personajeRepository).saveAll(org.mockito.Mockito.anyList())
-        verify(estadisticaRepository, org.mockito.Mockito.atLeastOnce()).saveAll(org.mockito.Mockito.anyList())
-        verify(ataqueRepository, org.mockito.Mockito.atLeastOnce()).saveAll(org.mockito.Mockito.anyList())
+        verify(juegoRepository).save(Mockito.any(Juego::class.java))
+        verify(personajeRepository).saveAll(Mockito.anyList())
+        verify(estadisticaRepository, Mockito.atLeastOnce()).saveAll(Mockito.anyList())
+        verify(ataqueRepository, Mockito.atLeastOnce()).saveAll(Mockito.anyList())
     }
 
 

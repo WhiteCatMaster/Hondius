@@ -1,8 +1,7 @@
-package org.example.backend
+package org.example.backend.service
 
 import org.example.backend.entity.Usuario
 import org.example.backend.repository.UsuarioRepository
-import org.example.backend.service.UsuarioService
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
