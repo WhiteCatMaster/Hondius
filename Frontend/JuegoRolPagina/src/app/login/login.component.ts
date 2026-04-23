@@ -1,5 +1,5 @@
-/*import { Component } from '@angular/core';
-import { FirebaseAuthService } from '../auth/firebase-auth.service';
+import { Component } from '@angular/core';
+import { FirebaseAuthService } from '../../auth/firebase-auth.service';
 
 @Component({
   selector: 'app-login',
@@ -14,4 +14,3 @@ export class LoginComponent {
     // Next step: send token to backend
   }
 }
-*/

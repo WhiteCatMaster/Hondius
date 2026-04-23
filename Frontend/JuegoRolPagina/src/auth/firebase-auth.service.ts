@@ -1,6 +1,6 @@
-/*import { Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
-import { auth } from '../firebase';
+import { auth } from '../app/firebase';
 
 @Injectable({ providedIn: 'root' })
 export class FirebaseAuthService {
@@ -16,4 +16,3 @@ export class FirebaseAuthService {
     return signOut(auth);
   }
 }
-*/
