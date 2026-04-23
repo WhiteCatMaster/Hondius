@@ -14,11 +14,11 @@ class EstadisticaService(private val estadisticaRepo: EstadisticaRepository){
     fun getEstadisticaById(id: Long): Estadistica? {
         return estadisticaRepo.findById(id).orElse(null)
     }
-
+    /*
     fun getEstadisticaByNombre(nombre: String): Estadistica {
         return estadisticaRepo.findByNombre(nombre)
     }
-
+*/
     fun createEstadistica(estadistica: Estadistica): Estadistica {
         return estadisticaRepo.save(estadistica)
     }

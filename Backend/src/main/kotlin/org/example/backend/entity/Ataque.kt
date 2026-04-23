@@ -44,4 +44,8 @@ class Ataque(
     @CollectionTable(name = "ataque_ratio_dado", joinColumns = [JoinColumn(name = "ataque_id")])
     @Column(name = "valor")
     var ratioDado: MutableList<Int> = mutableListOf()
-)
+) {
+    override fun toString(): String {
+        return "Ataque(id=$id, nombre='$nombre', manaAtacante=$manaAtacante, estadisticasDefensor=$estadisticasDefensor, owner=$owner, dadoBase=$dadoBase, ratioDado=$ratioDado)"
+    }
+}
