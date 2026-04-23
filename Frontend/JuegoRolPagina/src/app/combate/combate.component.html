@@ -1,57 +1,85 @@
 <div>
-  @if (partidaActual() === null) {
+  @if (personajeTuyo() === null || rival() === null) {
     <p>Cargando datos del combate...</p>
   } @else {
-    @for (personaje of $any(partidaActual())?.personajes; track personaje.nombre) {
-      <div class="PantallaPartida">
-        <h1>{{ personaje.nombre }}</h1>
-        <div>
-          <progress class="BarraVidaTuya" [value]="70" [max]="personaje.vida"></progress>
-        </div>
-        <img class="PersonajeTuyo" [src]="personaje.fotoUrl">
-      </div>
-
-      <div class="PantallaDatos">
-        <div class="ClaseIzquierda">
-          <h1 class="Ataques">Ataques:</h1>
-          <button class="AtaqueBoton">
-            @for (ataque of personaje.ataquesDelPersonaje; track ataque.nombre) {
-                {{ ataque.nombre }}
-            }
-          </button>
-        </div>
-
-        <div class="ClaseDerecha" (click)="tirarDado()">
-          <div class="d20dice-content">
-            <div class="d20dice" [class.rolling]="estaRodando" [attr.data-face]="caraDelDado">
-              <figure class="face face-1"></figure>
-              <figure class="face face-2"></figure>
-              <figure class="face face-3"></figure>
-              <figure class="face face-4"></figure>
-              <figure class="face face-5"></figure>
-              <figure class="face face-6"></figure>
-              <figure class="face face-7"></figure>
-              <figure class="face face-8"></figure>
-              <figure class="face face-9"></figure>
-              <figure class="face face-10"></figure>
-              <figure class="face face-11"></figure>
-              <figure class="face face-12"></figure>
-              <figure class="face face-13"></figure>
-              <figure class="face face-14"></figure>
-              <figure class="face face-15"></figure>
-              <figure class="face face-16"></figure>
-              <figure class="face face-17"></figure>
-              <figure class="face face-18"></figure>
-              <figure class="face face-19"></figure>
-              <figure class="face face-20"></figure>
-            </div>
-          </div>
     
+    <div class="PantallaPartida">
+      
+      <div class="BatallaIzquierda">
+        <h1>{{ personajeTuyo().nombre }}</h1>
+        <div class="DivBarra">
+          <progress class="BarraVidaTuya" [value]="personajeTuyo().vida" [max]="personajeTuyo().vidaMaxima"></progress>
+          <p>{{vidaTuya()}}/{{personajeTuyo().vida}}</p>
+        </div>
+        <img class="PersonajeTuyo" [src]="personajeTuyo().fotoUrl">
+      </div>
+
+      <div class="BatallaDerecha">
+        <h1>{{ rival().nombre }}</h1>
+        <div class="DivBarra">
+          <progress class="BarraVidaTuya" [value]="rival().vida" [max]="rival().vidaMaxima"></progress>
+          <p>{{vidaRival()}}/{{rival().vida}}</p>
+        </div>
+        <img class="ImagenRival" [src]="rival().fotoUrl">
+      </div>
+      
+    </div>
+
+    <div class="PantallaDatos">
+
+      <!-- MENU ATAQUES IZQUIERDA -->
+      <div class="ClaseIzquierda" [class.inactivo]="!TuTurno">
+        <div class="IzquierdaIzquierda">
+          <h1 class="Ataques">Ataques:</h1>   
+          @for (ataque of personajeTuyo().ataquesDelPersonaje; track ataque.nombre) {
+  
+            @if (ataqueSeleccionado() == null) {
+              <button (click)="seleccionarAtaque(ataque)" class="AtaqueBoton">{{ ataque.nombre }}</button>
+            } @else {
+                @if (ataqueSeleccionado() === ataque) {
+                  <button (click)="seleccionarAtaque(ataque)" class="AtaqueBoton">{{ ataque.nombre }}</button>
+                } @else {
+                  <button (click)="seleccionarAtaque(ataque)" class="AtaqueBotonNoSeleccionado">{{ ataque.nombre }}</button>
+                } 
+            }  
+
+          }
+        </div>
+    
+        <div class="IzquierdaDerecha">
+          <h1>AQUI VA EL DADO</h1>
+          <button (click)="pasarTurnoTuyo()">paso</button>
+        </div>
+      </div>
+
+      <!-- MENU ATAQUES DERECHA -->
+      <div class="ClaseDerecha" [class.inactivo]="TuTurno">
+
+        <div class="IzquierdaIzquierda">
+          <h1 class="Ataques">Ataques:</h1>   
+          @for (ataque of rival().ataquesDelPersonaje; track ataque.nombre) {
+  
+            @if (ataqueSeleccionado() == null) {
+              <button (click)="seleccionarAtaque(ataque)" class="AtaqueBoton">{{ ataque.nombre }}</button>
+            } @else {
+                @if (ataqueSeleccionado() === ataque) {
+                  <button (click)="seleccionarAtaque(ataque)" class="AtaqueBoton">{{ ataque.nombre }}</button>
+                } @else {
+                  <button (click)="seleccionarAtaque(ataque)" class="AtaqueBotonNoSeleccionado">{{ ataque.nombre }}</button>
+                } 
+            }  
+
+          }
+        </div>
+      
+        <div class="IzquierdaDerecha">
+          <h1>AQUI VA EL DADO</h1>
+          <button (click)="pasarTurnoRival()">paso</button>
         </div>
 
       </div>
-        }
-    }
 
-  </div>
+    </div>
 
+  }
+</div>

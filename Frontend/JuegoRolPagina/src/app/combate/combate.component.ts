@@ -1,6 +1,7 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Partida } from '../models/partida';
+import { computed } from '@angular/core'; 
 
 @Component({
   selector: 'app-combate',
@@ -10,74 +11,126 @@ import { Partida } from '../models/partida';
   styleUrl: './combate.component.css'
 })
 export class CombateComponent implements OnInit {
-  partidaActual = signal<Partida | null>(null);
+  personajeTuyo = signal<any>(null);
+  rival = signal<any>(null);
+  ataqueSeleccionado = signal<any>(null);
 
-  // Dado
-  estaRodando = true;
-  caraDelDado = 20;
+  TuTurno = true;
+  // El computed este es para que se actualice en tiempo real
+  vidaTuya = computed(() => this.personajeTuyo()?.vida || 0);
+  vidaRival = computed(() => this.rival()?.vida || 0);
 
-  tirarDado() {
-    const resultado = Math.floor(Math.random() * 20) + 1;
-    this.estaRodando = false; 
-    this.caraDelDado = resultado; 
+  pasarTurnoTuyo() {
+    if(this.TuTurno == true) {
+      this.TuTurno = false;
+    } else {
+      this.TuTurno = true;
+    }
+
+    if (this.ataqueSeleccionado() !== null) {
+      const dano = this.ataqueSeleccionado().statReduceRival[0].valor;
+
+      const datosPaloma = this.rival();
+      datosPaloma.vida = datosPaloma.vida - dano;
+      this.rival.set(datosPaloma);
+
+      this.ataqueSeleccionado.set(null);
+    }
   }
 
-  // Lo otro, lo de la base de datos temporal
+  pasarTurnoRival() {
+    if(this.TuTurno == true) {
+      this.TuTurno = false;
+    } else {
+      this.TuTurno = true;
+    }
+
+    if (this.ataqueSeleccionado() !== null) {
+      const dano = this.ataqueSeleccionado().statReduceRival[0].valor;
+
+      const datosCanario = this.personajeTuyo();
+      datosCanario.vida = datosCanario.vida - dano;
+      this.personajeTuyo.set(datosCanario);
+
+      this.ataqueSeleccionado.set(null);
+    }
+
+  }
+
+  seleccionarAtaque(ataquePulsado: any) {
+    this.ataqueSeleccionado.set(ataquePulsado); 
+    console.log("Has seleccionado:", this.ataqueSeleccionado().nombre); 
+  }
+
+  // A partir de aqui lo de la base de datos temporal
   ngOnInit(): void {
-    this.cargarPartidaDePrueba();
+    this.cargarPersonajesDePrueba();
   }
-
-  cargarPartidaDePrueba() {
-    this.partidaActual.set({
+  cargarPersonajesDePrueba() {
+    
+    // TU PERSONAJE
+    this.personajeTuyo.set({
       id: null,
-      nombre: 'La gran batalla del bosque',
-      descripcion: 'El combate final está a punto de empezar...',
-      idioma: 'ES',
-      maxJugadores: 4,
-      personajes: [
+      nombre: 'Canario',
+      fotoUrl: 'https://upload.wikimedia.org/wikipedia/commons/f/fb/Serinus_canaria_gelb.JPG',
+      urlSprite: 'https://upload.wikimedia.org/wikipedia/commons/f/fb/Serinus_canaria_gelb.JPG',
+      vidaMaxima: 100, 
+      vida: 100,
+      estadisticasDelPersonaje: [
+        { nombreEstadistica: 'Fuerza', valorPropio: 15, consumible: false },
+        { nombreEstadistica: 'Maná', valorPropio: 50, consumible: true }
+      ],
+      ataquesDelPersonaje: [
         {
           id: null,
-          nombre: 'Guerrero Valiente',
-          fotoUrl: 'https://upload.wikimedia.org/wikipedia/commons/f/fb/Serinus_canaria_gelb.JPG',
-          urlSprite: 'https://upload.wikimedia.org/wikipedia/commons/f/fb/Serinus_canaria_gelb.JPG',
-          vida: 100,
-          estadisticasDelPersonaje: [
-            { nombreEstadistica: 'Fuerza', valorPropio: 15, consumible: false },
-            { nombreEstadistica: 'Maná', valorPropio: 50, consumible: true }
-          ],
-          ataquesDelPersonaje: [
-            {
-              id: null,
-              nombre: 'Golpe Rompecráneos',
-              dadoBase: 20,
-              ratioDado: [1, 20],
-              statReducePropio: [{ estadistica: 'Maná', valor: 10 }], 
-              statReduceRival: [{ estadistica: 'Vida', valor: 25 }]  
-            }
-          ]
+          nombre: 'Golpe Rompecráneos',
+          dadoBase: 20,
+          ratioDado: [1, 20],
+          statReducePropio: [{ estadistica: 'Maná', valor: 10 }], 
+          statReduceRival: [{ estadistica: 'Vida', valor: 25 }]  
         },
         {
           id: null,
-          nombre: 'Mago Oscuro',
-          fotoUrl: 'https://upload.wikimedia.org/wikipedia/commons/f/fb/Serinus_canaria_gelb.JPG',
-          urlSprite: 'https://upload.wikimedia.org/wikipedia/commons/f/fb/Serinus_canaria_gelb.JPG',
-          vida: 70,
-          estadisticasDelPersonaje: [
-            { nombreEstadistica: 'Inteligencia', valorPropio: 20, consumible: false },
-            { nombreEstadistica: 'Maná', valorPropio: 120, consumible: true }
-          ],
-          ataquesDelPersonaje: [
-            {
-              id: null,
-              nombre: 'Bola de Fuego',
-              dadoBase: 20,
-              ratioDado: [1, 20],
-              statReducePropio: [{ estadistica: 'Maná', valor: 30 }], 
-              statReduceRival: [{ estadistica: 'Vida', valor: 45 }]  
-            }
-          ]
+          nombre: 'Machetear',
+          dadoBase: 20,
+          ratioDado: [1, 20],
+          statReducePropio: [{ estadistica: 'Maná', valor: 3 }],  
+          statReduceRival: [{ estadistica: 'Vida', valor: 12 }]
+        },
+        {
+          id: null,
+          nombre: 'Aniquilar',
+          dadoBase: 20,
+          ratioDado: [1, 20],
+          statReducePropio: [{ estadistica: 'Maná', valor: 35 }],
+          statReduceRival: [{ estadistica: 'Vida', valor: 60 }]
         }
       ]
-    } as any); 
+    });
+
+    // EL DEL RIVAL 
+    this.rival.set({
+      id: null,
+      nombre: 'Paloma',
+      fotoUrl: 'https://upload.wikimedia.org/wikipedia/commons/a/aa/PigeonMonceau_%28cropped%29.jpg',
+      urlSprite: 'https://upload.wikimedia.org/wikipedia/commons/a/aa/PigeonMonceau_%28cropped%29.jpg',
+      vidaMaxima: 70, 
+      vida: 70,
+      estadisticasDelPersonaje: [
+        { nombreEstadistica: 'Inteligencia', valorPropio: 20, consumible: false },
+        { nombreEstadistica: 'Maná', valorPropio: 120, consumible: true }
+      ],
+      ataquesDelPersonaje: [
+        {
+          id: null,
+          nombre: 'Bola de Fuego',
+          dadoBase: 20,
+          ratioDado: [1, 20],
+          statReducePropio: [{ estadistica: 'Maná', valor: 30 }], 
+          statReduceRival: [{ estadistica: 'Vida', valor: 45 }]  
+        }
+      ]
+    }); 
   }
 }
+
