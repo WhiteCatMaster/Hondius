@@ -1,5 +1,7 @@
+/* Contenedor Principal */
 .selector-container {
   min-height: 100vh;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -10,11 +12,11 @@
   background-attachment: fixed;
   font-family: 'Almendra', system-ui;
   overflow-y: auto;
-  height: 100vh;
   padding: 10px 20px 80px 20px;
   box-sizing: border-box;
 }
 
+/* Scrollbar */
 .selector-container::-webkit-scrollbar {
   width: 10px;
 }
@@ -34,7 +36,7 @@
   background: #8c450f; 
 }
 
-/* Titulo*/
+/* Titulo Principal */
 .titulo-selector {
   font-family: 'Pirata One', system-ui;
   font-size: 4.5rem;
@@ -52,22 +54,54 @@
   font-weight: bold;
 }
 
-/* Personajes */
-.personajes-grid {
+/* =========================================
+   NUEVO LAYOUT EN COLUMNAS (HORIZONTAL) 
+   ========================================= */
+
+.columnas-wrapper {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: row;
+  width: 95%;
+  max-width: 1400px;
   gap: 40px;
   justify-content: center;
-  max-width: 1200px;
-  width: 100%;
-  margin-bottom: 10%;
+  align-items: flex-start;
 }
 
+.columna {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.titulo-columna {
+  font-family: 'Pirata One', system-ui;
+  font-size: 3rem;
+  color: #4e3522;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  margin-top: 0;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+/* Personajes en Grid de 2x2 */
+.personajes-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Crea 2 columnas por cada lado */
+  gap: 20px;
+  width: 100%;
+  margin-bottom: 50px;
+  justify-items: center;
+}
+
+/* Tarjetas */
 .personaje-card {
   background-color: #f4e4bc; 
   border: 4px solid #5B3124;
   border-radius: 15px;
-  width: 320px;
+  width: 100%;
+  max-width: 260px; /* Un poco más estrechas para que quepan 4 en pantalla (2 y 2) */
   display: flex;
   flex-direction: column;
   box-shadow: 0px 10px 20px rgba(0,0,0,0.6);
@@ -80,6 +114,18 @@
   box-shadow: 0px 15px 30px rgba(0,0,0,0.8);
 }
 
+.personaje-card.selected {
+  transform: scale(1.03); /* Se hace un poco más grande al seleccionarse */
+  box-shadow: 0px 15px 30px rgba(0,0,0,0.8);
+}
+
+.disabled-card {
+  filter: grayscale(0.8);
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Detalles de la Tarjeta */
 .card-header {
   background-color: #5B3124;
   color: #f4e4bc;
@@ -91,13 +137,13 @@
 .card-header h2 {
   margin: 0;
   font-family: 'Pirata One', system-ui;
-  font-size: 2.2rem;
-  letter-spacing: 2px;
+  font-size: 2rem;
+  letter-spacing: 1px;
 }
 
 .card-imagen {
   width: 100%;
-  height: 300px;
+  height: 250px;
   background-color: #3e2723;
   border-bottom: 4px solid #5B3124;
 }
@@ -116,13 +162,13 @@
   border-top: 2px solid rgba(91, 49, 36, 0.2);
 }
 
-/* Botón Seleccionar */
+/* Botones */
 .btn-seleccionar {
   background: linear-gradient(90deg, #8c450f, #f18c09);
   color: white;
   border: 2px solid #4e3522;
-  padding: 12px 30px;
-  font-size: 1.5rem;
+  padding: 12px 20px;
+  font-size: 1.4rem;
   font-family: 'Pirata One', system-ui;
   border-radius: 8px;
   cursor: pointer;
@@ -134,4 +180,25 @@
 .btn-seleccionar:hover {
  transform: scale(1.05);
  color: #fff;
+}
+
+.btn-seleccionar:disabled {
+  background: #666 !important;
+  border-color: #444;
+  cursor: not-allowed;
+  filter: grayscale(1);
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Estilo para el botón de enemigo (Rojizo) */
+.btn-enemigo {
+  background: linear-gradient(90deg, #8c450f, #f18c09);
+  border: 2px solid #3b0b0b;
+}
+
+.btn-enemigo:hover {
+  transform: scale(1.05);
+  box-shadow: 0px 10px 20px rgba(107, 20, 20, 0.6);
+  color: #fff;
 }

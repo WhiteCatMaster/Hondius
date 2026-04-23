@@ -10,13 +10,7 @@ import { Usuario } from './models/usuario';
 import { JugadorJuego, Rol } from './models/jugador-juego';
 import { Partida } from './models/partida';
 import { ServicioAPI } from './servicio-api';
-
-export interface Dado {
-  nombre: string;
-  caras: number;
-  cantidad: number;
-  imagen?: string;
-}
+import { Dado } from './models/dado';
 
 @Component({
   selector: 'app-opciones',
@@ -50,6 +44,7 @@ export class OpcionesComponent {
       ratioDado: [],
       statReducePropio: [],
       statReduceRival: [],
+      danoAtaque: 0
     },
   ];
 
@@ -73,6 +68,7 @@ export class OpcionesComponent {
           statReducePropio: [{ estadistica: '', valor: 0 }],
           statReduceRival: [{ estadistica: '', valor: 0 }],
           id: null,
+          danoAtaque: 0
         },
       ],
       estadisticasDelPersonaje: [
@@ -195,6 +191,7 @@ export class OpcionesComponent {
       ratioDado: [],
       statReducePropio: [],
       statReduceRival: [],
+      danoAtaque: 0
     });
   }
 
@@ -223,6 +220,7 @@ export class OpcionesComponent {
           statReducePropio: [{ estadistica: '', valor: 0 }],
           statReduceRival: [{ estadistica: '', valor: 0 }],
           id: null,
+          danoAtaque: 0
         },
       ],
       estadisticasDelPersonaje: [
@@ -253,6 +251,7 @@ export class OpcionesComponent {
       statReducePropio: [{ estadistica: '', valor: 0 }],
       statReduceRival: [{ estadistica: '', valor: 0 }],
       id: null,
+      danoAtaque: 0
     });
   }
 
@@ -303,6 +302,7 @@ export class OpcionesComponent {
 
   ratioDadoMin: number | null = null;
   ratioDadoMax: number | null = null;
+  danoAtaque: number = 0;
 
   iniciarArrastre(item: any) {
     this.itemArrastrado = item;
@@ -386,6 +386,7 @@ export class OpcionesComponent {
       estadisticasDefensor: mapaEstadisticasDefensor,
       dadoBase: 20,
       ratioDado: [this.ratioDadoMin, this.ratioDadoMax],
+      danoAtaque: this.danoAtaque,
     };
 
     console.log('¡Hechizo creado y listo para enviar!', ataqueFinal);
@@ -396,16 +397,17 @@ export class OpcionesComponent {
       ratioDado: ataqueFinal.ratioDado,
       statReducePropio: ataqueFinal.manaAtacante
         ? Object.entries(ataqueFinal.manaAtacante).map(([nombre, valor]) => ({
-            estadistica: nombre,
-            valor,
-          }))
+          estadistica: nombre,
+          valor,
+        }))
         : [],
       statReduceRival: ataqueFinal.estadisticasDefensor
         ? Object.entries(ataqueFinal.estadisticasDefensor).map(([nombre, valor]) => ({
-            estadistica: nombre,
-            valor,
-          }))
+          estadistica: nombre,
+          valor,
+        }))
         : [],
+      danoAtaque: ataqueFinal.danoAtaque
     };
     this.ataques.push(ataqueParaEnviar);
     console.log('Ataque para enviar a la API:', ataqueParaEnviar);
@@ -417,6 +419,8 @@ export class OpcionesComponent {
     this.efectosEnMesa = [];
     this.ratioDadoMin = null;
     this.ratioDadoMax = null;
+    this.danoAtaque = 0;
+
   }
 
   mandarPartida() {

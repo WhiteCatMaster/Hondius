@@ -237,18 +237,31 @@
             </div>
           </div>
 
-          <div class="zona-suerte-dado">
-            <h3 class="subtitulo-mesa">Ratio Dados (Suerte)</h3>
-            <div class="contenedor-inputs-dado">
-              <div class="input-grupo">
-                <label>Rango Crítico:</label>
-                <input type="number" class="input-dado" placeholder="Ej: 2" [(ngModel)]="ratioDadoMin">
-              </div>
-              <div class="input-grupo">
-                <label>Rango Normal:</label>
-                <input type="number" class="input-dado" placeholder="Ej: 3" [(ngModel)]="ratioDadoMax">
+          <div class="controles-inferiores-mesa"> 
+            <div class="zona-suerte-dado">
+              <h3 class="subtitulo-mesa">Ratio Dados (Suerte)</h3>
+              <div class="contenedor-inputs-dado">
+                <div class="input-grupo">
+                  <label>Rango Crítico:</label>
+                  <input type="number" class="input-dado" placeholder="Ej: 2" [(ngModel)]="ratioDadoMin">
+                </div>
+                <div class="input-grupo">
+                  <label>Rango Normal:</label>
+                  <input type="number" class="input-dado" placeholder="Ej: 3" [(ngModel)]="ratioDadoMax">
+                </div>
               </div>
             </div>
+
+            <div class="zona-dano">
+              <h3 class="subtitulo-mesa">Indica el daño:</h3>
+              <div class="contenedor-inputs-dado">
+                  <div class="input-grupo">
+                    <label>Cantidad:</label>
+                  <input type="number" class="input-dado" placeholder="Ej: 50" [(ngModel)]="danoAtaque">
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
@@ -285,6 +298,10 @@
             @if (ratioDadoMin || ratioDadoMax) {
               <h4>Suerte (Dado 20):</h4>
               <p>Crítico en: {{ ratioDadoMin || '?' }} | Normal en: {{ ratioDadoMax || '?' }}</p>
+            }
+            @if (danoAtaque) {
+              <h4>Daño Directo:</h4>
+              <p>{{ danoAtaque }} pts de daño</p>
             }
           }
         </div>

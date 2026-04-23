@@ -23,6 +23,12 @@
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    scrollbar-width: none; 
+    -ms-overflow-style: none;
+}
+#ContenedorDerecha::-webkit-scrollbar {
+    width: 0px;
+    background: transparent; 
 }
 
 #ContenedorDerecha p {
@@ -352,14 +358,16 @@ h2 {
     align-items: center;
 }
 
-.zona-drop-mesa h3 {
+.subtitulo-mesa {
     font-family: "Almendra", system-ui;
     text-align: center;
     margin-top: 0;
-    margin-bottom: 1px;
+    margin-bottom: 10px;
     font-size: 20px;
     color: #E6D8BF;
+    white-space: nowrap;
 }
+
 
 .mesa-grid-items {
     display: grid;
@@ -468,8 +476,6 @@ h2 {
 }
 
 .zona-suerte-dado {
-    width: 100%;
-
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -513,6 +519,23 @@ h2 {
 .input-dado::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
+}
+
+/* Zona ataque */
+.controles-inferiores-mesa {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly; /* Reparte el espacio inteligentemente sin empujar contra los bordes */
+    align-items: flex-start; 
+    width: 100%;
+    margin-top: 20px;
+}
+
+.zona-suerte-dado, .zona-dano {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: max-content; /* MAGIA: Esto prohíbe terminantemente que el texto se aplaste en dos líneas */
 }
 
 /* zona de resultado dentro de ataque
@@ -607,6 +630,25 @@ h2 {
 .btn-sellar-pergamino:hover {
     transform: scale(1.05);
     background-color: #7b4231;
+}
+
+
+.resumen-ataque::-webkit-scrollbar {
+    width: 8px;
+}
+
+.resumen-ataque::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.resumen-ataque::-webkit-scrollbar-thumb {
+    background-color: #5B3124;
+    border-radius: 10px;
+    border: 2px solid #f4e4bc;
+}
+
+.resumen-ataque::-webkit-scrollbar-thumb:hover {
+    background-color: #8c450f;
 }
 /* seccion para crear el personaje*/
 .ClaseGeneralPersonajes {
