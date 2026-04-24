@@ -6,26 +6,24 @@ import org.example.backend.service.JuegoService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import tools.jackson.databind.JsonNode
+import tools.jackson.module.kotlin.jacksonObjectMapper
 
 // DTO para la solicitud de crear partida (es un alias de JuegoDto)
 //typealias CrearPartidaDto = JuegoDto
 
-// Clase wrapper para coincidir exactamente con el JSON de entrada
-data class CrearPartidaRequest(
-    val juego: CrearPartidaDto
-)
-@CrossOrigin
 @RestController
-@RequestMapping("/partida")
+@RequestMapping("/api/partida", "/partida")
 class PartidaController(
     private val partidaService: JuegoService
 ) {
 
     @PostMapping
-    fun crearPartida(@RequestBody request: CrearPartidaRequest): ResponseEntity<Any> {
+    fun crearPartida(@RequestBody payload: JsonNode): ResponseEntity<Any> {
         return try {
-
-            val juegoGuardado = partidaService.crearJuegoxDTO(request.juego)
+            val juegoNode = payload.get("juego") ?: payload
+            val juegoDto = jsonMapper.treeToValue(juegoNode, CrearPartidaDto::class.java)
+            val juegoGuardado = partidaService.crearJuegoxDTO(juegoDto)
 
             // Devolvemos un 201 Created con el resultado
             ResponseEntity.status(HttpStatus.CREATED).body(juegoGuardado)
@@ -54,3 +52,6 @@ class PartidaController(
     }
      */
 }
+
+private val jsonMapper = jacksonObjectMapper()
+

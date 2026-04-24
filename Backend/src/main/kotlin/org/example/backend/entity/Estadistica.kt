@@ -29,7 +29,7 @@ class Estadistica(
     var personaje: Personaje? = null
 ) {
     override fun toString(): String {
-        return "Estadistica(id=$id, nombre='$nombre', valor=$valor, consumible=$consumible, personaje=$personaje)"
+        return "Estadistica(id=$id, nombre='$nombre', valor=$valor, consumible=$consumible, personajeId=${personaje?.id})"
     }
 }
 

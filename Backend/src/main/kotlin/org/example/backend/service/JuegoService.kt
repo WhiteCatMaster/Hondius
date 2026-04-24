@@ -159,7 +159,7 @@ class JuegoService(
                     valor = estatDTO.valor ?: 0,
                     consumible = estatDTO.consumible ?: false,
                 )
-                println("Guardando estadistica: $estat...")
+                println("Guardando estadistica: nombre=${estat.nombre}, valor=${estat.valor}, consumible=${estat.consumible}")
                 estats.add(estat)
             }
             for (ataqueDTO in personajeDTO.personajeAtaques){
@@ -210,12 +210,12 @@ class JuegoService(
             personajes.add(personaje)
         }
         val personajesGuardados = personajeRepo.saveAll(personajes)
-        println("Guardados: $personajesGuardados")
+        println("Personajes guardados: ${personajesGuardados.size}")
         for (i in personajes){
             val estatsGuardadas = estadisticaRepo.saveAll(i.estadisticas)
-            println("Estats guardadas: $estatsGuardadas")
+            println("Estadisticas guardadas: ${estatsGuardadas.size}")
             val ataquesGuardados = ataqueRepo.saveAll(i.ataques)
-            println("Guardados: $ataquesGuardados")
+            println("Ataques guardados: ${ataquesGuardados.size}")
         }
         println("Devolviendo partida creada...")
         var resultado = PartidaDto(

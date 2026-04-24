@@ -37,7 +37,7 @@ class Personaje(
 
 ){
     override fun toString(): String {
-        return "Personaje(id=$id, nombre='$nombre', vida=$vida, fotoUrl=$fotoUrl, jugadorJuego=$jugadorJuego, estadisticas=$estadisticas, ataques=$ataques)"
+        return "Personaje(id=$id, nombre='$nombre', vida=$vida, fotoUrl=$fotoUrl, estadisticas=${estadisticas.size}, ataques=${ataques.size})"
     }
 }
 

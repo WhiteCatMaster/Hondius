@@ -46,6 +46,6 @@ class Ataque(
     var ratioDado: MutableList<Int> = mutableListOf()
 ) {
     override fun toString(): String {
-        return "Ataque(id=$id, nombre='$nombre', manaAtacante=$manaAtacante, estadisticasDefensor=$estadisticasDefensor, owner=$owner, dadoBase=$dadoBase, ratioDado=$ratioDado)"
+        return "Ataque(id=$id, nombre='$nombre', manaAtacante=${manaAtacante.size}, estadisticasDefensor=${estadisticasDefensor.size}, ownerId=${owner?.id}, dadoBase=$dadoBase, ratioDado=$ratioDado)"
     }
 }
