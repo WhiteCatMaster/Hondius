@@ -1,0 +1,22 @@
+<div class="selector-container">
+  <h1 class="titulo-selector">Panel editor del Master</h1>
+  <p class="subtitulo-master">Selecciona un personaje para modificar sus stats</p>
+
+  <div class="personajes-grid">
+    @for (pj of partidaActual()?.personajes; track pj.nombre) {
+      <div class="personaje-card">
+        <div class="card-header">
+          <h2>{{ pj.nombre }}</h2>
+        </div>
+        <div class="card-imagen">
+          <img [src]="pj.fotoUrl" alt="Retrato">
+        </div>
+        <div class="card-footer">
+          <button class="btn-seleccionar" (click)="seleccionarParaEditar(pj)">
+            Editar Estadísticas
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+</div>
