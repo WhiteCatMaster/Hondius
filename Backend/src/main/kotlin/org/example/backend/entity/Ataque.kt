@@ -39,6 +39,8 @@ class Ataque(
 
     @Column(nullable = false)
     var dadoBase: Int = 10,
+    @Column(nullable = false)
+    var danioAtaque: Int = 0,
 
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "ataque_ratio_dado", joinColumns = [JoinColumn(name = "ataque_id")])
