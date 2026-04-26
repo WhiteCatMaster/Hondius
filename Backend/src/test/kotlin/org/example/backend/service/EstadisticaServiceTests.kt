@@ -4,21 +4,22 @@ import org.example.backend.entity.Estadistica
 import org.example.backend.repository.EstadisticaRepository
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.verify
-import org.mockito.Mockito.`when`
+import org.mockito.kotlin.any
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 import java.util.Optional
 
 class EstadisticaServiceTests {
-    private val estadisticaRepository: EstadisticaRepository = mock(EstadisticaRepository::class.java)
+    private val estadisticaRepository: EstadisticaRepository = mock<EstadisticaRepository>()
     private val estadisticaService = EstadisticaService(estadisticaRepository)
 
     @Test
     fun testBuscarEstadistica() {
         //Debería devolver la estadistica falsificada con mockito
         val estadisticaFalsa = Estadistica(1L, "Falsa", 1, true)
-        `when`(estadisticaRepository.findById(1L)).thenReturn(Optional.of(estadisticaFalsa))
+        whenever(estadisticaRepository.findById(1L)).thenReturn(Optional.of(estadisticaFalsa))
 
 
         val resultado = estadisticaService.getEstadisticaById(1L)
@@ -42,7 +43,7 @@ class EstadisticaServiceTests {
             Estadistica(1L, "Fuerza", 10, false),
             Estadistica(2L, "Mana", 50, true)
         )
-        `when`(estadisticaRepository.findAll()).thenReturn(listaFalsa)
+        whenever(estadisticaRepository.findAll()).thenReturn(listaFalsa)
 
         val resultado = estadisticaService.getAllEstadisticas()
 
@@ -59,7 +60,7 @@ class EstadisticaServiceTests {
         val estadisticaGuardada = Estadistica(1L, "Vida", 100, false)
 
 
-        `when`(estadisticaRepository.save(nuevaEstadistica)).thenReturn(estadisticaGuardada)
+        whenever(estadisticaRepository.save(nuevaEstadistica)).thenReturn(estadisticaGuardada)
 
         val resultado = estadisticaService.createEstadistica(nuevaEstadistica)
 
@@ -73,8 +74,8 @@ class EstadisticaServiceTests {
         val estadisticaExistente = Estadistica(1L, "Vieja", 5, false)
         val datosActualizados = Estadistica(null, "Nueva", 20, false)
 
-        `when`(estadisticaRepository.findById(1L)).thenReturn(Optional.of(estadisticaExistente))
-        `when`(estadisticaRepository.save(estadisticaExistente)).thenReturn(estadisticaExistente)
+        whenever(estadisticaRepository.findById(1L)).thenReturn(Optional.of(estadisticaExistente))
+        whenever(estadisticaRepository.save(estadisticaExistente)).thenReturn(estadisticaExistente)
 
         val resultado = estadisticaService.updateEstadistica(1L, datosActualizados)
 
@@ -88,13 +89,13 @@ class EstadisticaServiceTests {
     fun testActualizarEstadisticaInexistente() {
         //Se debería devolver un null
         val datosActualizados = Estadistica(null, "Nueva", 20, false)
-        `when`(estadisticaRepository.findById(2L)).thenReturn(Optional.empty())
+        whenever(estadisticaRepository.findById(2L)).thenReturn(Optional.empty())
 
         val resultado = estadisticaService.updateEstadistica(2L, datosActualizados)
 
         assertEquals(null, resultado)
         verify(estadisticaRepository).findById(2L)
-        verify(estadisticaRepository, Mockito.never()).save(Mockito.any())
+        verify(estadisticaRepository, never()).save(any())
     }
 
     @Test
@@ -102,8 +103,8 @@ class EstadisticaServiceTests {
         //Debería devolver la estadistica modificada
         val estadisticaExistente = Estadistica(1L, "Defensa", 10, false)
 
-        `when`(estadisticaRepository.findById(1L)).thenReturn(Optional.of(estadisticaExistente))
-        `when`(estadisticaRepository.save(estadisticaExistente)).thenReturn(estadisticaExistente)
+        whenever(estadisticaRepository.findById(1L)).thenReturn(Optional.of(estadisticaExistente))
+        whenever(estadisticaRepository.save(estadisticaExistente)).thenReturn(estadisticaExistente)
 
         val resultado = estadisticaService.updateEstadisticaValor(1L, 50)
 

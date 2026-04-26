@@ -7,16 +7,16 @@ import org.example.backend.entity.RolJugador
 import org.example.backend.repository.PersonajeRepository
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito.any
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.never
-import org.mockito.Mockito.verify
-import org.mockito.Mockito.`when`
+import org.mockito.kotlin.any
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 import java.util.Optional
 
 class PersonajeServiceTests {
 
-    private val personajeRepo: PersonajeRepository = mock(PersonajeRepository::class.java)
+    private val personajeRepo: PersonajeRepository = mock<PersonajeRepository>()
     private val personajeService = PersonajeService(personajeRepo)
 
     @Test
@@ -28,7 +28,7 @@ class PersonajeServiceTests {
             Personaje(1L, "Guerrero", 100, "url_foto", jugadorJuego1, mutableListOf(estadisticaFalsa)),
             Personaje(2L, "Mago", 80, "url_foto_2", jugadorJuego2, mutableListOf(estadisticaFalsa))
         )
-        `when`(personajeRepo.findAll()).thenReturn(listaFalsa)
+        whenever(personajeRepo.findAll()).thenReturn(listaFalsa)
 
         val resultado = personajeService.getAllPersonajes()
 
@@ -41,7 +41,7 @@ class PersonajeServiceTests {
         val estadisticaFalsa = Estadistica(1L, "Falsa", 1, true)
         val jugadorJuego1 = JugadorJuego(1L, null, null, RolJugador.JUGADOR, null)
         val personajeFalso = Personaje(1L, "Guerrero", 100, "url", jugadorJuego1, mutableListOf(estadisticaFalsa))
-        `when`(personajeRepo.findById(1L)).thenReturn(Optional.of(personajeFalso))
+        whenever(personajeRepo.findById(1L)).thenReturn(Optional.of(personajeFalso))
 
         val resultado = personajeService.getPersonajeById(1L)
 
@@ -52,7 +52,7 @@ class PersonajeServiceTests {
 
     @Test
     fun testGetPersonajeByIdInexistente() {
-        `when`(personajeRepo.findById(99L)).thenReturn(Optional.empty())
+        whenever(personajeRepo.findById(99L)).thenReturn(Optional.empty())
 
         val resultado = personajeService.getPersonajeById(99L)
 
@@ -68,7 +68,7 @@ class PersonajeServiceTests {
         val nuevoPersonaje = Personaje(null, "Arquero", 90, "url", jugadorJuego1, mutableListOf(estadisticaFalsa))
         val personajeGuardado = Personaje(1L, "Arquero", 90, "url2", jugadorJuego2, mutableListOf(estadisticaFalsa))
 
-        `when`(personajeRepo.save(nuevoPersonaje)).thenReturn(personajeGuardado)
+        whenever(personajeRepo.save(nuevoPersonaje)).thenReturn(personajeGuardado)
 
         val resultado = personajeService.createPersonaje(nuevoPersonaje)
 
@@ -84,8 +84,8 @@ class PersonajeServiceTests {
         val personajeExistente = Personaje(1L, "Viejo Nombre", 100, "url", jugadorJuego1, mutableListOf(estadisticaFalsa))
         val datosActualizados = Personaje(null, "Nuevo Nombre", 100, "url", jugadorJuego2, mutableListOf(estadisticaFalsa))
 
-        `when`(personajeRepo.findById(1L)).thenReturn(Optional.of(personajeExistente))
-        `when`(personajeRepo.save(personajeExistente)).thenReturn(personajeExistente)
+        whenever(personajeRepo.findById(1L)).thenReturn(Optional.of(personajeExistente))
+        whenever(personajeRepo.save(personajeExistente)).thenReturn(personajeExistente)
 
         val resultado = personajeService.updateNombrePersonaje(1L, datosActualizados)
 
@@ -99,7 +99,7 @@ class PersonajeServiceTests {
         val estadisticaFalsa = Estadistica(1L, "Falsa", 1, true)
         val jugadorJuego1 = JugadorJuego(1L, null, null, RolJugador.JUGADOR, null)
         val datosActualizados = Personaje(null, "Nuevo Nombre", 100, "url", jugadorJuego1, mutableListOf(estadisticaFalsa))
-        `when`(personajeRepo.findById(99L)).thenReturn(Optional.empty())
+        whenever(personajeRepo.findById(99L)).thenReturn(Optional.empty())
 
         val resultado = personajeService.updateNombrePersonaje(99L, datosActualizados)
 
@@ -125,8 +125,8 @@ class PersonajeServiceTests {
         )
         val datosActualizados = Personaje(null, "Guerrero", 100, "url", jugadorJuego1, nuevasEstadisticas)
 
-        `when`(personajeRepo.findById(1L)).thenReturn(Optional.of(personajeExistente))
-        `when`(personajeRepo.save(personajeExistente)).thenReturn(personajeExistente)
+        whenever(personajeRepo.findById(1L)).thenReturn(Optional.of(personajeExistente))
+        whenever(personajeRepo.save(personajeExistente)).thenReturn(personajeExistente)
 
         val resultado = personajeService.actualizarEstadisticaPersonaje(1L, datosActualizados)
 
@@ -141,7 +141,7 @@ class PersonajeServiceTests {
         val jugadorJuego1 = JugadorJuego(1L, null, null, RolJugador.JUGADOR, null)
         val estadisticaFalsa = Estadistica(1L, "Falsa", 1, true)
         val datosActualizados = Personaje(null, "Guerrero", 100, "url", jugadorJuego1, mutableListOf(estadisticaFalsa))
-        `when`(personajeRepo.findById(99L)).thenReturn(Optional.empty())
+        whenever(personajeRepo.findById(99L)).thenReturn(Optional.empty())
 
         val resultado = personajeService.actualizarEstadisticaPersonaje(99L, datosActualizados)
 

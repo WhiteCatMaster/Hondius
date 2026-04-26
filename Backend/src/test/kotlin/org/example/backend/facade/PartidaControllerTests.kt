@@ -6,16 +6,16 @@ import org.example.backend.service.EstadisticaService
 import org.example.backend.service.JuegoService
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.verify
-import org.mockito.Mockito.`when`
+import org.mockito.kotlin.any
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 
 class PartidaControllerTests (){
 
-    private val partidaService = mock(JuegoService::class.java)
+    private val partidaService = mock<JuegoService>()
     private val partidaController = PartidaController(partidaService)
     /*
     @Test
@@ -37,7 +37,7 @@ class PartidaControllerTests (){
         val listaFalsa = listOf(partida1, partida2)
 
 
-        `when`(partidaService.getAllPartidas()).thenReturn(listaFalsa)
+        whenever(partidaService.getAllPartidas()).thenReturn(listaFalsa)
 
 
         val result = partidaController.obtenerPartidas()
@@ -50,7 +50,7 @@ class PartidaControllerTests (){
     fun testObtenerPartidasListaVacia() {
 
         val listaVacia = emptyList<PartidaDto>()
-        `when`(partidaService.getAllPartidas()).thenReturn(listaVacia)
+        whenever(partidaService.getAllPartidas()).thenReturn(listaVacia)
 
 
         val result = partidaController.obtenerPartidas()
