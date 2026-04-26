@@ -2,6 +2,7 @@ package org.example.backend.service
 
 import jakarta.transaction.Transactional
 import org.example.backend.dto.CrearPartidaDto
+import org.example.backend.dto.DatosPartidaDto
 import org.example.backend.dto.JuegoDto
 import org.example.backend.dto.PartidaDto
 import org.example.backend.entity.Ataque
@@ -17,6 +18,7 @@ import org.example.backend.repository.JuegoRepository
 import org.example.backend.repository.JugadorJuegoRepository
 import org.example.backend.repository.PersonajeRepository
 import org.example.backend.repository.UsuarioRepository
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 
 @Service
@@ -42,6 +44,182 @@ class JuegoService(
             )
         }
     }
+
+    fun obtenerDatosPartida(id: Long): ResponseEntity<DatosPartidaDto> {
+        val partida : Juego = juegoRepo.findById(id).orElse(null)
+        var personajes = mutableListOf<DatosPartidaDto.PersonajeDto>()
+        var estadisticas = mutableListOf<DatosPartidaDto.PersonajeDto.EstadisticaDto>()
+        var ataques = mutableListOf<DatosPartidaDto.PersonajeDto.AtaqueDto>()
+        for (personaje in partida.personajes) {
+            for (i in personaje.estadisticas){
+                val estadisticaDto = DatosPartidaDto.PersonajeDto.EstadisticaDto(
+                    id = i.id,
+                    nombre = i.nombre,
+                    valor = i.valor,
+                    consumible = i.consumible,
+                )
+                estadisticas.add(estadisticaDto)
+            }
+            for (i in personaje.ataques){
+                var manaAtacanteDto = mutableMapOf<String, Int>()
+                var estadisticasDefensorDto = mutableMapOf<String, Double>()
+                for (j in i.manaAtacante.keys){
+                    val clave = j.nombre
+                    manaAtacanteDto[clave] = i.manaAtacante[j] ?: 0
+                }
+                for (j in i.estadisticasDefensor.keys){
+                    val clave = j.nombre
+                    estadisticasDefensorDto[clave] = i.estadisticasDefensor[j] ?: 0.0
+                }
+                val ataqueDto = DatosPartidaDto.PersonajeDto.AtaqueDto(
+                    id = i.id,
+                    nombre = i.nombre,
+                    manaAtacante = manaAtacanteDto,
+                    estadisticasDefensor = estadisticasDefensorDto,
+                    dadoBase = i.dadoBase,
+                    ratioDado = i.ratioDado,
+                    danoAtaque = i.danioAtaque
+                )
+                ataques.add(ataqueDto)
+            }
+            val personajeDto = DatosPartidaDto.PersonajeDto(
+                id = personaje.id,
+                personajeNombre = personaje.nombre,
+                personajeVida = personaje.vida,
+                personajeFotoUrl = personaje.fotoUrl,
+                personajeEstadisticas = estadisticas,
+                personajeAtaques = ataques
+            )
+            personajes.add(personajeDto)
+        }
+        val resultado = DatosPartidaDto(
+            id = partida.id,
+            nombre = partida.nombre,
+            descripcion = partida.descripcion,
+            idioma = partida.idioma,
+            maximoJugadores = partida.maximoJugadores,
+            jugadores = personajes
+        )
+        return ResponseEntity.ok(resultado)
+    }
+    fun createJuego(juego: Juego) = juegoRepo.save(juego)
+
+    fun eliminarJuego(id: Long) = juegoRepo.deleteById(id)
+
+    fun asignarJugadorJuego(juegoId: Long, jugadorJuego: JugadorJuego): Juego? {
+        val juego = juegoRepo.findById(juegoId).orElse(null) ?: return null
+        juego.jugadores.add(jugadorJuego)
+        return juegoRepo.save(juego)
+    }
+
+    fun modificarJuego(juegoId: Long, updatedJuego: Juego): Juego? {
+        val existingJuego = juegoRepo.findById(juegoId).orElse(null) ?: return null
+        existingJuego.nombre = updatedJuego.nombre
+        existingJuego.jugadores = updatedJuego.jugadores
+        return juegoRepo.save(existingJuego)
+    }
+    fun cambiarIdiomaJuego(juegoId: Long, nuevoIdioma: String): Juego? {
+        val existingJuego = juegoRepo.findById(juegoId).orElse(null) ?: return null
+        existingJuego.idioma = nuevoIdioma
+        return juegoRepo.save(existingJuego)
+    }
+    @Transactional
+    fun crearJuegoxDTO(juegoDTO: CrearPartidaDto): PartidaDto {
+        var personajes = mutableListOf<Personaje>()
+        val juego = Juego(
+            nombre = juegoDTO.nombre ?: "",
+            idioma = juegoDTO.idioma,
+            descripcion = juegoDTO.descripcion,
+            maximoJugadores = juegoDTO.maximoJugadores,
+            personajes = mutableListOf()
+        )
+
+        //Deberia de crear un jugadorJuego sin valores
+        //Crear los jugadores a partir del DTO
+        println("Guardando jugadores desde DTO...")
+        for (personajeDTO in juegoDTO.jugadores){
+            println("Guardando estats desde DTO...")
+            //Se cargan las estadisticas primero
+            var estats = mutableListOf<Estadistica>()
+            var ataques = mutableListOf<Ataque>()
+            for (estatDTO in personajeDTO.personajeEstadisticas){
+                var estat  = Estadistica(
+                    nombre = estatDTO.nombre ?: "",
+                    valor = estatDTO.valor ?: 0,
+                    consumible = estatDTO.consumible,
+                )
+                println("Guardando estadistica: nombre=${estat.nombre}, valor=${estat.valor}, consumible=${estat.consumible}")
+                estats.add(estat)
+            }
+            for (ataqueDTO in personajeDTO.personajeAtaques){
+                //Deberia de mapear la estat a la que se refiere el string del json
+                var estatsDefensor = mutableMapOf<Estadistica, Double>()
+                for (i in estats){
+                    if (ataqueDTO.estadisticasDefensor.containsKey(i.nombre)){
+                        estatsDefensor[i] = ataqueDTO.estadisticasDefensor[i.nombre] ?: 0.0
+                    }
+                }
+                //Volver a mapear pero esta vez con manaAtacante
+                var manaAtacante = mutableMapOf<Estadistica, Int>()
+                for (i in estats){
+                    if (ataqueDTO.manaAtacante.containsKey(i.nombre)){
+                        manaAtacante[i] = ataqueDTO.manaAtacante[i.nombre] ?: 0
+                    }
+                }
+                var ataque = Ataque(
+                    nombre = ataqueDTO.nombre ?: "",
+                    dadoBase = ataqueDTO.dadoBase,
+                    ratioDado = ataqueDTO.ratioDado,
+                    estadisticasDefensor = estatsDefensor,
+                    manaAtacante = manaAtacante,
+                    danioAtaque = ataqueDTO.danoAtaque
+                    //De momento se deja owner como null
+                )
+
+                ataques.add(ataque)
+            }
+
+            println("Guardando ataques desde DTO...")
+
+            println("Guardando personajes desde DTO...")
+            var personaje = Personaje(
+                nombre = personajeDTO.personajeNombre ?: "",
+                vida = personajeDTO.personajeVida ?: 0,
+                fotoUrl = personajeDTO.personajeFotoUrl ?: "",
+                estadisticas = estats,
+                ataques = ataques,
+                //De momento se deja Jugador JUego como null
+            )
+            for (i in personaje.estadisticas){
+                i.personaje = personaje
+            }
+            for (i in personaje.ataques){
+                i.owner = personaje
+
+            }
+            personajes.add(personaje)
+            juego.personajes = personajes
+        }
+        val juegoGuardado = juegoRepo.save(juego)
+        val personajesGuardados = personajeRepo.saveAll(personajes)
+        println("Personajes guardados: ${personajesGuardados.size}")
+        for (i in personajes){
+            val estatsGuardadas = estadisticaRepo.saveAll(i.estadisticas)
+            println("Estadisticas guardadas: ${estatsGuardadas.size}")
+            val ataquesGuardados = ataqueRepo.saveAll(i.ataques)
+            println("Ataques guardados: ${ataquesGuardados.size}")
+        }
+        println("Devolviendo partida creada...")
+        var resultado = PartidaDto(
+            id = juegoGuardado.id,
+            nombre = juegoGuardado.nombre,
+            idioma = juegoGuardado.idioma,
+            descripcion = juegoGuardado.descripcion,
+            maximoJugadores = juegoGuardado.maximoJugadores,
+        )
+        return resultado
+    }
+
     /*
     fun getDatosPartida(nombrePartida: String): JuegoDto? {
         val juego = juegoRepo.findByNombre(nombrePartida) ?: return null
@@ -114,120 +292,6 @@ class JuegoService(
         )
     }
     */
-    fun createJuego(juego: Juego) = juegoRepo.save(juego)
-
-    fun eliminarJuego(id: Long) = juegoRepo.deleteById(id)
-
-    fun asignarJugadorJuego(juegoId: Long, jugadorJuego: JugadorJuego): Juego? {
-        val juego = juegoRepo.findById(juegoId).orElse(null) ?: return null
-        juego.jugadores.add(jugadorJuego)
-        return juegoRepo.save(juego)
-    }
-
-    fun modificarJuego(juegoId: Long, updatedJuego: Juego): Juego? {
-        val existingJuego = juegoRepo.findById(juegoId).orElse(null) ?: return null
-        existingJuego.nombre = updatedJuego.nombre
-        existingJuego.jugadores = updatedJuego.jugadores
-        return juegoRepo.save(existingJuego)
-    }
-    fun cambiarIdiomaJuego(juegoId: Long, nuevoIdioma: String): Juego? {
-        val existingJuego = juegoRepo.findById(juegoId).orElse(null) ?: return null
-        existingJuego.idioma = nuevoIdioma
-        return juegoRepo.save(existingJuego)
-    }
-    @Transactional
-    fun crearJuegoxDTO(juegoDTO: CrearPartidaDto): PartidaDto {
-        var personajes = mutableListOf<Personaje>()
-        val juego = Juego(
-            nombre = juegoDTO.nombre ?: "",
-            idioma = juegoDTO.idioma,
-            descripcion = juegoDTO.descripcion,
-            maximoJugadores = juegoDTO.maximoJugadores
-        )
-        val juegoGuardado = juegoRepo.save(juego)
-        //Deberia de crear un jugadorJuego sin valores
-        //Crear los jugadores a partir del DTO
-        println("Guardando jugadores desde DTO...")
-        for (personajeDTO in juegoDTO.jugadores){
-            println("Guardando estats desde DTO...")
-            //Se cargan las estadisticas primero
-            var estats = mutableListOf<Estadistica>()
-            var ataques = mutableListOf<Ataque>()
-            for (estatDTO in personajeDTO.personajeEstadisticas){
-                var estat  = Estadistica(
-                    nombre = estatDTO.nombre ?: "",
-                    valor = estatDTO.valor ?: 0,
-                    consumible = estatDTO.consumible ?: false,
-                )
-                println("Guardando estadistica: nombre=${estat.nombre}, valor=${estat.valor}, consumible=${estat.consumible}")
-                estats.add(estat)
-            }
-            for (ataqueDTO in personajeDTO.personajeAtaques){
-                //Deberia de mapear la estat a la que se refiere el string del json
-                var estatsDefensor = mutableMapOf<Estadistica, Double>()
-                for (i in estats){
-                    if (ataqueDTO.estadisticasDefensor.containsKey(i.nombre)){
-                        estatsDefensor[i] = ataqueDTO.estadisticasDefensor[i.nombre] ?: 0.0
-                    }
-                }
-                //Volver a mapear pero esta vez con manaAtacante
-                var manaAtacante = mutableMapOf<Estadistica, Int>()
-                for (i in estats){
-                    if (ataqueDTO.manaAtacante.containsKey(i.nombre)){
-                        manaAtacante[i] = ataqueDTO.manaAtacante[i.nombre] ?: 0
-                    }
-                }
-                var ataque = Ataque(
-                    nombre = ataqueDTO.nombre ?: "",
-                    dadoBase = ataqueDTO.dadoBase,
-                    ratioDado = ataqueDTO.ratioDado,
-                    estadisticasDefensor = estatsDefensor,
-                    manaAtacante = manaAtacante,
-                    //De momento se deja owner como null
-                )
-
-                ataques.add(ataque)
-            }
-
-            println("Guardando ataques desde DTO...")
-
-            println("Guardando personajes desde DTO...")
-            var personaje = Personaje(
-                nombre = personajeDTO.personajeNombre ?: "",
-                vida = personajeDTO.personajeVida ?: 0,
-                fotoUrl = personajeDTO.personajeFotoUrl ?: "",
-                estadisticas = estats,
-                ataques = ataques,
-                //De momento se deja Jugador JUego como null
-            )
-            for (i in personaje.estadisticas){
-                i.personaje = personaje
-            }
-            for (i in personaje.ataques){
-                i.owner = personaje
-
-            }
-            personajes.add(personaje)
-        }
-        val personajesGuardados = personajeRepo.saveAll(personajes)
-        println("Personajes guardados: ${personajesGuardados.size}")
-        for (i in personajes){
-            val estatsGuardadas = estadisticaRepo.saveAll(i.estadisticas)
-            println("Estadisticas guardadas: ${estatsGuardadas.size}")
-            val ataquesGuardados = ataqueRepo.saveAll(i.ataques)
-            println("Ataques guardados: ${ataquesGuardados.size}")
-        }
-        println("Devolviendo partida creada...")
-        var resultado = PartidaDto(
-            id = juegoGuardado.id,
-            nombre = juegoGuardado.nombre,
-            idioma = juegoGuardado.idioma,
-            descripcion = juegoGuardado.descripcion,
-            maximoJugadores = juegoGuardado.maximoJugadores,
-        )
-        return resultado
-    }
-
     /*
 
     @Transactional

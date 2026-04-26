@@ -1,6 +1,7 @@
 package org.example.backend.facade
 
 import org.example.backend.dto.CrearPartidaDto
+import org.example.backend.dto.DatosPartidaDto
 import org.example.backend.dto.PartidaDto
 import org.example.backend.service.JuegoService
 import org.springframework.http.HttpStatus
@@ -40,6 +41,12 @@ class PartidaController(
 
 
     }
+    @GetMapping("/{id}")
+    fun obtenerDatosPartida(@PathVariable id: Long): ResponseEntity<DatosPartidaDto>? {
+        val partida = partidaService.obtenerDatosPartida(id)
+        return partida
+    }
+
     /*
     @GetMapping("/{nombrePartida}")
     fun obtenerDatosCompletosPartida(@PathVariable nombrePartida: String): ResponseEntity<JuegoDto> {

@@ -8,22 +8,22 @@ import org.example.backend.entity.Usuario
 import org.example.backend.repository.JugadorJuegoRepository
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito.any
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.never
-import org.mockito.Mockito.verify
-import org.mockito.Mockito.`when`
+import org.mockito.kotlin.any
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 import java.util.Optional
 
 class JugadorJuegoServiceTests {
 
-    private val jugadorJuegoRepo: JugadorJuegoRepository = mock(JugadorJuegoRepository::class.java)
+    private val jugadorJuegoRepo: JugadorJuegoRepository = mock<JugadorJuegoRepository>()
     private val jugadorJuegoService = JugadorJuegoService(jugadorJuegoRepo)
 
     // Variables simuladas para rellenar los constructores obligatorios sin crear toda la jerarquía
-    private val usuarioMock = mock(Usuario::class.java)
-    private val juegoMock = mock(Juego::class.java)
-    private val personajeMock = mock(Personaje::class.java)
+    private val usuarioMock = mock<Usuario>()
+    private val juegoMock = mock<Juego>()
+    private val personajeMock = mock<Personaje>()
 
     @Test
     fun testGetAllJugadoresJuego() {
@@ -31,7 +31,7 @@ class JugadorJuegoServiceTests {
             JugadorJuego(1L, usuarioMock, juegoMock, RolJugador.JUGADOR, null),
             JugadorJuego(2L, usuarioMock, juegoMock, RolJugador.JUGADOR, personajeMock)
         )
-        `when`(jugadorJuegoRepo.findAll()).thenReturn(listaFalsa)
+        whenever(jugadorJuegoRepo.findAll()).thenReturn(listaFalsa)
 
         val resultado = jugadorJuegoService.getAllJugadoresJuego()
 
@@ -42,7 +42,7 @@ class JugadorJuegoServiceTests {
     @Test
     fun testGetJugadorJuegoById() {
         val jugadorFalso = JugadorJuego(1L, usuarioMock, juegoMock, RolJugador.JUGADOR, null)
-        `when`(jugadorJuegoRepo.findById(1L)).thenReturn(Optional.of(jugadorFalso))
+        whenever(jugadorJuegoRepo.findById(1L)).thenReturn(Optional.of(jugadorFalso))
 
         val resultado = jugadorJuegoService.getJugadorJuegoById(1L)
 
@@ -52,7 +52,7 @@ class JugadorJuegoServiceTests {
 
     @Test
     fun testGetJugadorJuegoByIdInexistente() {
-        `when`(jugadorJuegoRepo.findById(99L)).thenReturn(Optional.empty())
+        whenever(jugadorJuegoRepo.findById(99L)).thenReturn(Optional.empty())
 
         val resultado = jugadorJuegoService.getJugadorJuegoById(99L)
 
@@ -65,7 +65,7 @@ class JugadorJuegoServiceTests {
         val nuevoJugador = JugadorJuego(null, usuarioMock, juegoMock, RolJugador.JUGADOR, null)
         val jugadorGuardado = JugadorJuego(1L, usuarioMock, juegoMock, RolJugador.JUGADOR, null)
 
-        `when`(jugadorJuegoRepo.save(nuevoJugador)).thenReturn(jugadorGuardado)
+        whenever(jugadorJuegoRepo.save(nuevoJugador)).thenReturn(jugadorGuardado)
 
         val resultado = jugadorJuegoService.createJugadorJuego(nuevoJugador)
 
@@ -79,8 +79,8 @@ class JugadorJuegoServiceTests {
         // Simulamos un objeto con los datos que queremos actualizar (ej. se le asigna un rol distinto y un personaje)
         val datosActualizados = JugadorJuego(null, usuarioMock, juegoMock, RolJugador.ADMIN, personajeMock)
 
-        `when`(jugadorJuegoRepo.findById(1L)).thenReturn(Optional.of(jugadorExistente))
-        `when`(jugadorJuegoRepo.save(jugadorExistente)).thenReturn(jugadorExistente)
+        whenever(jugadorJuegoRepo.findById(1L)).thenReturn(Optional.of(jugadorExistente))
+        whenever(jugadorJuegoRepo.save(jugadorExistente)).thenReturn(jugadorExistente)
 
         val resultado = jugadorJuegoService.updateJugadorJuego(1L, datosActualizados)
 
@@ -93,7 +93,7 @@ class JugadorJuegoServiceTests {
     @Test
     fun testUpdateJugadorJuegoInexistente() {
         val datosActualizados = JugadorJuego(null, usuarioMock, juegoMock, RolJugador.JUGADOR, null)
-        `when`(jugadorJuegoRepo.findById(99L)).thenReturn(Optional.empty())
+        whenever(jugadorJuegoRepo.findById(99L)).thenReturn(Optional.empty())
 
         val resultado = jugadorJuegoService.updateJugadorJuego(99L, datosActualizados)
 
@@ -112,8 +112,8 @@ class JugadorJuegoServiceTests {
     fun testAsignarPersonaje() {
         val jugadorExistente = JugadorJuego(1L, usuarioMock, juegoMock, RolJugador.JUGADOR, null)
 
-        `when`(jugadorJuegoRepo.findById(1L)).thenReturn(Optional.of(jugadorExistente))
-        `when`(jugadorJuegoRepo.save(jugadorExistente)).thenReturn(jugadorExistente)
+        whenever(jugadorJuegoRepo.findById(1L)).thenReturn(Optional.of(jugadorExistente))
+        whenever(jugadorJuegoRepo.save(jugadorExistente)).thenReturn(jugadorExistente)
 
         //Como el metodo asignarPersonaje actual aún no tiene la lógica implementada (solo hace findById y save), el test verifica solo eso.
         val resultado = jugadorJuegoService.asignarPersonaje(1L, 5L)
@@ -125,7 +125,7 @@ class JugadorJuegoServiceTests {
 
     @Test
     fun testAsignarPersonajeInexistente() {
-        `when`(jugadorJuegoRepo.findById(99L)).thenReturn(Optional.empty())
+        whenever(jugadorJuegoRepo.findById(99L)).thenReturn(Optional.empty())
 
         val resultado = jugadorJuegoService.asignarPersonaje(99L, 5L)
 

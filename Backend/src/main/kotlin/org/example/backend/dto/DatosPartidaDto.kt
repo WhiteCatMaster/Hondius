@@ -1,19 +1,19 @@
 package org.example.backend.dto
 
-import org.example.backend.entity.Estadistica
-import org.example.backend.entity.RolJugador
+import org.example.backend.dto.CrearPartidaDto.PersonajeDto
 import java.io.Serializable
 
-
-data class CrearPartidaDto(
+class DatosPartidaDto (
+    val id: Long? = null,
     val nombre: String? = null,
     val descripcion: String? = null,
     val idioma: String? = null,
     val maximoJugadores: Int? = null,
     val jugadores: MutableList<PersonajeDto> = mutableListOf()
-) : Serializable {
+): Serializable {
 
     data class PersonajeDto(
+        val id: Long? = null,
         val personajeNombre: String? = null,
         val personajeVida: Int? = null,
         val personajeFotoUrl: String? = null,
@@ -22,6 +22,7 @@ data class CrearPartidaDto(
     ) : Serializable {
 
         data class EstadisticaDto(
+            val id: Long? = null,
             val nombre: String? = null,
             val valor: Int? = null,
             val consumible: Boolean = false
@@ -29,7 +30,7 @@ data class CrearPartidaDto(
             Serializable
 
         data class AtaqueDto(
-            //val id: Long? = null,
+            val id: Long? = null,
             val nombre: String? = null,
             val manaAtacante: MutableMap<String, Int> = mutableMapOf(),
             val estadisticasDefensor: MutableMap<String, Double> = mutableMapOf(),
