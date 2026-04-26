@@ -36,7 +36,7 @@ services:
     depends_on:
       - backend
     volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro,Z
       - datos_prometheus:/prometheus
     command:
       - --config.file=/etc/prometheus/prometheus.yml
@@ -50,8 +50,8 @@ services:
       - prometheus
     volumes:
       - datos_grafana:/var/lib/grafana
-      - ./grafana/provisioning:/etc/grafana/provisioning:ro
-      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro,Z
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro,Z
     ports:
       - "3000:3000"
 
