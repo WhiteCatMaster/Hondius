@@ -2,6 +2,9 @@ import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Partida } from '../models/partida';
 import { computed } from '@angular/core'; 
+import { ActivatedRoute } from '@angular/router';
+import { ServicioAPI } from '../servicio-api';
+import { PersonajeDto } from '../selectorELIMINAR.component';
 
 @Component({
   selector: 'app-combate',
@@ -14,10 +17,16 @@ export class CombateComponent implements OnInit {
   personajeTuyo = signal<any>(null);
   rival = signal<any>(null);
   ataqueSeleccionado = signal<any>(null);
-
+  combateId: string | null = null;
+  combateDto: CombatePersonjaesDto|null = null;
+  
   ambasEstatsBien = false;
 
   TuTurno = true;
+  constructor(
+    private route: ActivatedRoute,
+    private servicioAPI: ServicioAPI,
+  ){}
   // El computed este es para que se actualice en tiempo real
   vidaTuya = computed(() => this.personajeTuyo()?.vida || 0);
   vidaRival = computed(() => this.rival()?.vida || 0);
@@ -137,7 +146,18 @@ export class CombateComponent implements OnInit {
 
   // A partir de aqui lo de la base de datos temporal
   ngOnInit(): void {
-    this.cargarPersonajesDePrueba();
+    //this.cargarPersonajesDePrueba();
+    this.combateId = this.route.snapshot.paramMap.get('id');
+    //this.cargarPartidaDePrueba();
+    if (this.combateId) {
+      this.servicioAPI.obtenerCombate(this.combateId).subscribe({
+        next: (partidaBackend) => {
+            this.combateDto = partidaBackend;
+            this.cargarPersonajesBD()
+            console.log(this.combateDto)
+        },
+      });
+    }
   }
 
   cargarPersonajesDePrueba() {
@@ -225,5 +245,108 @@ export class CombateComponent implements OnInit {
     }); 
   }
 
+  cargarPersonajesBD(){
+    //Supongo que deberia de hacer un GET a backend y recoger el combate por el id 
+    //Para hacerlo mas sencillo solo voy a recoger los personajes del combate 
+    let estadisticas1:any[] = []
+    let ataques1:any[] = []
+    let ataques1mana: any[] = []
+    let ataques1propio: any[] = []
+    let estadisticas2:any[] = []
+    let ataques2:any[] = []
+    let ataques2mana: any[] = []
+    let ataques2propio: any[] = []
+    this.combateDto?.personaje1.personajeEstadisticas.forEach(element => {
+      let estat = {
+          id: element.id, nombreEstadistica: element.nombre, valorPropio: element.valor, consumible: element.consumible
+        }
+        estadisticas1.push(estat)
+    });
+    this.combateDto?.personaje1.personajeAtaques.forEach(element => {
+      for(let i in element.manaAtacante.keys){
+        let mana = {
+          estadistica: i,
+          valor: element.manaAtacante.get(i)
+        }
+        ataques1mana.push(mana)
+      }
+      for(let i in element.estadisticasDefensor.keys){
+        let estat = {
+          estadistica: i,
+          valor: element.estadisticasDefensor.get(i)
+        }
+        ataques1propio.push(estat)
+      }
+      let ataque = {
+            id: element.id,
+              nombre: element.nombre,
+              dadoBase: element.dadoBase,
+              ratioDado: element.ratioDado,
+              danoAtaque: element.danoAtaque,
+              statReducePropio: ataques1mana,
+              statReduceRival: ataques1propio,
+        }
+        ataques1.push(ataque)
+    });
+    this.combateDto?.personaje2.personajeEstadisticas.forEach(element => {
+      let estat = {
+          id: element.id, nombreEstadistica: element.nombre, valorPropio: element.valor, consumible: element.consumible
+        }
+        estadisticas2.push(estat)
+    });
+    this.combateDto?.personaje2.personajeAtaques.forEach(element => {
+      for(let i in element.manaAtacante.keys){
+        let mana = {
+          estadistica: i,
+          valor: element.manaAtacante.get(i)
+        }
+        ataques2mana.push(mana)
+      }
+      for(let i in element.estadisticasDefensor.keys){
+        let estat = {
+          estadistica: i,
+          valor: element.estadisticasDefensor.get(i)
+        }
+        ataques2propio.push(estat)
+      }
+      let ataque = {
+            id: element.id,
+              nombre: element.nombre,
+              dadoBase: element.dadoBase,
+              ratioDado: element.ratioDado,
+              danoAtaque: element.danoAtaque,
+              statReducePropio: ataques2mana,
+              statReduceRival: ataques2propio,
+        }
+        ataques2.push(ataque)
+    });
+    this.personajeTuyo.set({
+      id: this.combateDto?.personaje1.id,
+      nombre: this.combateDto?.personaje1.personajeNombre,
+      fotoUrl: this.combateDto?.personaje1.personajeFotoUrl,
+      urlSprite: this.combateDto?.personaje1.personajeFotoUrl,
+      vidaMaxima: this.combateDto?.personaje1.personajeVida, 
+      vida: this.combateDto?.personaje1.personajeVida,
+      estadisticasDelPersonaje: estadisticas1,
+      ataquesDelPersonaje: ataques1
+    });
+    this.rival.set({
+      id: this.combateDto?.personaje2.id,
+      nombre: this.combateDto?.personaje2.personajeNombre,
+      fotoUrl: this.combateDto?.personaje2.personajeFotoUrl,
+      urlSprite: this.combateDto?.personaje2.personajeFotoUrl,
+      vidaMaxima: this.combateDto?.personaje2.personajeVida, 
+      vida: this.combateDto?.personaje2.personajeVida,
+      estadisticasDelPersonaje: estadisticas2,
+      ataquesDelPersonaje: ataques2
+    });
+  }
+
+}
+
+export interface CombatePersonjaesDto{
+  id:number;
+  personaje1: PersonajeDto
+  personaje2: PersonajeDto
 }
 

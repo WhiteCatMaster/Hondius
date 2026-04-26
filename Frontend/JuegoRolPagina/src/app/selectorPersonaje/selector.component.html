@@ -10,13 +10,17 @@
       <div class="columna">
         <h2 class="titulo-columna">Tu Héroe</h2>
         <div class="personajes-grid">
-          @for (personaje of $any(partidaActual())?.personajes; track personaje.nombre) {
+          @for (personaje of $any(partidaActual())?.personajes; track personaje.id) {
+            @if (personaje == null) {
+
+            }
+            @else {
             <div class="personaje-card" [class.selected]="heroeSeleccionado === personaje">
               <div class="card-header">
                 <h2>{{ personaje.nombre }}</h2>
               </div>
               <div class="card-imagen">
-                <img [src]="personaje.fotoUrl">
+                <img [src]="personaje.urlSprite">
               </div>
               <div class="card-footer">
                 <button class="btn-seleccionar" 
@@ -26,6 +30,7 @@
                 </button>
               </div>
             </div>
+            }
           }
         </div>
       </div>
@@ -33,7 +38,7 @@
       <div class="columna">
         <h2 class="titulo-columna">Tu Enemigo</h2>
         <div class="personajes-grid">
-          @for (enemigo of $any(partidaActual())?.personajes; track enemigo.nombre) {
+          @for (enemigo of $any(partidaActual())?.personajes; track enemigo.id) {
             <div class="personaje-card" 
                  [class.selected]="enemigoSeleccionado === enemigo"
                  [class.disabled-card]="enemigo === heroeSeleccionado"> 
@@ -41,7 +46,7 @@
                 <h2>{{ enemigo.nombre }}</h2>
               </div>
               <div class="card-imagen">
-                <img [src]="enemigo.fotoUrl">
+                <img [src]="enemigo.urlSprite">
               </div>
               <div class="card-footer">
                 <button class="btn-seleccionar btn-enemigo" 

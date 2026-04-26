@@ -470,6 +470,7 @@ export class OpcionesComponent {
           estadisticasDefensor: diccionarioDefensa,
           dadoBase: ataque.dadoBase,
           ratioDado: ataque.ratioDado,
+          danoAtaque: ataque.danoAtaque
         };
         ataquesPersonaje.push(ataquepersonaje);
       }

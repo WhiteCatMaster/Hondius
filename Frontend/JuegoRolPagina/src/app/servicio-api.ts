@@ -1,10 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Personaje } from './models/personaje';
 import { Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
-import { Ataque } from './models/ataque';
-import { Estadistica } from './models/estadistica';
 import { Usuario } from './models/usuario';
 import { MOCK_USUARIO } from './usuario/usuario.mock';
 
@@ -26,5 +23,17 @@ export class ServicioAPI {
 
   obtenerDatosUsuario(): Observable<Usuario> {
     return of(MOCK_USUARIO).pipe(delay(3000));
+  }
+  obtenerDatosPartida(id:number|string): Observable<any> {
+    //Deberia de devolver lo que necesita selectorELIMINAR para poder cargar una partida y sus personajes
+    return this.http.get<any>(`${this.apiUrl}/partida/${id}`)
+  }
+
+  enviarCombate(payload: any): Observable<any>{
+    return this.http.post<any>(`${this.apiUrl}/partida/combate`, payload);
+  }
+
+  obtenerCombate(id: number|string): Observable<any>{
+    return this.http.get<any>(`${this.apiUrl}/partida/combate/${id}`)
   }
 }

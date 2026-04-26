@@ -11,10 +11,10 @@ import { EditarPersonaje } from './editar-personaje/editar-personaje';
 export const routes: Routes = [
   { path: '', component: Landing },
   { path: 'crear-partida', component: OpcionesComponent },
-  { path: 'selector', component: SelectorComponent },
-  { path: 'jugar-combate', component: CombateComponent },
-  { path: 'selector-personaje', component: SelectorPersonajeComponent },
+  { path: 'selector/:id', component: SelectorComponent },
+  { path: 'jugar-combate/:id', component: CombateComponent },
   { path: 'perfil', component: UsuarioWebComponent },
   { path: 'selector-master', component: SelectorMasterComponent},
   { path:  'editar-personaje/:nombre', component:EditarPersonaje},
+  { path: 'selector-personaje/:id', component: SelectorPersonajeComponent },
 ];

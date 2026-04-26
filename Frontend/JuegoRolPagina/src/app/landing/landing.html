@@ -29,7 +29,7 @@
               <p>{{ partida.descripcion }}</p>
               <p><strong>Idioma:</strong> {{ partida.idioma }}</p>
               <p><strong>Máx jugadores:</strong> {{ partida.maxJugadores }}</p>
-              <button routerLink="/selector">Unirme</button>
+              <button [routerLink]="['/selector', partida.id]">Unirme</button>
             </div>
           }
 
