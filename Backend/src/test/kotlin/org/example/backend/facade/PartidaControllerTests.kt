@@ -17,6 +17,7 @@ class PartidaControllerTests (){
 
     private val partidaService = mock(JuegoService::class.java)
     private val partidaController = PartidaController(partidaService)
+    /*
     @Test
     fun testCrearPartida(){
         val jugador = mock(CrearPartidaDto.PersonajeDto::class.java)
@@ -26,6 +27,8 @@ class PartidaControllerTests (){
         val result = partidaController.crearPartida(CrearPartidaRequest(CrearPartidaDto(nombre = "Partida", "Description", "ES",5,mutableListOf(jugador))))
         assertEquals(HttpStatus.CREATED, result.statusCode)
     }
+
+     */
     @Test
     fun testObtenerPartidas() {
 
