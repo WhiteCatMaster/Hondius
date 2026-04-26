@@ -9,8 +9,13 @@
         <h1>{{ personajeTuyo().nombre }}</h1>
         <div class="DivBarra">
           <progress class="BarraVidaTuya" [value]="personajeTuyo().vida" [max]="personajeTuyo().vidaMaxima"></progress>
-          <p>{{vidaTuya()}}/{{personajeTuyo().vida}}</p>
+          <p>{{personajeTuyo().vida}}/{{vidaTuya()}}</p>
         </div>
+        @for (estadistica of personajeTuyo().estadisticasDelPersonaje; track estadistica.nombreEstadistica) {
+          @if (estadistica.consumible == true) {
+            <p>{{ estadistica.nombreEstadistica }} {{estadistica.valorPropio}}</p>
+          }
+        }
         <img class="PersonajeTuyo" [src]="personajeTuyo().fotoUrl">
       </div>
 
@@ -18,8 +23,13 @@
         <h1>{{ rival().nombre }}</h1>
         <div class="DivBarra">
           <progress class="BarraVidaTuya" [value]="rival().vida" [max]="rival().vidaMaxima"></progress>
-          <p>{{vidaRival()}}/{{rival().vida}}</p>
+          <p>{{rival().vida}}/{{vidaRival()}}</p>
         </div>
+        @for (estadistica of rival().estadisticasDelPersonaje; track estadistica.nombreEstadistica) {
+          @if (estadistica.consumible == true) {
+            <p>{{ estadistica.nombreEstadistica }} {{estadistica.valorPropio}}</p>
+          }
+        }
         <img class="ImagenRival" [src]="rival().fotoUrl">
       </div>
       
@@ -30,16 +40,16 @@
       <!-- MENU ATAQUES IZQUIERDA -->
       <div class="ClaseIzquierda" [class.inactivo]="!TuTurno">
         <div class="IzquierdaIzquierda">
-          <h1 class="Ataques">Ataques:</h1>   
+          <h1 class="Ataques">ATAQUES de {{ personajeTuyo().nombre }}:</h1>   
           @for (ataque of personajeTuyo().ataquesDelPersonaje; track ataque.nombre) {
   
             @if (ataqueSeleccionado() == null) {
               <button (click)="seleccionarAtaque(ataque)" class="AtaqueBoton">{{ ataque.nombre }}</button>
             } @else {
                 @if (ataqueSeleccionado() === ataque) {
-                  <button (click)="seleccionarAtaque(ataque)" class="AtaqueBoton">{{ ataque.nombre }}</button>
+                  <button (click)="seleccionarAtaque(ataque)" class="AtaqueBoton"><strong>{{ ataque.nombre }}</strong></button>
                 } @else {
-                  <button (click)="seleccionarAtaque(ataque)" class="AtaqueBotonNoSeleccionado">{{ ataque.nombre }}</button>
+                  <button (click)="seleccionarAtaque(ataque)" class="AtaqueBotonNoSeleccionado"><strong>{{ ataque.nombre }}</strong></button>
                 } 
             }  
 
@@ -47,7 +57,7 @@
         </div>
     
         <div class="IzquierdaDerecha">
-          <h1>AQUI VA EL DADO</h1>
+          <h1 class="TextoDado">DADO:</h1>
           <button (click)="pasarTurnoTuyo()">paso</button>
         </div>
       </div>
@@ -56,16 +66,16 @@
       <div class="ClaseDerecha" [class.inactivo]="TuTurno">
 
         <div class="IzquierdaIzquierda">
-          <h1 class="Ataques">Ataques:</h1>   
+          <h1 class="Ataques">ATAQUES de {{ rival().nombre }}</h1>   
           @for (ataque of rival().ataquesDelPersonaje; track ataque.nombre) {
   
             @if (ataqueSeleccionado() == null) {
               <button (click)="seleccionarAtaque(ataque)" class="AtaqueBoton">{{ ataque.nombre }}</button>
             } @else {
                 @if (ataqueSeleccionado() === ataque) {
-                  <button (click)="seleccionarAtaque(ataque)" class="AtaqueBoton">{{ ataque.nombre }}</button>
+                  <button (click)="seleccionarAtaque(ataque)" class="AtaqueBoton"><strong>{{ ataque.nombre }}</strong></button>
                 } @else {
-                  <button (click)="seleccionarAtaque(ataque)" class="AtaqueBotonNoSeleccionado">{{ ataque.nombre }}</button>
+                  <button (click)="seleccionarAtaque(ataque)" class="AtaqueBotonNoSeleccionado"><strong>{{ ataque.nombre }}</strong></button>
                 } 
             }  
 
@@ -73,7 +83,7 @@
         </div>
       
         <div class="IzquierdaDerecha">
-          <h1>AQUI VA EL DADO</h1>
+          <h1 class="TextoDado">DADO:</h1>
           <button (click)="pasarTurnoRival()">paso</button>
         </div>
 

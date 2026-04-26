@@ -15,6 +15,8 @@ export class CombateComponent implements OnInit {
   rival = signal<any>(null);
   ataqueSeleccionado = signal<any>(null);
 
+  ambasEstatsBien = false;
+
   TuTurno = true;
   // El computed este es para que se actualice en tiempo real
   vidaTuya = computed(() => this.personajeTuyo()?.vida || 0);
@@ -28,16 +30,53 @@ export class CombateComponent implements OnInit {
     }
 
     if (this.ataqueSeleccionado() !== null) {
-      const dano = this.ataqueSeleccionado().statReduceRival[0].valor;
+      this.ambasEstatsBien = true;
 
-      const datosPaloma = this.rival();
-      datosPaloma.vida = datosPaloma.vida - dano;
-      this.rival.set(datosPaloma);
+    if (this.ataqueSeleccionado() !== null) {
+      if(this.ataqueSeleccionado().statReducePropio !== null) {
+        for(let coste of this.ataqueSeleccionado().statReducePropio) {
+
+          // Esto busca en TU personaje hasta encontrar una estadistica con el nombre de la que esté en el for y la guarda en miStat
+          let miStat = this.personajeTuyo().estadisticasDelPersonaje.find(
+            (e: any) => e.nombreEstadistica === coste.estadistica
+          );
+
+          if(miStat.valorPropio >= coste.valor) {
+            this.ambasEstatsBien = true;
+          } else {
+            this.ambasEstatsBien = false;
+            break;
+          }
+        }
+        }
+
+        if(this.ambasEstatsBien == true) {
+          for(let estadistica of this.ataqueSeleccionado().statReducePropio) {
+            let miStat = this.personajeTuyo().estadisticasDelPersonaje.find(
+              (e: any) => e.nombreEstadistica === estadistica.estadistica
+            );
+
+            miStat.valorPropio = miStat.valorPropio - estadistica.valor;
+          }
+
+        }
+      }
+
+      if (this.ambasEstatsBien == true) {
+        const dano = this.ataqueSeleccionado().danoAtaque;
+        const datosPaloma = this.rival();
+        datosPaloma.vida = datosPaloma.vida - dano;//Aquí se debería meter algo con el dado
+        this.rival.set(datosPaloma);
+        
+      } else {
+        alert("No tienes recursos suficientes para este ataque.");
+      }
 
       this.ataqueSeleccionado.set(null);
     }
-  }
 
+    }
+  
   pasarTurnoRival() {
     if(this.TuTurno == true) {
       this.TuTurno = false;
@@ -46,15 +85,49 @@ export class CombateComponent implements OnInit {
     }
 
     if (this.ataqueSeleccionado() !== null) {
-      const dano = this.ataqueSeleccionado().statReduceRival[0].valor;
+      this.ambasEstatsBien = true;
 
-      const datosCanario = this.personajeTuyo();
-      datosCanario.vida = datosCanario.vida - dano;
-      this.personajeTuyo.set(datosCanario);
+    if (this.ataqueSeleccionado() !== null) {
+      if(this.ataqueSeleccionado().statReducePropio !== null) {
+        for(let coste of this.ataqueSeleccionado().statReducePropio) {
+
+          let miStat = this.rival().estadisticasDelPersonaje.find(
+            (e: any) => e.nombreEstadistica === coste.estadistica
+          );
+
+          if(miStat.valorPropio >= coste.valor) {
+            this.ambasEstatsBien = true;
+          } else {
+            this.ambasEstatsBien = false;
+            break;
+          }
+        }
+        }
+
+        if(this.ambasEstatsBien == true) {
+          for(let estadistica of this.ataqueSeleccionado().statReducePropio) {
+            let miStat = this.rival().estadisticasDelPersonaje.find(
+              (e: any) => e.nombreEstadistica === estadistica.estadistica
+            );
+
+            miStat.valorPropio = miStat.valorPropio - estadistica.valor;
+          }
+
+        }
+      }
+
+      if (this.ambasEstatsBien == true) {
+        const dano = this.ataqueSeleccionado().danoAtaque;
+        const datosCanario = this.personajeTuyo();
+        datosCanario.vida = datosCanario.vida - dano;
+        this.personajeTuyo.set(datosCanario);
+        
+      } else {
+        alert("No tienes recursos suficientes para este ataque.");
+      }
 
       this.ataqueSeleccionado.set(null);
     }
-
   }
 
   seleccionarAtaque(ataquePulsado: any) {
@@ -66,9 +139,10 @@ export class CombateComponent implements OnInit {
   ngOnInit(): void {
     this.cargarPersonajesDePrueba();
   }
+
   cargarPersonajesDePrueba() {
     
-    // TU PERSONAJE
+    // CANARIO
     this.personajeTuyo.set({
       id: null,
       nombre: 'Canario',
@@ -78,7 +152,8 @@ export class CombateComponent implements OnInit {
       vida: 100,
       estadisticasDelPersonaje: [
         { nombreEstadistica: 'Fuerza', valorPropio: 15, consumible: false },
-        { nombreEstadistica: 'Maná', valorPropio: 50, consumible: true }
+        { nombreEstadistica: 'Maná', valorPropio: 50, consumible: true },
+        { nombreEstadistica: 'Pajarería', valorPropio: 30, consumible: true } 
       ],
       ataquesDelPersonaje: [
         {
@@ -86,29 +161,41 @@ export class CombateComponent implements OnInit {
           nombre: 'Golpe Rompecráneos',
           dadoBase: 20,
           ratioDado: [1, 20],
-          statReducePropio: [{ estadistica: 'Maná', valor: 10 }], 
-          statReduceRival: [{ estadistica: 'Vida', valor: 25 }]  
+          statReducePropio: [
+            { estadistica: 'Maná', valor: 10 },
+            { estadistica: 'Pajarería', valor: 5 }
+          ], 
+          statReduceRival: [],  
+          danoAtaque: 25 
         },
         {
           id: null,
           nombre: 'Machetear',
           dadoBase: 20,
           ratioDado: [1, 20],
-          statReducePropio: [{ estadistica: 'Maná', valor: 3 }],  
-          statReduceRival: [{ estadistica: 'Vida', valor: 12 }]
+          statReducePropio: [
+            { estadistica: 'Maná', valor: 3 },
+            { estadistica: 'Pajarería', valor: 2 }
+          ],  
+          statReduceRival: [],
+          danoAtaque: 12
         },
         {
           id: null,
           nombre: 'Aniquilar',
           dadoBase: 20,
           ratioDado: [1, 20],
-          statReducePropio: [{ estadistica: 'Maná', valor: 35 }],
-          statReduceRival: [{ estadistica: 'Vida', valor: 60 }]
+          statReducePropio: [
+            { estadistica: 'Maná', valor: 35 },
+            { estadistica: 'Pajarería', valor: 20 }
+          ],
+          statReduceRival: [],
+          danoAtaque: 60 
         }
       ]
     });
 
-    // EL DEL RIVAL 
+    // PALOMA
     this.rival.set({
       id: null,
       nombre: 'Paloma',
@@ -118,7 +205,8 @@ export class CombateComponent implements OnInit {
       vida: 70,
       estadisticasDelPersonaje: [
         { nombreEstadistica: 'Inteligencia', valorPropio: 20, consumible: false },
-        { nombreEstadistica: 'Maná', valorPropio: 120, consumible: true }
+        { nombreEstadistica: 'Maná', valorPropio: 120, consumible: true },
+        { nombreEstadistica: 'Pajarería', valorPropio: 100, consumible: true }
       ],
       ataquesDelPersonaje: [
         {
@@ -126,11 +214,16 @@ export class CombateComponent implements OnInit {
           nombre: 'Bola de Fuego',
           dadoBase: 20,
           ratioDado: [1, 20],
-          statReducePropio: [{ estadistica: 'Maná', valor: 30 }], 
-          statReduceRival: [{ estadistica: 'Vida', valor: 45 }]  
+          statReducePropio: [
+            { estadistica: 'Maná', valor: 30 },
+            { estadistica: 'Pajarería', valor: 15 }
+          ], 
+          statReduceRival: [],  
+          danoAtaque: 45 
         }
       ]
     }); 
   }
+
 }
 
