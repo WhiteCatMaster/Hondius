@@ -22,7 +22,7 @@ export class SelectorMasterComponent implements OnInit {
 
   seleccionarParaEditar(personaje: any) {
     console.log('Editando a:', personaje.nombre);
-    this.router.navigate(['/editor-estadisticas', personaje.nombre]);
+    this.router.navigate(['/editar-personaje', personaje.nombre]);
   }
 
   cargarDatosPrueba() {

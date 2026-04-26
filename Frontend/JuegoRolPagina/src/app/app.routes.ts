@@ -6,6 +6,8 @@ import { SelectorComponent } from './selectorELIMINAR.component';
 import { SelectorPersonajeComponent } from './selectorPersonaje/selector.component';;
 import { UsuarioWebComponent } from './usuario/usuarioWeb';
 import { SelectorMasterComponent} from './selector-master/selector-master.component'
+import { EditarPersonaje } from './editar-personaje/editar-personaje';
+
 export const routes: Routes = [
   { path: '', component: Landing },
   { path: 'crear-partida', component: OpcionesComponent },
@@ -14,4 +16,5 @@ export const routes: Routes = [
   { path: 'selector-personaje', component: SelectorPersonajeComponent },
   { path: 'perfil', component: UsuarioWebComponent },
   { path: 'selector-master', component: SelectorMasterComponent},
+  { path:  'editar-personaje/:nombre', component:EditarPersonaje},
 ];

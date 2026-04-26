@@ -1,0 +1,70 @@
+<div class="editor-container">
+  
+  <div class="pergamino-layout">
+    
+    <div class="columna-izq">
+      <div class="marco-retrato">
+        <img [src]="personaje?.fotoUrl" alt="Retrato de {{ personaje?.nombre }}">
+      </div>
+      <h2 class="nombre-pj">{{ personaje?.nombre }}</h2>
+    </div>
+
+    <div class="columna-centro con-scroll">
+      <h3 class="titulo-seccion">Estadísticas</h3>
+      
+      <div class="lista-stats">
+        @for (stat of personaje?.estadisticas; track stat.nombre; let i = $index) {
+          <div class="stat-fila">
+            <span class="stat-nombre">{{ stat.nombre }}</span>
+            <div class="stat-controles">
+              <button class="btn-minidado" (click)="bajarStat(i)">-</button>
+              <input type="number" class="input-stat" [(ngModel)]="stat.valor">
+              <button class="btn-minidado" (click)="subirStat(i)">+</button>
+            </div>
+          </div>
+        }
+      </div>
+      
+    </div>
+
+    <div class="columna-der con-scroll">
+      <h3 class="titulo-seccion">Ataques</h3>
+      
+      <div class="lista-ataques">
+        @for (ataque of personaje?.ataques; track ataque.nombre) {
+          <div class="ataque-tarjeta">
+            <h4>{{ ataque.nombre }}</h4>
+            
+            <p><strong>Daño Base:</strong> {{ ataque.dadoBase }}</p>
+
+            @if (ataque.statReducePropio && ataque.statReducePropio.length > 0) {
+              <p class="ataque-detalles">
+                <strong>Coste:</strong> 
+                @for (coste of ataque.statReducePropio; track coste.estadistica; let isLast = $last) {
+                  {{ coste.estadistica }}{{ !isLast ? ', ' : '' }}
+                }
+              </p>
+            }
+
+            @if (ataque.statReduceRival && ataque.statReduceRival.length > 0) {
+              <p class="ataque-detalles">
+                <strong>Afecta a:</strong> 
+                @for (efecto of ataque.statReduceRival; track efecto.estadistica; let isLast = $last) {
+                  {{ efecto.estadistica }}{{ !isLast ? ', ' : '' }}
+                }
+              </p>
+            }
+          </div>
+        }
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="panel-inferior">
+    <button class="btn-guardar" routerLink="/selector-master">Atras</button>
+    <button class="btn-guardar">Guardar</button>
+  </div>
+
+</div>
