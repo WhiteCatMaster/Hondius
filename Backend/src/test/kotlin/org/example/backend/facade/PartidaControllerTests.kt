@@ -12,23 +12,41 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import tools.jackson.module.kotlin.jacksonObjectMapper
 
 class PartidaControllerTests (){
 
     private val partidaService = mock<JuegoService>()
+    private val jsonMapper = jacksonObjectMapper()
     private val partidaController = PartidaController(partidaService)
-    /*
-    @Test
-    fun testCrearPartida(){
-        val jugador = mock(CrearPartidaDto.PersonajeDto::class.java)
-        val crearPartidaDto = mock(CrearPartidaDto::class.java)
 
-        `when`(partidaService.crearJuegoxDTO(crearPartidaDto)).thenReturn(mock(PartidaDto::class.java))
-        val result = partidaController.crearPartida(CrearPartidaRequest(CrearPartidaDto(nombre = "Partida", "Description", "ES",5,mutableListOf(jugador))))
+    @Test
+    fun testCrearPartida() {
+        val jugador = CrearPartidaDto.PersonajeDto()
+        val dtoEntrada = CrearPartidaDto(
+            nombre = "Partida",
+            descripcion = "Description",
+            idioma = "ES",
+            maximoJugadores = 5,
+            jugadores = mutableListOf(jugador)
+        )
+
+        val payload = jsonMapper.createObjectNode()
+        payload.set("juego", jsonMapper.valueToTree(dtoEntrada))
+
+
+        val partidaCreada = PartidaDto(id = 1L, nombre = "Partida Creada")
+
+        whenever(partidaService.crearJuegoxDTO(any())).thenReturn(partidaCreada)
+
+        val result = partidaController.crearPartida(payload)
+
         assertEquals(HttpStatus.CREATED, result.statusCode)
+        assertEquals(partidaCreada, result.body)
     }
 
-     */
+
+
     @Test
     fun testObtenerPartidas() {
 
