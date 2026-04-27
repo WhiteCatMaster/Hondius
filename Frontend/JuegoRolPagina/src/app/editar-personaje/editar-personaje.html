@@ -2,11 +2,14 @@
   
   <div class="pergamino-layout">
     
-    <div class="columna-izq">
+   <div class="columna-izq">
       <div class="marco-retrato">
         <img [src]="personaje?.fotoUrl" alt="Retrato de {{ personaje?.nombre }}">
       </div>
-      <h2 class="nombre-pj">{{ personaje?.nombre }}</h2>
+      
+      <div class="contenedor-nombre-editable">
+        <input type="text" class="input-nombre-pj" [(ngModel)]="personaje.nombre" placeholder="Nombre del héroe...">
+      </div>
     </div>
 
     <div class="columna-centro con-scroll">
@@ -64,7 +67,7 @@
 
   <div class="panel-inferior">
     <button class="btn-guardar" routerLink="/selector-master">Atras</button>
-    <button class="btn-guardar">Guardar</button>
+    <button class="btn-guardar" (click)="guardar()">Guardar</button>
   </div>
 
 </div>

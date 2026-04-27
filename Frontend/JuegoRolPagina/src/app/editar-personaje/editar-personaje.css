@@ -208,3 +208,26 @@ input[type="number"] {
   -moz-appearance: textfield;
   appearance: none;
 }
+
+/*Nombre editar*/
+
+.contenedor-nombre-editable {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 15px; 
+}
+
+.input-nombre-pj {
+  font-family: 'Pirata One', cursive;
+  font-size: 2.8rem; 
+  color: #4e3522;
+  background: transparent;
+  border: none;
+  border-bottom: 2px dashed #5B3124; 
+  text-align: center;
+  width: 90%;
+  outline: none;
+  transition: border-bottom 0.3s ease;
+}
