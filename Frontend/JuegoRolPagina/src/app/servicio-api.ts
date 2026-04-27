@@ -22,7 +22,7 @@ export class ServicioAPI {
   }
 
   obtenerDatosUsuario(): Observable<Usuario> {
-    return of(MOCK_USUARIO).pipe(delay(3000));
+    return of(MOCK_USUARIO).pipe(delay(0));
   }
   obtenerDatosPartida(id:number|string): Observable<any> {
     //Deberia de devolver lo que necesita selectorELIMINAR para poder cargar una partida y sus personajes

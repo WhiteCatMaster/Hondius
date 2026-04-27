@@ -5,12 +5,31 @@
   <title>Juego de Rol</title>
 </head>
 <body>
+<div class="contenedor-usuario">
+  @if (usuario) {
+    <div class="perfil">
+
+
+      <a href="/perfil">
+        <img [src]="usuario.fotoUrl" alt="Usuario" class = "fotoPerfil">
+      </a>
+      <br>
+      <span>{{ usuario.nombre}}</span>
+
+
+    </div>
+  } @else {
+    <p>No hay sesión activa o no se encontró el usuario.</p>
+  }
+</div>
   <div class = "container">
     <div class = "bloque1">
-      <div class = "tituloLanding"> Juego de rol </div>
+
+      <div class = "tituloLanding"> Juego de rol</div>
       <div class = "subtituloLanding"> Bienvenido a la experiencia más completa de juego. </div>
       <button routerLink="/crear-partida">Crea una nueva partida.</button>
     </div>
+
     <div class = "partidasContainer">
 
       <h2 class = "subtituloPartidas"> Únete a una trepidante aventura. </h2>

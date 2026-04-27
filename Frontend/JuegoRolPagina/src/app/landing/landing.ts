@@ -1,8 +1,10 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, signal } from '@angular/core';
 import { RouterLink, RouterModule } from '@angular/router';
 
 import { Partida } from '../models/partida';
 import { ServicioAPI } from '../servicio-api';
+import { Usuario } from '../models/usuario';
+import { Rol } from '../models/jugador-juego';
 
 @Component({
   selector: 'app-landing',
@@ -13,45 +15,60 @@ import { ServicioAPI } from '../servicio-api';
 })
 // export class Landing {}
 export class Landing implements OnInit {
-  constructor(private servicioAPI: ServicioAPI) {}
+  public Rol = Rol;
+  constructor(
+    private servicioAPI: ServicioAPI,
+    private cdRef: ChangeDetectorRef
+  ) {}
+
+  usuario: Usuario | null = null;
   partidas = signal<Partida[]>([]);
 
   ngOnInit(): void {
     this.cargarPartidasMock();
     this.cargarPartidasBD();
+    this.servicioAPI.obtenerDatosUsuario().subscribe({
+      next: (datos) => {
+        console.log('Datos cargados:', datos);
+        this.usuario = datos;
+        this.cdRef.detectChanges();
+      },
+    });
   }
-   
-cargarPartidasMock() {
-  this.partidas.set([
-    {
-      nombre: 'Aventura en el bosque',
-      descripcion: 'Exploración y misterio',
-      idioma: 'ES',
-      maxJugadores: 4,
-      id: null
-    },
-    {
-      nombre: 'Batalla final',
-      descripcion: 'PvP intenso',
-      idioma: 'EN',
-      maxJugadores: 8,
-      id: null
-    }
-  ]);
-}
+
+  cargarPartidasMock() {
+    this.partidas.set([
+      {
+        nombre: 'Aventura en el bosque',
+        descripcion: 'Exploración y misterio',
+        idioma: 'ES',
+        maxJugadores: 4,
+        id: null,
+      },
+      {
+        nombre: 'Batalla final',
+        descripcion: 'PvP intenso',
+        idioma: 'EN',
+        maxJugadores: 8,
+        id: null,
+      },
+    ]);
+  }
 
   cargarPartidasBD() {
     //Se deberian de cargar las partidas que hay en DB
 
     this.servicioAPI.recogerPartidas().subscribe({
       next: (partidasBackend) => {
-        this.partidas.set(partidasBackend.map(atributo =>({
-          nombre:atributo.nombre,
-          descripcion: atributo.descripcion,
-          id: atributo.id,
-          idioma: atributo.idioma,
-          maxJugadores: atributo.maximoJugadores
-        })))
+        this.partidas.set(
+          partidasBackend.map((atributo) => ({
+            nombre: atributo.nombre,
+            descripcion: atributo.descripcion,
+            id: atributo.id,
+            idioma: atributo.idioma,
+            maxJugadores: atributo.maximoJugadores,
+          })),
+        );
       },
       error: (error) => {
         console.log('Parece que ha ocurrido un error:', error);
