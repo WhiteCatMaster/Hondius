@@ -16,7 +16,7 @@
   flex-direction: column;
   align-items: center;
   gap: 0px; /* Pegado como en tu diseño */
-  margin-top: 3%;
+  /* margin-top: 3%; */
 }
 
 /* --- Layout Perfil (Contenedor1) --- */
@@ -131,6 +131,9 @@
 #ContenedorPrincipal {
   background-image: linear-gradient(rgba(255, 255, 255, 0.172), rgba(255, 255, 255, 0.172)), url('https://i.imgur.com/L6ux5lw.jpeg');
   background-size: cover;
+  min-height: 100vh;
+  width: 100%;
+  background-position: center center;
 }
 
 
