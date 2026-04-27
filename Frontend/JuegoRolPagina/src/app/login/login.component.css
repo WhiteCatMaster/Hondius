@@ -1,0 +1,74 @@
+.login-container {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: url('https://i.imgur.com/L6ux5lw.jpeg') center/cover fixed; /* Tu fondo actual */
+  box-sizing: border-box;
+}
+
+.pergamino-login {
+  width: 90%; 
+  max-width: 450px; 
+  min-height: 40vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+    background-color: #f4e4bc;
+  border: 5px solid #5B3124;
+  border-radius: 15px;
+  padding: 40px;
+  box-shadow: 0px 10px 30px rgba(0,0,0,0.6);
+}
+
+.titulo-login {
+  font-family: 'Pirata One', cursive;
+  font-size: 3rem;
+  color: #4e3522;
+  margin-top: 0;
+  margin-bottom: 10px; 
+}
+
+.subtitulo {
+  color: #5B3124;
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-bottom: 40px;
+}
+
+/* boton */
+.btn-google {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px; 
+  width: 100%; 
+  background-color: white;
+  color: #333;
+  border: 2px solid #ccc;
+  padding: 12px 20px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-google:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0px 8px 15px rgba(0,0,0,0.2);
+  background-color: #f9f9f9;
+}
+
+.btn-google:active {
+  transform: translateY(2px) scale(0.98);
+  box-shadow: 0px 2px 5px rgba(0,0,0,0.2);
+}
+
+.icono-google {
+  width: 24px;
+  height: 24px;
+}
