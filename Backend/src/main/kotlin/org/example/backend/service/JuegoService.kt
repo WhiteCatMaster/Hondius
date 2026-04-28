@@ -31,6 +31,17 @@ class JuegoService(
 ) {
     fun getAllJuegos() = juegoRepo.findAll()
 
+    fun obtenerIdAdminxPartida(partidaId:Long): Long{
+        //Supongo que deberia de buscar dentro de la partida cual es el admin
+        val partida = juegoRepo.findById(partidaId).get()
+        var resultado = -1L
+        for (jugadorJuego in partida.jugadores){
+            if (jugadorJuego.juego?.id == partidaId && jugadorJuego.rol == RolJugador.ADMIN){
+                resultado = jugadorJuego.usuario?.id ?: -1
+            }
+        }
+        return resultado
+    }
     fun getAllPartidas(): List<PartidaDto> {
         return juegoRepo.findAll().map { juego ->
             PartidaDto(
@@ -46,9 +57,9 @@ class JuegoService(
     fun obtenerDatosPartida(id: Long): ResponseEntity<DatosPartidaDto> {
         val partida : Juego = juegoRepo.findById(id).orElse(null)
         var personajes = mutableListOf<DatosPartidaDto.PersonajeDto>()
-        var estadisticas = mutableListOf<DatosPartidaDto.PersonajeDto.EstadisticaDto>()
-        var ataques = mutableListOf<DatosPartidaDto.PersonajeDto.AtaqueDto>()
         for (personaje in partida.personajes) {
+            var ataques = mutableListOf<DatosPartidaDto.PersonajeDto.AtaqueDto>()
+            var estadisticas = mutableListOf<DatosPartidaDto.PersonajeDto.EstadisticaDto>()
             for (i in personaje.estadisticas){
                 val estadisticaDto = DatosPartidaDto.PersonajeDto.EstadisticaDto(
                     id = i.id,

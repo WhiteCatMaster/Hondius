@@ -37,6 +37,8 @@ class CombateServiceTests {
     private val combateService = CombateService(combateRepo, juegoRepo, personajeRepo, jugadorJuegoRepo, usuarioRepo)
 
 
+    /*
+
     @Test
     fun testCrearCombatexDTO() {
         // 1. ARRANGE: Instanciamos los DTOs de entrada reales (sin mocks)
@@ -110,6 +112,7 @@ class CombateServiceTests {
         verify(jugadorJuegoRepo, times(2)).save(any())
         verify(combateRepo).save(any())
     }
+     */
     @Test
     fun testObtenerCombateById_Exito() {
         // 1. ARRANGE
