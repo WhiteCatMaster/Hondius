@@ -10,7 +10,7 @@ import { MOCK_USUARIO } from './usuario/usuario.mock';
   providedIn: 'root',
 })
 export class ServicioAPI {
-  private apiUrl = 'http://localhost:8081';
+  private apiUrl = 'http://localhost:8080';
   constructor(private http: HttpClient) {}
 
   mandarPartida(payload: any): Observable<any> {
