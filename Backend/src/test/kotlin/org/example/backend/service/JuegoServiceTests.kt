@@ -12,10 +12,13 @@ import org.example.backend.repository.UsuarioRepository
 import org.example.backend.entity.Ataque
 import org.example.backend.entity.Estadistica
 import org.example.backend.entity.Personaje
+import org.example.backend.entity.Usuario
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.mockito.kotlin.any
 import org.mockito.kotlin.atLeastOnce
+import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
@@ -49,6 +52,94 @@ class JuegoServiceTests {
         assertEquals("Partida primera", resultado[0].nombre)
         verify(juegoRepository).findAll()
     }
+    @Test
+    fun testObtenerDatosPartida_Exito() {
+        // 1. ARRANGE
+        // Mocks para las claves de los mapas
+        val estFuerzaMock = mock<Estadistica> { on { nombre } doReturn "Fuerza" }
+        val estDefensaMock = mock<Estadistica> { on { nombre } doReturn "Defensa" }
+
+        // Mock de la estadística
+        val estadisticaMock = mock<Estadistica> {
+            on { id } doReturn 10L
+            on { nombre } doReturn "Vida"
+            on { valor } doReturn 100
+            on { consumible } doReturn false
+        }
+
+        // Mock del ataque
+        val ataqueMock = mock<Ataque> {
+            on { id } doReturn 20L
+            on { nombre } doReturn "Tajo"
+            on { manaAtacante } doReturn mutableMapOf(estFuerzaMock to 10)
+            on { estadisticasDefensor } doReturn mutableMapOf(estDefensaMock to 5.0)
+            on { dadoBase } doReturn 20
+            on { ratioDado } doReturn mutableListOf(1, 2)
+            on { danioAtaque } doReturn 15
+        }
+
+        // Mock del personaje
+        val personajeMock = mock<Personaje> {
+            on { id } doReturn 100L
+            on { nombre } doReturn "Guerrero"
+            on { vida } doReturn 150
+            on { fotoUrl } doReturn "url_guerrero"
+            on { estadisticas } doReturn mutableListOf(estadisticaMock)
+            on { ataques } doReturn mutableListOf(ataqueMock)
+        }
+
+        // Mock de la partida
+        val partidaMock = mock<Juego> {
+            on { id } doReturn 1L
+            on { nombre } doReturn "Partida de Prueba"
+            on { descripcion } doReturn "Descripción"
+            on { idioma } doReturn "ES"
+            on { maximoJugadores } doReturn 4
+            on { personajes } doReturn mutableListOf(personajeMock)
+        }
+
+        whenever(juegoRepository.findById(1L)).thenReturn(java.util.Optional.of(partidaMock))
+
+        // 2. ACT
+        val resultado = juegoService.obtenerDatosPartida(1L)
+
+        // 3. ASSERT
+        assertEquals(200, resultado.statusCode.value())
+        val body = resultado.body!!
+
+        assertEquals(1L, body.id)
+        assertEquals("Partida de Prueba", body.nombre)
+        assertEquals(1, body.jugadores.size)
+
+        // Verificamos el mapeo del personaje
+        val jugadorDto = body.jugadores[0]
+        assertEquals("Guerrero", jugadorDto.personajeNombre)
+
+        // Verificamos las estadísticas
+        assertEquals(1, jugadorDto.personajeEstadisticas.size)
+        assertEquals("Vida", jugadorDto.personajeEstadisticas[0].nombre)
+
+        // Verificamos los ataques y sus mapas
+        assertEquals(1, jugadorDto.personajeAtaques.size)
+        val ataqueDto = jugadorDto.personajeAtaques[0]
+        assertEquals("Tajo", ataqueDto.nombre)
+        assertEquals(10, ataqueDto.manaAtacante["Fuerza"])
+        assertEquals(5.0, ataqueDto.estadisticasDefensor["Defensa"])
+    }
+
+    @Test
+    fun testObtenerDatosPartida_NoEncontrado() {
+        // ARRANGE
+        whenever(juegoRepository.findById(99L)).thenReturn(java.util.Optional.empty())
+
+        // ACT & ASSERT
+        // Como el código usa .orElse(null) e inmediatamente después llama a `partida.personajes`,
+        // al no encontrar la partida se producirá un NullPointerException.
+        assertThrows<NullPointerException> {
+            juegoService.obtenerDatosPartida(99L)
+        }
+    }
+
     @Test
     fun testGetAllJuegos() {
         val listaFalsa = listOf(
@@ -124,7 +215,6 @@ class JuegoServiceTests {
         verify(juegoRepository).findById(1L)
         verify(juegoRepository).save(juegoExistente)
     }
-    /*
 
     @Test
     fun testCrearJuegoxDTO() {
@@ -161,6 +251,9 @@ class JuegoServiceTests {
         whenever(personajeRepository.saveAll(any<List<Personaje>>())).thenReturn(listOf() as List<Personaje>)
         whenever(estadisticaRepository.saveAll(any<List<Estadistica>>())).thenReturn(listOf() as List<Estadistica>)
         whenever(ataqueRepository.saveAll(any<List<Ataque>>())).thenReturn(listOf() as List<Ataque>)
+        whenever(usuarioRepository.findById(1L)).thenReturn(Optional.of(mock<Usuario>()))
+        whenever(jugadorJuegoRepository.save(any())).thenAnswer { invocation -> invocation.arguments[0] }
+
 
         val resultado = juegoService.crearJuegoxDTO(partidaDto)
 
@@ -172,6 +265,6 @@ class JuegoServiceTests {
         verify(estadisticaRepository, atLeastOnce()).saveAll(any<List<Estadistica>>())
         verify(ataqueRepository, atLeastOnce()).saveAll(any<List<Ataque>>())
     }
-    */
+
 
 }

@@ -2,7 +2,6 @@ package org.example.backend.facade
 
 import org.example.backend.dto.CrearPartidaDto
 import org.example.backend.dto.PartidaDto
-import org.example.backend.service.EstadisticaService
 import org.example.backend.service.JuegoService
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -11,7 +10,6 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import tools.jackson.module.kotlin.jacksonObjectMapper
 
 class PartidaControllerTests (){
@@ -45,9 +43,6 @@ class PartidaControllerTests (){
         assertEquals(HttpStatus.CREATED, result.statusCode)
         assertEquals(partidaCreada, result.body)
     }
-
-
-
     @Test
     fun testObtenerPartidas() {
 
