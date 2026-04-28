@@ -1,13 +1,15 @@
 .dados-container {
   background: rgba(15, 23, 42, 0.9);
-  padding: 25px;
+  padding: 5px;
   border-radius: 15px;
   border: 2px solid #8c450f;
   color: white;
   max-width: 600px;
-  margin: 20px auto;
   text-align: center;
   box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  height: 100%;
+  box-sizing: border-box;
+  background: rgba(15, 23, 42, 0.9);
 }
 
 .selector-dados {
@@ -79,15 +81,17 @@
 }
 
 .btn-lanzar {
+  margin-top: 3px;
   width: 100%;
-  padding: 15px;
   background: linear-gradient(90deg, #8c450f, #f18c09);
   color: white;
   font-family: "Almendra", serif;
   font-weight: bold;
-  font-size: 1.5rem;
+  font-size: 20px;
   border: none;
-  border-radius: 10px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  border-radius: 4px;
   cursor: pointer;
   transition: all 0.3s ease;
 }
@@ -159,4 +163,8 @@
   font-size: 2.5rem;
   color: #f18c09;
   text-shadow: 0 0 15px rgba(241, 140, 9, 0.4);
+}
+
+h2 {
+  margin: 0px;
 }

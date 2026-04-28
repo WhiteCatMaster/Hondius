@@ -1,29 +1,8 @@
 <div class="dados-container">
   <h2>Lanzador de Conjuros</h2>
 
-  <div class="selector-dados">
-    @for (dado of listaDados(); track dado.caras; let i = $index) {
-      <div class="dado-control">
-
-        <div class="info-dado">
-          @if (dado.imagen) {
-            <img [src]="dado.imagen" [alt]="dado.nombre" class="icono-dado">
-          } @else {
-            <span class="dado-label">{{ dado.nombre }}</span>
-          }
-        </div>
-
-        <div class="botones">
-          <button (click)="cambiarCantidad(i, -1)">-</button>
-          <span class="cantidad">{{ dado.cantidad }}</span>
-          <button (click)="cambiarCantidad(i, 1)">+</button>
-        </div>
-      </div>
-    }
-  </div>
-
   <button class="btn-lanzar" [disabled]="lanzando()" (click)="lanzar()">
-    {{ lanzando() ? 'Los dados están rodando...' : '¡LANZAR DADOS!' }}
+    {{ lanzando() ? 'El dado está rodando...' : '¡LANZAR DADO!' }}
   </button>
 
   <div class="arena-dados">

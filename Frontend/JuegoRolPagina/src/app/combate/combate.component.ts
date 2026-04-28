@@ -4,34 +4,52 @@ import { Partida } from '../models/partida';
 import { computed } from '@angular/core'; 
 import { ActivatedRoute } from '@angular/router';
 import { ServicioAPI } from '../servicio-api';
+import { Router } from '@angular/router';
 import { PersonajeDto } from '../selectorELIMINAR.component';
 import { UsuarioService } from '../servicios/usuario-service';
+import { LanzadorDadosComponent } from '../lanzador-dados/lanzador-dados.component';
 
 @Component({
   selector: 'app-combate',
   standalone: true,
-  imports: [CommonModule], 
+  imports: [CommonModule, LanzadorDadosComponent], 
   templateUrl: './combate.component.html',
   styleUrl: './combate.component.css'
 })
 export class CombateComponent implements OnInit {
   personajeTuyo = signal<any>(null);
   rival = signal<any>(null);
+
   ataqueSeleccionado = signal<any>(null);
   combateId: string | null = null;
   combateDto: CombatePersonjaesDto|null = null;
   
   ambasEstatsBien = false;
+  turnoTuyo = true;
 
   TuTurno = true;
   constructor(
     private route: ActivatedRoute,
     private servicioAPI: ServicioAPI,
-    public usuarioService: UsuarioService
+    public usuarioService: UsuarioService,
+    private router: Router
   ){}
+
   // El computed este es para que se actualice en tiempo real
   vidaTuya = computed(() => this.personajeTuyo()?.vida || 0);
   vidaRival = computed(() => this.rival()?.vida || 0);
+
+  resultadoUltimoDado = signal<number>(0);
+
+  ejecutarTurnoConDado(resultadoDado: number) {
+    this.resultadoUltimoDado.set(resultadoDado);
+    if (this.turnoTuyo == true) {
+      this.pasarTurnoTuyo();
+    } else {
+      this.pasarTurnoRival() 
+    }
+    
+  }
 
   pasarTurnoTuyo() {
     if(this.TuTurno == true) {
@@ -74,9 +92,26 @@ export class CombateComponent implements OnInit {
       }
 
       if (this.ambasEstatsBien == true) {
-        const dano = this.ataqueSeleccionado().danoAtaque;
+        let dano = this.ataqueSeleccionado().danoAtaque;
         const datosPaloma = this.rival();
-        datosPaloma.vida = datosPaloma.vida - dano;//Aquí se debería meter algo con el dado
+
+        const rangoCritico = this.ataqueSeleccionado().ratioDado[0]; 
+        const rangoNormal = this.ataqueSeleccionado().ratioDado[1];
+        const dado = this.resultadoUltimoDado()
+
+        if(dado == rangoCritico) {
+          dano = dano * 2; 
+        } else if(dado == rangoNormal) { 
+          dano = dano * 1.5; 
+        }
+
+        datosPaloma.vida = datosPaloma.vida - dano;
+
+        if (datosPaloma.vida <= 0) {
+          alert("¡Has ganado la batalla!");
+          this.router.navigate(['/']); 
+        }
+
         this.rival.set(datosPaloma);
         
       } else {
@@ -84,9 +119,12 @@ export class CombateComponent implements OnInit {
       }
 
       this.ataqueSeleccionado.set(null);
+      this.turnoTuyo = false;
     }
 
-    }
+  }
+
+
   
   pasarTurnoRival() {
     if(this.TuTurno == true) {
@@ -128,9 +166,27 @@ export class CombateComponent implements OnInit {
       }
 
       if (this.ambasEstatsBien == true) {
-        const dano = this.ataqueSeleccionado().danoAtaque;
+        let dano = this.ataqueSeleccionado().danoAtaque;
         const datosCanario = this.personajeTuyo();
+        
+        const rangoCritico = this.ataqueSeleccionado().ratioDado[0]; 
+        const rangoNormal = this.ataqueSeleccionado().ratioDado[1];
+        const dado = this.resultadoUltimoDado()
+
+        if(dado == rangoCritico) {
+          dano = dano * 2; 
+        } else if(dado == rangoNormal) { 
+          dano = dano * 1.5; 
+        }
+
         datosCanario.vida = datosCanario.vida - dano;
+
+        if (datosCanario.vida <= 0) {
+          alert("¡Has perdido la batalla!");
+          this.router.navigate(['/landing']); 
+        }
+
+
         this.personajeTuyo.set(datosCanario);
         
       } else {
@@ -138,6 +194,7 @@ export class CombateComponent implements OnInit {
       }
 
       this.ataqueSeleccionado.set(null);
+      this.turnoTuyo = true;
     }
   }
 
@@ -146,7 +203,7 @@ export class CombateComponent implements OnInit {
     console.log("Has seleccionado:", this.ataqueSeleccionado().nombre); 
   }
 
-  // A partir de aqui lo de la base de datos temporal
+
   ngOnInit(): void {
     //this.cargarPersonajesDePrueba();
     this.combateId = this.route.snapshot.paramMap.get('id');
@@ -162,90 +219,6 @@ export class CombateComponent implements OnInit {
     }
   }
 
-  cargarPersonajesDePrueba() {
-    
-    // CANARIO
-    this.personajeTuyo.set({
-      id: null,
-      nombre: 'Canario',
-      fotoUrl: 'https://upload.wikimedia.org/wikipedia/commons/f/fb/Serinus_canaria_gelb.JPG',
-      urlSprite: 'https://upload.wikimedia.org/wikipedia/commons/f/fb/Serinus_canaria_gelb.JPG',
-      vidaMaxima: 100, 
-      vida: 100,
-      estadisticasDelPersonaje: [
-        { nombreEstadistica: 'Fuerza', valorPropio: 15, consumible: false },
-        { nombreEstadistica: 'Maná', valorPropio: 50, consumible: true },
-        { nombreEstadistica: 'Pajarería', valorPropio: 30, consumible: true } 
-      ],
-      ataquesDelPersonaje: [
-        {
-          id: null,
-          nombre: 'Golpe Rompecráneos',
-          dadoBase: 20,
-          ratioDado: [1, 20],
-          statReducePropio: [
-            { estadistica: 'Maná', valor: 10 },
-            { estadistica: 'Pajarería', valor: 5 }
-          ], 
-          statReduceRival: [],  
-          danoAtaque: 25 
-        },
-        {
-          id: null,
-          nombre: 'Machetear',
-          dadoBase: 20,
-          ratioDado: [1, 20],
-          statReducePropio: [
-            { estadistica: 'Maná', valor: 3 },
-            { estadistica: 'Pajarería', valor: 2 }
-          ],  
-          statReduceRival: [],
-          danoAtaque: 12
-        },
-        {
-          id: null,
-          nombre: 'Aniquilar',
-          dadoBase: 20,
-          ratioDado: [1, 20],
-          statReducePropio: [
-            { estadistica: 'Maná', valor: 35 },
-            { estadistica: 'Pajarería', valor: 20 }
-          ],
-          statReduceRival: [],
-          danoAtaque: 60 
-        }
-      ]
-    });
-
-    // PALOMA
-    this.rival.set({
-      id: null,
-      nombre: 'Paloma',
-      fotoUrl: 'https://upload.wikimedia.org/wikipedia/commons/a/aa/PigeonMonceau_%28cropped%29.jpg',
-      urlSprite: 'https://upload.wikimedia.org/wikipedia/commons/a/aa/PigeonMonceau_%28cropped%29.jpg',
-      vidaMaxima: 70, 
-      vida: 70,
-      estadisticasDelPersonaje: [
-        { nombreEstadistica: 'Inteligencia', valorPropio: 20, consumible: false },
-        { nombreEstadistica: 'Maná', valorPropio: 120, consumible: true },
-        { nombreEstadistica: 'Pajarería', valorPropio: 100, consumible: true }
-      ],
-      ataquesDelPersonaje: [
-        {
-          id: null,
-          nombre: 'Bola de Fuego',
-          dadoBase: 20,
-          ratioDado: [1, 20],
-          statReducePropio: [
-            { estadistica: 'Maná', valor: 30 },
-            { estadistica: 'Pajarería', valor: 15 }
-          ], 
-          statReduceRival: [],  
-          danoAtaque: 45 
-        }
-      ]
-    }); 
-  }
 
   cargarPersonajesBD(){
     //Supongo que deberia de hacer un GET a backend y recoger el combate por el id 
@@ -260,24 +233,39 @@ export class CombateComponent implements OnInit {
     let ataques2propio: any[] = []
     this.combateDto?.personaje1.personajeEstadisticas.forEach(element => {
       let estat = {
-          id: element.id, nombreEstadistica: element.nombre, valorPropio: element.valor, consumible: element.consumible
+          id: element.id, nombreEstadistica: element.nombre, valorPropio: Number(element.valor), consumible: element.consumible
         }
         estadisticas1.push(estat)
     });
     this.combateDto?.personaje1.personajeAtaques.forEach(element => {
-      for(let i in element.manaAtacante.keys){
-        let mana = {
-          estadistica: i,
-          valor: element.manaAtacante.get(i)
-        }
-        ataques1mana.push(mana)
+      let ataques1mana: any[] = []; 
+      let ataques1propio: any[] = [];
+
+      if (element.manaAtacante) {
+        Object.keys(element.manaAtacante as any).forEach(key => {
+          ataques1mana.push({
+            estadistica: key,
+            valor: Number((element.manaAtacante as any)[key])
+          });
+        });
       }
-      for(let i in element.estadisticasDefensor.keys){
-        let estat = {
-          estadistica: i,
-          valor: element.estadisticasDefensor.get(i)
-        }
-        ataques1propio.push(estat)
+
+      if (element.estadisticasDefensor) {
+        Object.keys(element.estadisticasDefensor as any).forEach(key => {
+          ataques1propio.push({
+            estadistica: key,
+            valor: Number((element.estadisticasDefensor as any)[key])
+          });
+        });
+      }
+
+      if (element.estadisticasDefensor) {
+        Object.keys(element.estadisticasDefensor as any).forEach(key => {
+          ataques1propio.push({
+            estadistica: key,
+            valor: Number((element.estadisticasDefensor as any)[key])
+          });
+        });
       }
       let ataque = {
             id: element.id,
@@ -292,17 +280,30 @@ export class CombateComponent implements OnInit {
     });
     this.combateDto?.personaje2.personajeEstadisticas.forEach(element => {
       let estat = {
-          id: element.id, nombreEstadistica: element.nombre, valorPropio: element.valor, consumible: element.consumible
+          id: element.id, nombreEstadistica: element.nombre, valorPropio: Number(element.valor), consumible: element.consumible
         }
         estadisticas2.push(estat)
     });
     this.combateDto?.personaje2.personajeAtaques.forEach(element => {
-      for(let i in element.manaAtacante.keys){
-        let mana = {
-          estadistica: i,
-          valor: element.manaAtacante.get(i)
-        }
-        ataques2mana.push(mana)
+      let ataques2mana: any[] = []; 
+      let ataques2propio: any[] = [];
+
+      if (element.manaAtacante) {
+        Object.keys(element.manaAtacante as any).forEach(key => {
+          ataques2mana.push({
+            estadistica: key,
+            valor: Number((element.manaAtacante as any)[key])
+          });
+        });
+      }
+
+      if (element.estadisticasDefensor) {
+        Object.keys(element.estadisticasDefensor as any).forEach(key => {
+          ataques2propio.push({
+            estadistica: key,
+            valor: Number((element.estadisticasDefensor as any)[key])
+          });
+        });
       }
       for(let i in element.estadisticasDefensor.keys){
         let estat = {
@@ -351,4 +352,3 @@ export interface CombatePersonjaesDto{
   personaje1: PersonajeDto
   personaje2: PersonajeDto
 }
-

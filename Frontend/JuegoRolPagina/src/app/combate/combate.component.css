@@ -51,6 +51,15 @@ p {
     color: #F4E4BC;
 }
 
+.EstadisticasFlotantes1 {
+    position: absolute;
+    z-index: 10; 
+    background-color: rgb(111, 78, 16); 
+    color: white;
+    padding: 10px;
+    border-radius: 8px
+}
+
 .BatallaIzquierda {
     width: 50%; 
     padding: 20px;

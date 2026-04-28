@@ -11,11 +11,13 @@
           <progress class="BarraVidaTuya" [value]="personajeTuyo().vida" [max]="personajeTuyo().vidaMaxima"></progress>
           <p>{{personajeTuyo().vida}}/{{vidaTuya()}}</p>
         </div>
+        <div class="EstadisticasFlotantes1">
         @for (estadistica of personajeTuyo().estadisticasDelPersonaje; track estadistica.nombreEstadistica) {
           @if (estadistica.consumible == true) {
-            <p>{{ estadistica.nombreEstadistica }} {{estadistica.valorPropio}}</p>
+            <p>{{ estadistica.nombreEstadistica }}: {{estadistica.valorPropio}}</p>
           }
         }
+        </div>
         <img class="PersonajeTuyo" [src]="personajeTuyo().fotoUrl">
       </div>
 
@@ -25,11 +27,13 @@
           <progress class="BarraVidaTuya" [value]="rival().vida" [max]="rival().vidaMaxima"></progress>
           <p>{{rival().vida}}/{{vidaRival()}}</p>
         </div>
+        <div class="EstadisticasFlotantes1">
         @for (estadistica of rival().estadisticasDelPersonaje; track estadistica.nombreEstadistica) {
           @if (estadistica.consumible == true) {
-            <p>{{ estadistica.nombreEstadistica }} {{estadistica.valorPropio}}</p>
+            <p>{{ estadistica.nombreEstadistica }}: {{estadistica.valorPropio}}</p>
           }
         }
+        </div>
         <img class="ImagenRival" [src]="rival().fotoUrl">
       </div>
       
@@ -52,13 +56,11 @@
                   <button (click)="seleccionarAtaque(ataque)" class="AtaqueBotonNoSeleccionado"><strong>{{ ataque.nombre }}</strong></button>
                 } 
             }  
-
           }
         </div>
     
         <div class="IzquierdaDerecha">
-          <h1 class="TextoDado">DADO:</h1>
-          <button (click)="pasarTurnoTuyo()">paso</button>
+          <app-lanzador-dados (dadoLanzado)="ejecutarTurnoConDado($event)"></app-lanzador-dados>
         </div>
       </div>
 
@@ -83,8 +85,7 @@
         </div>
       
         <div class="IzquierdaDerecha">
-          <h1 class="TextoDado">DADO:</h1>
-          <button (click)="pasarTurnoRival()">paso</button>
+          <app-lanzador-dados (dadoLanzado)="ejecutarTurnoConDado($event)"></app-lanzador-dados>
         </div>
 
       </div>
