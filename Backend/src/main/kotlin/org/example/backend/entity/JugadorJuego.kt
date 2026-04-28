@@ -30,7 +30,7 @@ class JugadorJuego(
     @Column(nullable = false)
     var rol: RolJugador = RolJugador.JUGADOR,
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "personaje_id", nullable = true)
     var personaje: Personaje? = null,
 )

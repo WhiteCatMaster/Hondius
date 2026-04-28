@@ -39,9 +39,15 @@ class Ataque(
 
     @Column(nullable = false)
     var dadoBase: Int = 10,
+    @Column(nullable = false)
+    var danioAtaque: Int = 0,
 
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "ataque_ratio_dado", joinColumns = [JoinColumn(name = "ataque_id")])
     @Column(name = "valor")
     var ratioDado: MutableList<Int> = mutableListOf()
-)
+) {
+    override fun toString(): String {
+        return "Ataque(id=$id, nombre='$nombre', manaAtacante=${manaAtacante.size}, estadisticasDefensor=${estadisticasDefensor.size}, ownerId=${owner?.id}, dadoBase=$dadoBase, ratioDado=$ratioDado)"
+    }
+}
