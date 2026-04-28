@@ -20,6 +20,7 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
+import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import java.util.Optional
@@ -38,11 +39,9 @@ class CombateServiceTests {
     @Test
     fun testCrearCombatexDTO() {
         // 1. ARRANGE: Instanciamos los DTOs de entrada reales (sin mocks)
-        val usuarioDto = CrearCombateDto.UsuarioDto()
 
-        // Cuidado: El String del rol debe coincidir exactamente con el nombre de tu Enum (ej. "ADMIN", no "Admin")
-        val jugadorUnoDto = CrearCombateDto.JugadorDto(10L, usuarioDto, "ADMIN", 100L)
-        val jugadorDosDto = CrearCombateDto.JugadorDto(11L, usuarioDto, "JUGADOR", 101L)
+        val jugadorUnoDto = CrearCombateDto.JugadorDto(10L, 20L, "ADMIN", 100L)
+        val jugadorDosDto = CrearCombateDto.JugadorDto(11L, 21L, "JUGADOR", 101L)
         val crearCombateDto = CrearCombateDto(1L, "batalla epica", jugadorUnoDto, jugadorDosDto, 1000L)
 
         // 2. ARRANGE: Preparamos las entidades falsas que devolverá la base de datos
@@ -76,16 +75,27 @@ class CombateServiceTests {
             on { juego } doReturn partidaMock
         }
 
+        val usuarioFalso1 = Usuario(20L,"google_id", "anEmail@mail.com","UsuarioUno","fotoUsuario.url",mutableListOf())
+        val usuarioFalso2 = Usuario(21L,"google_id2", "anEmail@mail.com","UsuarioDos","fotoUsuario.url",mutableListOf())
         // 3. ARRANGE: Configuramos los comportamientos de los repositorios
         // Como el service usa .get() después del findById, debemos devolver un Optional
         whenever(juegoRepo.findById(1000L)).thenReturn(java.util.Optional.of(partidaMock))
         whenever(usuarioRepo.save(any())).thenReturn(usuarioGuardadoMock)
+        whenever(jugadorJuegoRepo.save(any())).thenAnswer { invocation ->
+            // Capturamos el objeto que intentan guardar y le indicamos su clase
+            val entidad = invocation.arguments[0] as JugadorJuego
+
+            entidad
+        }
 
         whenever(personajeRepo.findById(100L)).thenReturn(java.util.Optional.of(personaje1Mock))
         whenever(personajeRepo.findById(101L)).thenReturn(java.util.Optional.of(personaje2Mock))
+        whenever(usuarioRepo.findById(20L)).thenReturn(java.util.Optional.of(usuarioFalso1))
+        whenever(usuarioRepo.findById(21L)).thenReturn(java.util.Optional.of(usuarioFalso2))
 
         whenever(jugadorJuegoRepo.saveAll(any<List<JugadorJuego>>())).thenReturn(listOf(jugadorJuego1Mock, jugadorJuego2Mock))
         whenever(combateRepo.save(any())).thenReturn(combateGuardadoMock)
+
 
         // 4. ACT: Llamamos al metodo
         val resultado = combateService.crearCombatexDTO(crearCombateDto)
@@ -96,9 +106,7 @@ class CombateServiceTests {
         assertEquals(10L, resultado.jugador1.id)
         assertEquals(11L, resultado.jugador2.id)
 
-        // Verificamos que se ejecutaron las operaciones de guardado crítico
-        verify(usuarioRepo).save(any())
-        verify(jugadorJuegoRepo).saveAll(any<List<JugadorJuego>>())
+        verify(jugadorJuegoRepo, times(2)).save(any())
         verify(combateRepo).save(any())
     }
     @Test

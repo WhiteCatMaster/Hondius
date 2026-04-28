@@ -28,7 +28,8 @@ class PartidaControllerTests (){
             descripcion = "Description",
             idioma = "ES",
             maximoJugadores = 5,
-            jugadores = mutableListOf(jugador)
+            jugadores = mutableListOf(jugador),
+            adminId = 1L
         )
 
         val payload = jsonMapper.createObjectNode()

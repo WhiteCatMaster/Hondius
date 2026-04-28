@@ -3,7 +3,6 @@ package org.example.backend.service
 import jakarta.transaction.Transactional
 import org.example.backend.dto.CrearPartidaDto
 import org.example.backend.dto.DatosPartidaDto
-import org.example.backend.dto.JuegoDto
 import org.example.backend.dto.PartidaDto
 import org.example.backend.entity.Ataque
 import org.example.backend.entity.Estadistica
@@ -11,7 +10,6 @@ import org.example.backend.entity.Juego
 import org.example.backend.entity.JugadorJuego
 import org.example.backend.entity.Personaje
 import org.example.backend.entity.RolJugador
-import org.example.backend.entity.Usuario
 import org.example.backend.repository.AtaqueRepository
 import org.example.backend.repository.EstadisticaRepository
 import org.example.backend.repository.JuegoRepository

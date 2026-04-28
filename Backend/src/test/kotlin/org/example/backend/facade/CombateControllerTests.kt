@@ -20,9 +20,8 @@ class CombateControllerTests {
 
     @Test
     fun testCrearCombate(){
-        val usuarioDto = CrearCombateDto.UsuarioDto()
-        val jugadorUnoDto = CrearCombateDto.JugadorDto(10L, usuarioDto, "ADMIN", 100L)
-        val jugadorDosDto = CrearCombateDto.JugadorDto(11L, usuarioDto, "JUGADOR", 101L)
+        val jugadorUnoDto = CrearCombateDto.JugadorDto(10L, 20L, "ADMIN", 100L)
+        val jugadorDosDto = CrearCombateDto.JugadorDto(11L, 21L, "JUGADOR", 101L)
 
         val crearCombateDto = CrearCombateDto(1L, "batalla epica", jugadorUnoDto, jugadorDosDto, 1000L)
 
