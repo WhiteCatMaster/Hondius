@@ -11,11 +11,8 @@ data class CrearCombateDto(
 ): Serializable {
     data class JugadorDto(
         val id: Long? = null,
-        val usuario: UsuarioDto? = null,
+        val usuarioId: Long? = null,
         val rol: String,
         val personajeId: Long
-    ): Serializable
-    data class UsuarioDto(
-        val id: Long? = null,
     ): Serializable
 }

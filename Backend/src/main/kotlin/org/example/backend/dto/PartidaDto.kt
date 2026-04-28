@@ -7,5 +7,6 @@ data class PartidaDto(
     val nombre: String? = null,
     val descripcion: String? = null,
     val idioma: String? = null,
-    val maximoJugadores: Int? = null
+    val maximoJugadores: Int? = null,
+    val adminId: Long? = null,
 ) : Serializable

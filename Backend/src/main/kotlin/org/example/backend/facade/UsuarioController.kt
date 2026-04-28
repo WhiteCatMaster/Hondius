@@ -1,10 +1,12 @@
 package org.example.backend.facade
 
+import org.example.backend.dto.UsuarioDto
 import org.example.backend.entity.Usuario
 import org.example.backend.service.UsuarioService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -18,7 +20,7 @@ data class RegistrarUsuarioRequest(
 )
 
 @RestController
-@RequestMapping("/api/usuarios", "/usuarios")
+@RequestMapping("/api/usuario", "/usuario")
 class UsuarioController(
     private val usuarioService: UsuarioService
 ) {
@@ -42,6 +44,35 @@ class UsuarioController(
     @GetMapping
     fun listarUsuarios(): ResponseEntity<List<Usuario>> {
         return ResponseEntity.ok(usuarioService.getAllUsuarios())
+    }
+    @GetMapping("/{googleId}")
+    fun obtenerUsuarioxGoogleId(@PathVariable googleId: String): ResponseEntity<UsuarioDto> {
+        val usuario = usuarioService.findByGoogleId(googleId).get() ?: return ResponseEntity.notFound().build()
+        val partidasDto = mutableListOf<UsuarioDto.JugadorJuegoDto>()
+        for(jugadorJuego in usuario.partidasParticipa){
+            val juegoDto = UsuarioDto.JuegoDto(
+                id = jugadorJuego.juego?.id,
+                nombre = jugadorJuego.juego?.nombre,
+                descripcion = jugadorJuego.juego?.descripcion,
+                idioma = jugadorJuego.juego?.idioma,
+                maxJugadores = jugadorJuego.juego?.maximoJugadores
+            )
+            val jugadorJuegoDto = UsuarioDto.JugadorJuegoDto(
+                id = jugadorJuego.id,
+                juego =juegoDto,
+                rol = jugadorJuego.rol.toString()
+            )
+            partidasDto.add(jugadorJuegoDto)
+        }
+        val resultado = UsuarioDto(
+            id = usuario.id,
+            googleId = usuario.googleId,
+            email = usuario.email,
+            nombre = usuario.nombre,
+            fotoUrl = usuario.fotoUrl,
+            partidasParticipa = partidasDto,
+        )
+        return ResponseEntity.ok(resultado)
     }
 }
 

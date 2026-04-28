@@ -28,47 +28,34 @@ class CombateService (
     @Transactional
     fun crearCombatexDTO(combateDTO: CrearCombateDto): CrearCombateDto {
         val partida = juegoRepo.findById(combateDTO.juegoId).get()
-        //Deberia de hacer un if para ver si es que el usuario ya existe
-
-        var usuarioModelo = Usuario(
-            googleId = "ID google insano",
-            email = "email insano",
-            nombre = "nombre de usuario",
-            fotoUrl = "Url de foto de perfil",
-            partidasParticipa = mutableListOf()
-        )
-
-        // ¡IMPORTANTE! Lo guardamos para que Hibernate le asigne un ID real
-        var usuarioGuardado = usuarioRepo.save(usuarioModelo)
-
-        // 1. CREAR Y GUARDAR EL PADRE (Independiente)
-
-        // 2. CREAR Y GUARDAR LOS HIJOS (Dependen del padre)
-        val jugadorJuegoModelo1 = JugadorJuego(
-            usuario = usuarioGuardado, // Usamos el que ya tiene ID
+        //Deberia de crear 2 nuevos jugador juego para que el admin tambien pueda jugar con el mismo usuario pero en modo jugador
+        val jugadorjuego1 = JugadorJuego(
+            usuario = usuarioRepo.findById(combateDTO.jugador1.usuarioId?: -1L).get(),
             juego = partida,
             rol = enumValueOf(combateDTO.jugador1.rol),
             personaje = personajeRepo.findById(combateDTO.jugador1.personajeId).get()
         )
-        val jugadorJuegoModelo2 = JugadorJuego(
-            usuario = usuarioGuardado, // Usamos el que ya tiene ID
+        val jugadorjuego2 = JugadorJuego(
+            usuario = usuarioRepo.findById(combateDTO.jugador2.usuarioId?: -1L).get(),
             juego = partida,
             rol = enumValueOf(combateDTO.jugador2.rol),
             personaje = personajeRepo.findById(combateDTO.jugador2.personajeId).get()
         )
+        val jugadorjuego1Guardado =jugadorJuegoRepo.save(jugadorjuego1)
+        val jugadorjuego2Guardado = jugadorJuegoRepo.save(jugadorjuego2)
 
         // Mantenemos la coherencia bidireccional en memoria
-        usuarioGuardado.partidasParticipa.add(jugadorJuegoModelo1)
-        usuarioGuardado.partidasParticipa.add(jugadorJuegoModelo2)
+        //usuarioGuardado.partidasParticipa.add(jugadorJuegoModelo1)
+        //usuarioGuardado.partidasParticipa.add(jugadorJuegoModelo2)
 
         // ¡IMPORTANTE! Guardamos los jugadores para que tengan ID
-        val jugadoresGuardados = jugadorJuegoRepo.saveAll(listOf(jugadorJuegoModelo1, jugadorJuegoModelo2))
+        //val jugadoresGuardados = jugadorJuegoRepo.saveAll(listOf(jugadorJuegoModelo1, jugadorJuegoModelo2))
 
         // 3. CREAR Y GUARDAR EL NIETO (Depende de los hijos)
         val combateCreado = Combate(
             nombre = combateDTO.nombre,
-            jugador1 = jugadoresGuardados[0], // Usamos los que ya tienen ID
-            jugador2 = jugadoresGuardados[1], // Usamos los que ya tienen ID
+            jugador1 = jugadorjuego1Guardado, // Usamos los que ya tienen ID
+            jugador2 = jugadorjuego2Guardado, // Usamos los que ya tienen ID
             juego = partida
         )
 
@@ -76,18 +63,18 @@ class CombateService (
         val combateGuardado = combateRepo.save(combateCreado)
 
         // --- El resto de tu código de mapeo de DTO sigue igual ---
-        val usuarioDto = CrearCombateDto.UsuarioDto()
-
+        val usuario1Id = combateGuardado.jugador1.usuario?.id
+        val usuario2Id = combateGuardado.jugador2.usuario?.id
         val jugador1 = CrearCombateDto.JugadorDto(
             id = combateGuardado.jugador1.id ?: -1,
-            usuario = usuarioDto,
+            usuarioId = usuario1Id,
             rol = combateGuardado.jugador1.rol.toString(),
             personajeId = combateGuardado.jugador1.personaje?.id ?: -1 ,
         )
 
         val jugador2 = CrearCombateDto.JugadorDto(
             id = combateGuardado.jugador2.id ?: -1,
-            usuario = usuarioDto,
+            usuarioId = usuario2Id,
             rol = combateGuardado.jugador2.rol.toString(),
             personajeId = combateGuardado.jugador2.personaje?.id ?: -1,
         )
@@ -107,6 +94,7 @@ class CombateService (
         var ataques1Dto = mutableListOf<DatosPartidaDto.PersonajeDto.AtaqueDto>()
         var estadisticas2Dto = mutableListOf<DatosPartidaDto.PersonajeDto.EstadisticaDto>()
         var ataques2Dto = mutableListOf<DatosPartidaDto.PersonajeDto.AtaqueDto>()
+        println(combateGuardado.jugador1)
         for(i in combateGuardado.jugador1.personaje?.estadisticas!!){
             val estadistica1Dto = DatosPartidaDto.PersonajeDto.EstadisticaDto(
                 id = i.id,

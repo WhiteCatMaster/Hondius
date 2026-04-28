@@ -131,10 +131,17 @@ class JuegoService(
             idioma = juegoDTO.idioma,
             descripcion = juegoDTO.descripcion,
             maximoJugadores = juegoDTO.maximoJugadores,
-            personajes = mutableListOf()
+            personajes = mutableListOf(),
         )
+        val usuarioadmin = usuarioRepo.findById(juegoDTO.adminId).get()
 
-        //Deberia de crear un jugadorJuego sin valores
+        //Deberia de crear un jugadorJuego en base al admin que ha creado el juego
+        val jugadorAdmin = JugadorJuego(
+            usuario = usuarioadmin,
+            juego = juego,
+            rol = RolJugador.ADMIN,
+            personaje = null
+        )
         //Crear los jugadores a partir del DTO
         println("Guardando jugadores desde DTO...")
         for (personajeDTO in juegoDTO.jugadores){
@@ -198,9 +205,10 @@ class JuegoService(
 
             }
             personajes.add(personaje)
-            juego.personajes = personajes
         }
+        juego.personajes = personajes
         val juegoGuardado = juegoRepo.save(juego)
+        val jugadorJuegoGuardado = jugadorJuegoRepo.save(jugadorAdmin)
         val personajesGuardados = personajeRepo.saveAll(personajes)
         println("Personajes guardados: ${personajesGuardados.size}")
         for (i in personajes){
@@ -216,6 +224,7 @@ class JuegoService(
             idioma = juegoGuardado.idioma,
             descripcion = juegoGuardado.descripcion,
             maximoJugadores = juegoGuardado.maximoJugadores,
+            adminId = jugadorJuegoGuardado.usuario?.id,
         )
         return resultado
     }
