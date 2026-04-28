@@ -1,4 +1,4 @@
-![CI](https://github.com/WhiteCatMaster/JuegoRol/actions/workflows/main.yml/badge.svg)
+[![CI Pipeline Juego Rol](https://github.com/WhiteCatMaster/JuegoRol/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/WhiteCatMaster/JuegoRol/actions/workflows/main.yml)
 
 Dependencias: Docker, gradlew, jdk y node.js en el sistema operativo 
 En principio dentro de la carpeta backend para poder iniciar la base de datos mediante docker lanzar:
