@@ -11,14 +11,14 @@ import { LoginComponent } from './login/login.component';
 import { LanzadorDadosComponent } from './lanzador-dados/lanzador-dados.component';
 
 export const routes: Routes = [
-  { path: '', component: Landing },
   { path: 'login', component: LoginComponent },
-  { path: 'crear-partida', component: OpcionesComponent },
-  { path: 'selector/:id', component: SelectorComponent },
-  { path: 'selector-personaje/:id', component: SelectorPersonajeComponent },
-  { path: 'jugar-combate/:id', component: CombateComponent },
-  { path: 'perfil', component: UsuarioWebComponent },
-  { path: 'selector-master', component: SelectorMasterComponent },
-  { path: 'editar-personaje/:nombre', component: EditarPersonaje },
   { path: 'dado', component: LanzadorDadosComponent },
+  { path: '', component: Landing }, //Landing page 
+  { path: 'crear-partida', component: OpcionesComponent },//Crear partida 
+  { path: 'selector/:id', component: SelectorComponent }, //seleccionar rol dentro de una partida 
+  { path: 'jugar-combate/:id', component: CombateComponent }, // Entrar a un combate creado
+  { path: 'perfil', component: UsuarioWebComponent }, //Entrar al perfil (no parece haber boton para entrar aqui)
+  { path: 'selector-master', component: SelectorMasterComponent}, //Elegir el personaje a editar 
+  { path: 'editar-personaje/:nombre', component: EditarPersonaje}, //Interfaz para editar un personaje en concreto 
+  { path: 'selector-personaje/:id', component: SelectorPersonajeComponent }, //Seleccionar los personajes que van a combatir
 ];

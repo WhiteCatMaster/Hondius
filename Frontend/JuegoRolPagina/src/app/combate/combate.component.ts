@@ -5,6 +5,7 @@ import { computed } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ServicioAPI } from '../servicio-api';
 import { PersonajeDto } from '../selectorELIMINAR.component';
+import { UsuarioService } from '../servicios/usuario-service';
 
 @Component({
   selector: 'app-combate',
@@ -26,6 +27,7 @@ export class CombateComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private servicioAPI: ServicioAPI,
+    public usuarioService: UsuarioService
   ){}
   // El computed este es para que se actualice en tiempo real
   vidaTuya = computed(() => this.personajeTuyo()?.vida || 0);

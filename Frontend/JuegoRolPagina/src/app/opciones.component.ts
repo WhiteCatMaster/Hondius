@@ -11,6 +11,7 @@ import { JugadorJuego, Rol } from './models/jugador-juego';
 import { Partida } from './models/partida';
 import { ServicioAPI } from './servicio-api';
 import { Dado } from './models/dado';
+import { UsuarioService } from './servicios/usuario-service';
 
 @Component({
   selector: 'app-opciones',
@@ -20,7 +21,11 @@ import { Dado } from './models/dado';
   styleUrl: './opciones.component.css',
 })
 export class OpcionesComponent {
-  constructor(private servicioAPI: ServicioAPI) {}
+  constructor(
+    private servicioAPI: ServicioAPI,
+    public usuarioService: UsuarioService,
+  ) {}
+
 
   nombre = '';
   descripcion = '';
@@ -423,6 +428,7 @@ export class OpcionesComponent {
 
   mandarPartida() {
     let jugadores = [];
+    const adminId = this.usuarioService.usuarioActual()?.id
 
     for (let personaje of this.personajes) {
       // 1. Procesamos las estadísticas del personaje
@@ -477,7 +483,7 @@ export class OpcionesComponent {
       let personajePayload = {
         personajeNombre: personaje.nombre,
         personajeVida: personaje.vida,
-        personajeFotoUrl: personaje.fotoUrl,
+        personajeFotoUrl: personaje.urlSprite,
         personajeEstadisticas: estadisticasPersonaje,
         personajeAtaques: ataquesPersonaje,
       };
@@ -492,6 +498,7 @@ export class OpcionesComponent {
         idioma: this.idioma,
         maximoJugadores: this.maxJugadores,
         jugadores: jugadores,
+        adminID: adminId
       },
     };
 

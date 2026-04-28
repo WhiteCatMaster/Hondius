@@ -5,6 +5,7 @@ import { Partida } from '../models/partida';
 import { ServicioAPI } from '../servicio-api';
 import { Usuario } from '../models/usuario';
 import { Rol } from '../models/jugador-juego';
+import { UsuarioService } from '../servicios/usuario-service';
 
 @Component({
   selector: 'app-landing',
@@ -18,16 +19,19 @@ export class Landing implements OnInit {
   public Rol = Rol;
   constructor(
     private servicioAPI: ServicioAPI,
-    private cdRef: ChangeDetectorRef
+    private cdRef: ChangeDetectorRef,
+    public usuarioService: UsuarioService
   ) {}
 
   usuario: Usuario | null = null;
   partidas = signal<Partida[]>([]);
 
   ngOnInit(): void {
+    
     this.cargarPartidasMock();
     this.cargarPartidasBD();
-    this.servicioAPI.obtenerDatosUsuario().subscribe({
+    const googleId = this.usuarioService.usuarioActual()?.googleId
+    this.servicioAPI.obtenerDatosUsuario(googleId).subscribe({
       next: (datos) => {
         console.log('Datos cargados:', datos);
         this.usuario = datos;

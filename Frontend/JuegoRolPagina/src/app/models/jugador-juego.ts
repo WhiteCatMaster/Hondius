@@ -2,8 +2,8 @@ import { Partida } from "./partida";
 import { Usuario } from "./usuario";
 
 export enum Rol {
-    Admin = "admin",
-    Jugador = "jugador"
+    Admin = "ADMIN",
+    Jugador = "JUGADOR"
 }
 
 export interface JugadorJuego {

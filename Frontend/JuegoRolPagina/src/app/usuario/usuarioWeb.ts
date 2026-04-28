@@ -3,6 +3,7 @@ import { UpperCasePipe } from '@angular/common';
 import { Usuario } from '../models/usuario';
 import { Rol } from '../models/jugador-juego';
 import { ServicioAPI } from '.././servicio-api';
+import { UsuarioService } from '../servicios/usuario-service';
 
 @Component({
   selector: 'app-usuario',
@@ -18,11 +19,13 @@ export class UsuarioWebComponent implements OnInit {
 
   constructor(
     private apiService: ServicioAPI,
-    private cdRef: ChangeDetectorRef
+    private cdRef: ChangeDetectorRef,
+    public usuarioService: UsuarioService
   ) {}
 
   ngOnInit(): void {
-    this.apiService.obtenerDatosUsuario().subscribe({
+    const usuarioGoogleId = this.usuarioService.usuarioActual()?.googleId
+    this.apiService.obtenerDatosUsuario(usuarioGoogleId).subscribe({
       next: (datos) => {
         console.log('Datos cargados:', datos);
         this.usuario = datos;

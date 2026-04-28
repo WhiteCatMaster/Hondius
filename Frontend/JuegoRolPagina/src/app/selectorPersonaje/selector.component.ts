@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Partida } from '../models/partida';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ServicioAPI } from '../servicio-api';
+import { UsuarioService } from '../servicios/usuario-service';
 
 @Component({
   selector: 'app-combate',
@@ -26,6 +27,7 @@ export class SelectorPersonajeComponent implements OnInit {
     private router: Router,
     private servicioAPI: ServicioAPI,
     private route: ActivatedRoute,
+    public usuarioService : UsuarioService
   ) {}
 
   // Lo otro, lo de la base de datos temporal
@@ -260,6 +262,7 @@ export class SelectorPersonajeComponent implements OnInit {
         ataquesDelPersonaje: ataques,
       } as any;
       personajes.push(personaje);
+      console.log(element.personajeFotoUrl)
     });
     this.partidaActual.set({
       id: this.partidaDto?.id,
@@ -273,18 +276,19 @@ export class SelectorPersonajeComponent implements OnInit {
 
   //Funcion para enviar los personajes que van a aprticipar en el combate
   enviarCombateBackend() {
+    const usuarioId = this.usuarioService.usuarioActual()?.id;
     let payload = {
       id: null,
       nombre: 'nombreCombate',
       jugador1: {
         id: null,
-        usuario: null,
+        usuarioId: usuarioId,
         rol: 'JUGADOR',
         personajeId: this.heroeSeleccionado.id,
       },
       jugador2: {
         id: null,
-        usuario: null,
+        usuarioId: usuarioId,
         rol: 'JUGADOR',
         personajeId: this.enemigoSeleccionado.id,
       },
