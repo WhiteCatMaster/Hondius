@@ -1,4 +1,4 @@
-package org.example.backend.service
+package org.example.backend.unit.service
 
 import org.example.backend.entity.Juego
 import org.example.backend.entity.JugadorJuego
@@ -6,6 +6,7 @@ import org.example.backend.entity.Personaje
 import org.example.backend.entity.RolJugador
 import org.example.backend.entity.Usuario
 import org.example.backend.repository.JugadorJuegoRepository
+import org.example.backend.service.JugadorJuegoService
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any

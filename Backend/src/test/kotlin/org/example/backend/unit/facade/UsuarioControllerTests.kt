@@ -1,9 +1,11 @@
-package org.example.backend.facade
+package org.example.backend.unit.facade
 
 import org.example.backend.entity.Juego
 import org.example.backend.entity.JugadorJuego
 import org.example.backend.entity.RolJugador
 import org.example.backend.entity.Usuario
+import org.example.backend.facade.RegistrarUsuarioRequest
+import org.example.backend.facade.UsuarioController
 import org.example.backend.service.UsuarioService
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -14,6 +16,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import org.springframework.http.HttpStatus
+import java.util.Optional
 
 
 class UsuarioControllerTests {
@@ -25,7 +28,14 @@ class UsuarioControllerTests {
         val usuarioFalso = Usuario(1L,"337d","aMail@mail.com", "Pepe", "foto.url",mutableListOf())
         whenever(usuarioService.createUsuario(any())).thenReturn(usuarioFalso)
 
-        val result = usuarioController.registrarUsuario(RegistrarUsuarioRequest(usuarioFalso.googleId, usuarioFalso.email,usuarioFalso.nombre, usuarioFalso.fotoUrl))
+        val result = usuarioController.registrarUsuario(
+            RegistrarUsuarioRequest(
+                usuarioFalso.googleId,
+                usuarioFalso.email,
+                usuarioFalso.nombre,
+                usuarioFalso.fotoUrl
+            )
+        )
         assertEquals(HttpStatus.CREATED, result.statusCode)
         val responseBody = result.body as Usuario
         assertEquals("337d", responseBody.googleId)
@@ -76,7 +86,7 @@ class UsuarioControllerTests {
             on { partidasParticipa } doReturn mutableListOf(jugadorJuegoMock)
         }
 
-        whenever(usuarioService.findByGoogleId(googleIdBuscado)).thenReturn(java.util.Optional.of(usuarioMock))
+        whenever(usuarioService.findByGoogleId(googleIdBuscado)).thenReturn(Optional.of(usuarioMock))
 
         // 2. ACT
         val resultado = usuarioController.obtenerUsuarioxGoogleId(googleIdBuscado)
@@ -104,7 +114,7 @@ class UsuarioControllerTests {
     fun testObtenerUsuarioxGoogleId_NoEncontrado() {
         // ARRANGE
         val googleIdBuscado = "google-no-existe"
-        whenever(usuarioService.findByGoogleId(googleIdBuscado)).thenReturn(java.util.Optional.empty())
+        whenever(usuarioService.findByGoogleId(googleIdBuscado)).thenReturn(Optional.empty())
 
         // ACT & ASSERT
         assertThrows<NoSuchElementException> {

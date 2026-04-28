@@ -1,4 +1,4 @@
-package org.example.backend.service
+package org.example.backend.unit.service
 
 import org.example.backend.dto.CrearCombateDto
 import org.example.backend.entity.Ataque
@@ -14,14 +14,17 @@ import org.example.backend.repository.JuegoRepository
 import org.example.backend.repository.JugadorJuegoRepository
 import org.example.backend.repository.PersonajeRepository
 import org.example.backend.repository.UsuarioRepository
+import org.example.backend.service.CombateService
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.mockito.kotlin.any
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import java.util.Optional
 import kotlin.collections.mutableListOf
 
 class CombateServiceTests {
@@ -30,7 +33,7 @@ class CombateServiceTests {
     private val personajeRepo: PersonajeRepository = mock<PersonajeRepository>()
     private val jugadorJuegoRepo: JugadorJuegoRepository = mock<JugadorJuegoRepository>()
     private val usuarioRepo: UsuarioRepository = mock<UsuarioRepository>()
-    private val combateService = CombateService(combateRepo,juegoRepo,personajeRepo,jugadorJuegoRepo,usuarioRepo)
+    private val combateService = CombateService(combateRepo, juegoRepo, personajeRepo, jugadorJuegoRepo, usuarioRepo)
 
 
     @Test
@@ -76,7 +79,7 @@ class CombateServiceTests {
         val usuarioFalso2 = Usuario(21L,"google_id2", "anEmail@mail.com","UsuarioDos","fotoUsuario.url",mutableListOf())
         // 3. ARRANGE: Configuramos los comportamientos de los repositorios
         // Como el service usa .get() después del findById, debemos devolver un Optional
-        whenever(juegoRepo.findById(1000L)).thenReturn(java.util.Optional.of(partidaMock))
+        whenever(juegoRepo.findById(1000L)).thenReturn(Optional.of(partidaMock))
         whenever(usuarioRepo.save(any())).thenReturn(usuarioGuardadoMock)
         whenever(jugadorJuegoRepo.save(any())).thenAnswer { invocation ->
             // Capturamos el objeto que intentan guardar y le indicamos su clase
@@ -85,10 +88,10 @@ class CombateServiceTests {
             entidad
         }
 
-        whenever(personajeRepo.findById(100L)).thenReturn(java.util.Optional.of(personaje1Mock))
-        whenever(personajeRepo.findById(101L)).thenReturn(java.util.Optional.of(personaje2Mock))
-        whenever(usuarioRepo.findById(20L)).thenReturn(java.util.Optional.of(usuarioFalso1))
-        whenever(usuarioRepo.findById(21L)).thenReturn(java.util.Optional.of(usuarioFalso2))
+        whenever(personajeRepo.findById(100L)).thenReturn(Optional.of(personaje1Mock))
+        whenever(personajeRepo.findById(101L)).thenReturn(Optional.of(personaje2Mock))
+        whenever(usuarioRepo.findById(20L)).thenReturn(Optional.of(usuarioFalso1))
+        whenever(usuarioRepo.findById(21L)).thenReturn(Optional.of(usuarioFalso2))
 
         whenever(jugadorJuegoRepo.saveAll(any<List<JugadorJuego>>())).thenReturn(listOf(jugadorJuego1Mock, jugadorJuego2Mock))
         whenever(combateRepo.save(any())).thenReturn(combateGuardadoMock)
@@ -166,7 +169,7 @@ class CombateServiceTests {
         }
 
         // Configuramos el repositorio
-        whenever(combateRepo.findById(1L)).thenReturn(java.util.Optional.of(combateMock))
+        whenever(combateRepo.findById(1L)).thenReturn(Optional.of(combateMock))
 
         // 2. ACT: Llamamos al metodo
         val resultado = combateService.obtenerCombateById(1L)
@@ -196,10 +199,10 @@ class CombateServiceTests {
     @Test
     fun testObtenerCombateById_NoEncontrado() {
         // 1. ARRANGE: El repositorio devuelve vacío
-        whenever(combateRepo.findById(99L)).thenReturn(java.util.Optional.empty())
+        whenever(combateRepo.findById(99L)).thenReturn(Optional.empty())
 
         // 2 & 3. ACT & ASSERT: Esperamos que lance NoSuchElementException por culpa del .get()
-        org.junit.jupiter.api.assertThrows<NoSuchElementException> {
+        assertThrows<NoSuchElementException> {
             combateService.obtenerCombateById(99L)
         }
     }

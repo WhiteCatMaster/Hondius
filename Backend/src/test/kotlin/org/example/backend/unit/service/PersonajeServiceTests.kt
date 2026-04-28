@@ -1,10 +1,11 @@
-package org.example.backend.service
+package org.example.backend.unit.service
 
 import org.example.backend.entity.Estadistica
 import org.example.backend.entity.JugadorJuego
 import org.example.backend.entity.Personaje
 import org.example.backend.entity.RolJugador
 import org.example.backend.repository.PersonajeRepository
+import org.example.backend.service.PersonajeService
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any

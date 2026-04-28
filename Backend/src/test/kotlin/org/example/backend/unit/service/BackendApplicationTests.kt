@@ -1,4 +1,4 @@
-package org.example.backend.service
+package org.example.backend.unit.service
 
 import org.springframework.boot.test.context.SpringBootTest
 

@@ -1,7 +1,8 @@
-package org.example.backend.facade
+package org.example.backend.unit.facade
 
 import org.example.backend.dto.CrearPartidaDto
 import org.example.backend.dto.PartidaDto
+import org.example.backend.facade.PartidaController
 import org.example.backend.service.JuegoService
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test

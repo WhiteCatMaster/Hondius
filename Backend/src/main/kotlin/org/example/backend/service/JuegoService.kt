@@ -133,80 +133,96 @@ class JuegoService(
         )
         val usuarioadmin = usuarioRepo.findById(juegoDTO.adminId).get()
 
-        //Deberia de crear un jugadorJuego en base al admin que ha creado el juego
         val jugadorAdmin = JugadorJuego(
             usuario = usuarioadmin,
             juego = juego,
             rol = RolJugador.ADMIN,
             personaje = null
         )
-        //Crear los jugadores a partir del DTO
+
         println("Guardando jugadores desde DTO...")
+
+        // --- INICIO DEL BLOQUE MODIFICADO ---
         for (personajeDTO in juegoDTO.jugadores){
             println("Guardando estats desde DTO...")
-            //Se cargan las estadisticas primero
-            var estats = mutableListOf<Estadistica>()
-            var ataques = mutableListOf<Ataque>()
+
+            val estats = mutableListOf<Estadistica>()
+            val buscadorEstadisticas = mutableMapOf<String, Estadistica>()
+
+            // 1. Cargamos las estadísticas y las indexamos por nombre
             for (estatDTO in personajeDTO.personajeEstadisticas){
-                var estat  = Estadistica(
+                val estat = Estadistica(
                     nombre = estatDTO.nombre ?: "",
                     valor = estatDTO.valor ?: 0,
                     consumible = estatDTO.consumible,
                 )
                 println("Guardando estadistica: nombre=${estat.nombre}, valor=${estat.valor}, consumible=${estat.consumible}")
                 estats.add(estat)
+                buscadorEstadisticas[estat.nombre] = estat
             }
+
+            val ataques = mutableListOf<Ataque>()
+
+            // 2. Cargamos los ataques buscando las referencias directas en el diccionario
             for (ataqueDTO in personajeDTO.personajeAtaques){
-                //Deberia de mapear la estat a la que se refiere el string del json
-                var estatsDefensor = mutableMapOf<Estadistica, Double>()
-                for (i in estats){
-                    if (ataqueDTO.estadisticasDefensor.containsKey(i.nombre)){
-                        estatsDefensor[i] = ataqueDTO.estadisticasDefensor[i.nombre] ?: 0.0
+
+                val estatsDefensor = mutableMapOf<Estadistica, Double>()
+                for ((nombreEst, valorDef) in ataqueDTO.estadisticasDefensor) {
+                    val estadisticaEncontrada = buscadorEstadisticas[nombreEst]
+                    if (estadisticaEncontrada != null) {
+                        estatsDefensor[estadisticaEncontrada] = valorDef
                     }
                 }
-                //Volver a mapear pero esta vez con manaAtacante
-                var manaAtacante = mutableMapOf<Estadistica, Int>()
-                for (i in estats){
-                    if (ataqueDTO.manaAtacante.containsKey(i.nombre)){
-                        manaAtacante[i] = ataqueDTO.manaAtacante[i.nombre] ?: 0
+
+                val manaAtacante = mutableMapOf<Estadistica, Int>()
+                for ((nombreEst, valorMana) in ataqueDTO.manaAtacante) {
+                    val estadisticaEncontrada = buscadorEstadisticas[nombreEst]
+                    if (estadisticaEncontrada != null) {
+                        manaAtacante[estadisticaEncontrada] = valorMana
                     }
                 }
-                var ataque = Ataque(
+
+                val ataque = Ataque(
                     nombre = ataqueDTO.nombre ?: "",
                     dadoBase = ataqueDTO.dadoBase,
                     ratioDado = ataqueDTO.ratioDado,
                     estadisticasDefensor = estatsDefensor,
                     manaAtacante = manaAtacante,
                     danioAtaque = ataqueDTO.danoAtaque
-                    //De momento se deja owner como null
                 )
-
                 ataques.add(ataque)
             }
 
             println("Guardando ataques desde DTO...")
-
             println("Guardando personajes desde DTO...")
-            var personaje = Personaje(
+
+            // 3. Montamos el personaje con sus listas ya enlazadas
+            val personaje = Personaje(
                 nombre = personajeDTO.personajeNombre ?: "",
                 vida = personajeDTO.personajeVida ?: 0,
                 fotoUrl = personajeDTO.personajeFotoUrl ?: "",
                 estadisticas = estats,
                 ataques = ataques,
-                //De momento se deja Jugador JUego como null
             )
+
+            // Relaciones bidireccionales
             for (i in personaje.estadisticas){
                 i.personaje = personaje
             }
             for (i in personaje.ataques){
                 i.owner = personaje
-
             }
+
             personajes.add(personaje)
         }
+        // --- FIN DEL BLOQUE MODIFICADO ---
+
         juego.personajes = personajes
         val juegoGuardado = juegoRepo.save(juego)
         val jugadorJuegoGuardado = jugadorJuegoRepo.save(jugadorAdmin)
+
+        // ... (El resto de tu función de guardado se mantiene exactamente igual) ...
+
         val personajesGuardados = personajeRepo.saveAll(personajes)
         println("Personajes guardados: ${personajesGuardados.size}")
         for (i in personajes){
@@ -215,8 +231,9 @@ class JuegoService(
             val ataquesGuardados = ataqueRepo.saveAll(i.ataques)
             println("Ataques guardados: ${ataquesGuardados.size}")
         }
+
         println("Devolviendo partida creada...")
-        var resultado = PartidaDto(
+        return PartidaDto(
             id = juegoGuardado.id,
             nombre = juegoGuardado.nombre,
             idioma = juegoGuardado.idioma,
@@ -224,9 +241,7 @@ class JuegoService(
             maximoJugadores = juegoGuardado.maximoJugadores,
             adminId = jugadorJuegoGuardado.usuario?.id,
         )
-        return resultado
     }
-
     /*
     fun getDatosPartida(nombrePartida: String): JuegoDto? {
         val juego = juegoRepo.findByNombre(nombrePartida) ?: return null

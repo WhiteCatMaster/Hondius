@@ -1,7 +1,8 @@
-package org.example.backend.service
+package org.example.backend.unit.service
 
 import org.example.backend.entity.Estadistica
 import org.example.backend.repository.EstadisticaRepository
+import org.example.backend.service.EstadisticaService
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any

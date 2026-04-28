@@ -1,4 +1,4 @@
-package org.example.backend.service
+package org.example.backend.unit.service
 
 import org.example.backend.dto.CrearPartidaDto
 import org.example.backend.entity.Juego
@@ -13,6 +13,8 @@ import org.example.backend.entity.Ataque
 import org.example.backend.entity.Estadistica
 import org.example.backend.entity.Personaje
 import org.example.backend.entity.Usuario
+import org.example.backend.service.EstadisticaService
+import org.example.backend.service.JuegoService
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -35,7 +37,15 @@ class JuegoServiceTests {
     private val estadisticaRepository: EstadisticaRepository = mock<EstadisticaRepository>()
     private val ataqueRepository: AtaqueRepository = mock<AtaqueRepository>()
     private val estadisticaService = EstadisticaService(estadisticaRepository)
-    private val juegoService = JuegoService(juegoRepository,usuarioRepository,jugadorJuegoRepository,personajeRepository,estadisticaRepository,ataqueRepository, estadisticaService)
+    private val juegoService = JuegoService(
+        juegoRepository,
+        usuarioRepository,
+        jugadorJuegoRepository,
+        personajeRepository,
+        estadisticaRepository,
+        ataqueRepository,
+        estadisticaService
+    )
 
     @Test
     fun testGetAllPartidas() {
@@ -98,7 +108,7 @@ class JuegoServiceTests {
             on { personajes } doReturn mutableListOf(personajeMock)
         }
 
-        whenever(juegoRepository.findById(1L)).thenReturn(java.util.Optional.of(partidaMock))
+        whenever(juegoRepository.findById(1L)).thenReturn(Optional.of(partidaMock))
 
         // 2. ACT
         val resultado = juegoService.obtenerDatosPartida(1L)
@@ -130,7 +140,7 @@ class JuegoServiceTests {
     @Test
     fun testObtenerDatosPartida_NoEncontrado() {
         // ARRANGE
-        whenever(juegoRepository.findById(99L)).thenReturn(java.util.Optional.empty())
+        whenever(juegoRepository.findById(99L)).thenReturn(Optional.empty())
 
         // ACT & ASSERT
         // Como el código usa .orElse(null) e inmediatamente después llama a `partida.personajes`,

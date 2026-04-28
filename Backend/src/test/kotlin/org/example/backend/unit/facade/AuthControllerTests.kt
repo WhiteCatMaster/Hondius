@@ -1,8 +1,10 @@
-package org.example.backend.facade
+package org.example.backend.unit.facade
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseToken
 import org.example.backend.entity.Usuario
+import org.example.backend.facade.AuthController
+import org.example.backend.facade.TokenRequest
 import org.example.backend.repository.UsuarioRepository
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -14,6 +16,7 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import org.springframework.http.HttpStatus
 import java.util.Optional
+import kotlin.collections.get
 
 class AuthControllerTests {
 
@@ -84,7 +87,7 @@ class AuthControllerTests {
 
             // Verificamos que se buscó y luego se guardó
             verify(usuarioRepo).findByGoogleId(uidGoogle)
-            verify(usuarioRepo).save(org.mockito.kotlin.any<Usuario>())
+            verify(usuarioRepo).save(any<Usuario>())
         }
     }
 

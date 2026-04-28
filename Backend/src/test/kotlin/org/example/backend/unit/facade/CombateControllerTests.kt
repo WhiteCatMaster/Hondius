@@ -1,7 +1,8 @@
-package org.example.backend.facade
+package org.example.backend.unit.facade
 
 import org.example.backend.dto.CombatePersonajesDto
 import org.example.backend.dto.CrearCombateDto
+import org.example.backend.facade.CombateController
 import org.example.backend.service.CombateService
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
