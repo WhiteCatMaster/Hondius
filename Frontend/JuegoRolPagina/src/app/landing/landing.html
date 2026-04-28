@@ -6,6 +6,7 @@
 </head>
 <body>
 <div class="contenedor-usuario">
+  
   @if (usuario) {
     <div class="perfil">
 
@@ -16,46 +17,54 @@
       <br>
       <span>{{ usuario.nombre}}</span>
 
-
     </div>
-  } @else {
-    <p>No hay sesión activa o no se encontró el usuario.</p>
-  }
-</div>
-  <div class = "container">
-    <div class = "bloque1">
-
-      <div class = "tituloLanding"> Juego de rol</div>
-      <div class = "subtituloLanding"> Bienvenido a la experiencia más completa de juego. </div>
-      <button routerLink="/crear-partida">Crea una nueva partida.</button>
-    </div>
-
-    <div class = "partidasContainer">
-
-      <h2 class = "subtituloPartidas"> Únete a una trepidante aventura. </h2>
-
-      <div class = "partidasDisponibles">
-
-
-
-        @if (partidas().length === 0) {
-          <p>No hay partidas disponibles</p>
-        } @else {
-
-          @for (partida of partidas(); track partida.id) {
-            <div class="card">
-              <h2>{{ partida.nombre }}</h2>
-              <p>{{ partida.descripcion }}</p>
-              <p><strong>Idioma:</strong> {{ partida.idioma }}</p>
-              <p><strong>Máx jugadores:</strong> {{ partida.maxJugadores }}</p>
-              <button [routerLink]="['/selector', partida.id]">Unirme</button>
-            </div>
+    <div class = "container">
+      <div class = "bloque1">
+  
+        <div class = "tituloLanding"> Juego de rol</div>
+        <div class = "subtituloLanding"> Bienvenido a la experiencia más completa de juego. </div>
+        <button routerLink="/crear-partida">Crea una nueva partida.</button>
+  
+      </div>
+  
+      <div class = "partidasContainer">
+  
+        <h2 class = "subtituloPartidas"> Únete a una trepidante aventura. </h2>
+  
+        <div class = "partidasDisponibles">
+  
+  
+  
+          @if (partidas().length === 0) {
+            <p>No hay partidas disponibles</p>
+          } @else {
+  
+            @for (partida of partidas(); track partida.id) {
+              <div class="card">
+                <h2>{{ partida.nombre }}</h2>
+                <p>{{ partida.descripcion }}</p>
+                <p><strong>Idioma:</strong> {{ partida.idioma }}</p>
+                <p><strong>Máx jugadores:</strong> {{ partida.maxJugadores }}</p>
+                <button [routerLink]="['/selector', partida.id]">Unirme</button>
+              </div>
+            }
           }
-
-        }
+        </div>
       </div>
     </div>
-  </div>
 
-</body>
+
+  } @else {
+    <div class = "tituloLanding"> Juego de rol</div>
+    <h1 class="FuenteNoIniciado">No hay sesión activa o no se encontró el usuario.</h1>
+
+    <div class="DivBotonInicio">
+    <button id="botonLogin" routerLink="/login">
+      <img src="https://antoniofernandez.com/assets/blog/node-google-login.png">
+      <p class="IniciarSesion">Inicia sesión</p>
+    </button>
+    </div>
+  }
+
+</div></body>
 </html>

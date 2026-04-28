@@ -85,6 +85,7 @@ body {
   max-width: 600px;
 }
 
+
 button {
   padding: 12px 28px;
   font-size: 1.1rem;
@@ -103,6 +104,33 @@ button:hover {
 
 button:active {
   transform: scale(0.98);
+}
+
+#botonLogin {
+  background: white;
+  padding: 0;
+  display: flex;         
+  align-items: center;   
+  justify-content: center; 
+  width: 200px;
+}
+
+.DivBotonInicio {
+  display: flex;
+  justify-content: center;
+}
+
+.FuenteNoIniciado {
+  color:black;
+}
+
+#botonLogin img {
+  width: 20%;
+  margin-right: 5px;
+}
+
+.IniciarSesion {
+  color:black;
 }
 
 .card {
@@ -131,3 +159,4 @@ button:active {
   display: block;
   margin-top: 1%;
 }
+
