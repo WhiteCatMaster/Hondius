@@ -1,3 +1,5 @@
+![CI](https://github.com/WhiteCatMaster/JuegoRol/actions/workflows/main.yml/badge.svg)
+
 Dependencias: Docker, gradlew, jdk y node.js en el sistema operativo 
 En principio dentro de la carpeta backend para poder iniciar la base de datos mediante docker lanzar:
 ```bash
