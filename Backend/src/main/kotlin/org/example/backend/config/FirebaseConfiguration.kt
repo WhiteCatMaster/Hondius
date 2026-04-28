@@ -13,7 +13,13 @@ class FirebaseConfiguration {
     @PostConstruct
     fun initFirebase(){
         try {
-            val serviceAccount = ClassPathResource("firebase-adminsdk.json").inputStream
+            val resource = ClassPathResource("firebase-adminsdk.json")
+            if (!resource.exists()) {
+                println("⚠️ Firebase credentials not found. Firebase will not be initialized.")
+                return
+            }
+
+            val serviceAccount = resource.inputStream
 
             val options = FirebaseOptions.builder()
                 .setCredentials(GoogleCredentials.fromStream(serviceAccount))
@@ -23,10 +29,11 @@ class FirebaseConfiguration {
             if (FirebaseApp.getApps().isEmpty()) {
                 FirebaseApp.initializeApp(options)
             }
-
+            println("✅ Firebase initialized successfully")
 
         } catch (e: Exception) {
             e.printStackTrace()
+            println("❌ Error initializing Firebase: ${e.message}")
         }
     }
 

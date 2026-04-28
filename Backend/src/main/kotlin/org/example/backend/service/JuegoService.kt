@@ -131,14 +131,16 @@ class JuegoService(
             maximoJugadores = juegoDTO.maximoJugadores,
             personajes = mutableListOf(),
         )
-        val usuarioadmin = usuarioRepo.findById(juegoDTO.adminId).get()
+        val usuarioadmin = juegoDTO.adminId?.let { usuarioRepo.findById(it).orElse(null) }
 
-        val jugadorAdmin = JugadorJuego(
-            usuario = usuarioadmin,
-            juego = juego,
-            rol = RolJugador.ADMIN,
-            personaje = null
-        )
+        val jugadorAdmin = usuarioadmin?.let {
+            JugadorJuego(
+                usuario = it,
+                juego = juego,
+                rol = RolJugador.ADMIN,
+                personaje = null
+            )
+        }
 
         println("Guardando jugadores desde DTO...")
 
@@ -219,7 +221,7 @@ class JuegoService(
 
         juego.personajes = personajes
         val juegoGuardado = juegoRepo.save(juego)
-        val jugadorJuegoGuardado = jugadorJuegoRepo.save(jugadorAdmin)
+        val jugadorJuegoGuardado = jugadorAdmin?.let { jugadorJuegoRepo.save(it) }
 
         // ... (El resto de tu función de guardado se mantiene exactamente igual) ...
 
@@ -239,7 +241,7 @@ class JuegoService(
             idioma = juegoGuardado.idioma,
             descripcion = juegoGuardado.descripcion,
             maximoJugadores = juegoGuardado.maximoJugadores,
-            adminId = jugadorJuegoGuardado.usuario?.id,
+            adminId = jugadorJuegoGuardado?.usuario?.id,
         )
     }
 

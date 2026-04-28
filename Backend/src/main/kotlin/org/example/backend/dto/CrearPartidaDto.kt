@@ -11,7 +11,7 @@ data class CrearPartidaDto(
     val idioma: String? = null,
     val maximoJugadores: Int? = null,
     val jugadores: MutableList<PersonajeDto> = mutableListOf(),
-    val adminId: Long,
+    val adminId: Long? = null,
 ) : Serializable {
 
     data class PersonajeDto(
@@ -35,7 +35,7 @@ data class CrearPartidaDto(
             val manaAtacante: MutableMap<String, Int> = mutableMapOf(),
             val estadisticasDefensor: MutableMap<String, Double> = mutableMapOf(),
             val dadoBase: Int = 10,
-            val ratioDado: MutableList<Int>,
+            val ratioDado: MutableList<Int> = mutableListOf(),
             val danoAtaque: Int = 0
         ) : Serializable
     }

@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import tools.jackson.databind.JsonNode
+import tools.jackson.databind.node.ObjectNode
 import tools.jackson.module.kotlin.jacksonObjectMapper
 
 // DTO para la solicitud de crear partida (es un alias de JuegoDto)
@@ -23,7 +24,7 @@ class PartidaController(
     fun crearPartida(@RequestBody payload: JsonNode): ResponseEntity<Any> {
         return try {
             val juegoNode = payload.get("juego") ?: payload
-            val juegoDto = jsonMapper.treeToValue(juegoNode, CrearPartidaDto::class.java)
+            val juegoDto = jsonMapper.treeToValue(normalizarNodoPartida(juegoNode), CrearPartidaDto::class.java)
             val juegoGuardado = partidaService.crearJuegoxDTO(juegoDto)
 
             // Devolvemos un 201 Created con el resultado
@@ -31,6 +32,28 @@ class PartidaController(
         } catch (e: Exception) {
             ResponseEntity.status(HttpStatus.BAD_REQUEST).body(mapOf("error" to e.message))
         }
+    }
+
+    private fun normalizarNodoPartida(juegoNode: JsonNode): JsonNode {
+        val objectNode = (juegoNode as? ObjectNode)?.deepCopy() ?: return juegoNode
+
+        val adminIdNode = objectNode.get("adminId")
+        if (adminIdNode == null || adminIdNode.isNull) {
+            objectNode.remove("adminId")
+            return objectNode
+        }
+
+        if (adminIdNode.isTextual) {
+            val adminIdTexto = adminIdNode.asText().trim()
+            val adminId = adminIdTexto.toLongOrNull()
+            if (adminId == null) {
+                objectNode.remove("adminId")
+            } else {
+                objectNode.put("adminId", adminId)
+            }
+        }
+
+        return objectNode
     }
     @GetMapping
     fun obtenerPartidas(): ResponseEntity<List<PartidaDto>>{
