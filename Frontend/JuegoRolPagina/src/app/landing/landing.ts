@@ -26,6 +26,7 @@ export class Landing implements OnInit {
 
   usuario: Usuario | null = null;
   partidas = signal<Partida[]>([]);
+  idsAdmin = signal<number[]>([]);
 
   ngOnInit(): void {
     
@@ -74,6 +75,13 @@ export class Landing implements OnInit {
             maxJugadores: atributo.maximoJugadores,
           })),
         );
+        for(let i of partidasBackend){
+          this.idsAdmin.update((array) => {
+            let array1 = array;
+            array1.push(i.adminId)
+            return array1
+          })
+        }
       },
       error: (error) => {
         console.log('Parece que ha ocurrido un error:', error);

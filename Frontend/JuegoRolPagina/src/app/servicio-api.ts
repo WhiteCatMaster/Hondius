@@ -41,4 +41,7 @@ export class ServicioAPI {
     // Lo enviamos en un objeto JSON simple
     return this.http.post<any>(`${this.apiUrl}/auth/login`, { token: token });
   }
+  obtenerPersonajexId(id:number|string):Observable<any>{
+    return this.http.get<any>(`${this.apiUrl}/personaje/${id}`)
+  }
 }

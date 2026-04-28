@@ -1,6 +1,5 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Partida } from '../models/partida';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ServicioAPI } from '../servicio-api';
 import { UsuarioService } from '../servicios/usuario-service';

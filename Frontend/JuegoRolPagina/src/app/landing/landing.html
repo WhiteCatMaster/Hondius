@@ -45,7 +45,12 @@
                 <p>{{ partida.descripcion }}</p>
                 <p><strong>Idioma:</strong> {{ partida.idioma }}</p>
                 <p><strong>Máx jugadores:</strong> {{ partida.maxJugadores }}</p>
-                <button [routerLink]="['/selector', partida.id]">Unirme</button>
+                @if (usuarioService.usuarioActual()?.id === idsAdmin()[partidas().indexOf(partida)]) {
+                  <button [routerLink]="['/selector-master', partida.id]">Administrar</button>
+                }@else {
+                  <button [routerLink]="['/selector-personaje', partida.id]">Unirme</button>
+                }
+                
               </div>
             }
           }
