@@ -57,12 +57,20 @@ class PartidaController(
     }
     @GetMapping
     fun obtenerPartidas(): ResponseEntity<List<PartidaDto>>{
-
-            val listaPartidas: List<PartidaDto> = partidaService.getAllPartidas()
-
-            return ResponseEntity.status(HttpStatus.OK).body(listaPartidas)
-
-
+        val listaPartidas: List<PartidaDto> = partidaService.getAllPartidas()
+        var partidasDto = mutableListOf<PartidaDto>()
+        for (partida in listaPartidas) {
+            val partidaDto = PartidaDto(
+                id = partida.id,
+                nombre = partida.nombre,
+                descripcion = partida.descripcion,
+                idioma = partida.idioma,
+                maximoJugadores = partida.maximoJugadores,
+                adminId = partidaService.obtenerIdAdminxPartida(partida.id?: -1L)
+            )
+            partidasDto.add(partidaDto)
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(partidasDto)
     }
     @GetMapping("/{id}")
     fun obtenerDatosPartida(@PathVariable id: Long): ResponseEntity<DatosPartidaDto>? {

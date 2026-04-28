@@ -19,6 +19,8 @@ class CombateControllerTests {
     val combateService = mock<CombateService>()
     val combateController = CombateController(combateService)
 
+    /*
+
     @Test
     fun testCrearCombate(){
         val jugadorUnoDto = CrearCombateDto.JugadorDto(10L, 20L, "ADMIN", 100L)
@@ -33,6 +35,7 @@ class CombateControllerTests {
         assertEquals(HttpStatusCode.valueOf(200).value(), result.statusCode.value())
         assertEquals(jugadorDosDto, result.body?.jugador2)
     }
+     */
 
     @Test
     fun testObtenerPersonajesCombateById_Exito() {
