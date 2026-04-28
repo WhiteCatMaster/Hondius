@@ -21,10 +21,24 @@
             <img [src]="usuario.fotoUrl" class="img-avatar">
           </div>
           <div class="datos-personaje">
-            <h2 class="texto-hueso">{{ usuario.nombre }}</h2>
-            <p class="texto-hueso email">{{ usuario.email }}</p>
-            <div class="divisor-hueso"></div>
-            <p class="texto-hueso sub">UID: {{ usuario.googleId }}</p>
+           @if (!modoEdicion) {
+              <!-- MODO LECTURA NORMAL -->
+              <h2 class="texto-hueso">{{ usuario.nombre }}</h2>
+              <p class="texto-hueso email">{{ usuario.email }}</p>
+              <div class="divisor-hueso"></div>
+              <p class="texto-hueso sub">UID: {{ usuario.googleId }}</p>
+              <button class="btn-editar" (click)="activarEdicion()">Editar perfil</button>
+            } @else {
+              <!-- MODO EDICIÓN -->
+              <input type="text" class="input-perfil" [(ngModel)]="editNombre" placeholder="Tu nombre épico...">
+              <input type="text" class="input-perfil" [(ngModel)]="editFotoUrl" placeholder="Pega URL de tu retrato...">
+              <p class="texto-hueso email">{{ usuario.email }}</p>
+              <div class="divisor-hueso"></div>
+              <div class="botones-edicion">
+                <button class="btn-cancelar" (click)="cancelarEdicion()">Cancelar</button>
+                <button class="btn-guardar" (click)="guardarEdicion()">Guardar Cambios</button>
+              </div>
+            }
           </div>
         </div>
       </div>
