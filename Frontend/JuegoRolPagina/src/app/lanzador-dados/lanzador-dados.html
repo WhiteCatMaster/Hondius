@@ -1,0 +1,21 @@
+<div class="dados-container">
+  <h2>Lanzador de Conjuros</h2>
+
+  <button class="btn-lanzar" [disabled]="lanzando()" (click)="lanzar()">
+    {{ lanzando() ? 'El dado está rodando...' : '¡LANZAR DADO!' }}
+  </button>
+
+  <div class="arena-dados">
+    @for (dado of dadosResultados(); track $index) {
+      <div class="dado-visual" [class.girando]="lanzando()" [attr.data-caras]="dado.caras">
+        {{ lanzando() ? '?' : dado.valor }}
+      </div>
+    }
+  </div>
+
+  @if (resultadoTotal() > 0 && !lanzando()) {
+    <div class="resultado-final">
+      Resultado Total: <span>{{ resultadoTotal() }}</span>
+    </div>
+  }
+</div>

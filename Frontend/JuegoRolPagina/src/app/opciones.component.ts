@@ -10,120 +10,161 @@ import { Usuario } from './models/usuario';
 import { JugadorJuego, Rol } from './models/jugador-juego';
 import { Partida } from './models/partida';
 import { ServicioAPI } from './servicio-api';
+import { Dado } from './models/dado';
+import { UsuarioService } from './servicios/usuario-service';
 
 @Component({
   selector: 'app-opciones',
   standalone: true,
   imports: [RouterLink, CommonModule, FormsModule],
   templateUrl: './opciones.component.html',
-  styleUrl: './opciones.component.css'
+  styleUrl: './opciones.component.css',
 })
-
 export class OpcionesComponent {
+  constructor(
+    private servicioAPI: ServicioAPI,
+    public usuarioService: UsuarioService,
+  ) {}
 
-  constructor(private servicioAPI: ServicioAPI) {
-
-  }
 
   nombre = '';
   descripcion = '';
   idioma = '';
   maxJugadores = 0;
-  
+
   paso = 1;
-  estadisticas:Estadistica[] = [{
-    nombre: '', valor: 0, consumible: false,
-    id: null
-  }];
-  ataques : Ataque[]= [{
-    nombre: '',
-    id: null,
-    dadoBase: 0,
-    ratioDado: [],
-    statReducePropio: [],
-    statReduceRival: []
-  }]
-  personajes: Personaje[] = [{
-    nombre: '', urlSprite: 'https://i.pinimg.com/474x/9c/0f/06/9c0f06b14aba220811331c49718d6b93.jpg', vida: 100, ataquesDelPersonaje: [{
-      nombre: '', dadoBase: 0, ratioDado: [], statReducePropio: [{ estadistica: '', valor: 0 }], statReduceRival: [{ estadistica: '', valor: 0 }],
-      id: null
-    }], estadisticasDelPersonaje: [{
-      nombreEstadistica: '', valorPropio: 0,
-      consumible: false
-    }],
-    id: null,
-    fotoUrl: ''
-  }];
+  estadisticas: Estadistica[] = [
+    {
+      nombre: '',
+      valor: 0,
+      consumible: false,
+      id: null,
+    },
+  ];
+  ataques: Ataque[] = [
+    {
+      nombre: '',
+      id: null,
+      dadoBase: 0,
+      ratioDado: [],
+      statReducePropio: [],
+      statReduceRival: [],
+      danoAtaque: 0
+    },
+  ];
+
+  dados: Dado[] = [
+    {
+      nombre: '',
+      caras: 6,
+      cantidad: 1,
+    },
+  ];
+  personajes: Personaje[] = [
+    {
+      nombre: '',
+      urlSprite: 'https://i.pinimg.com/474x/9c/0f/06/9c0f06b14aba220811331c49718d6b93.jpg',
+      vida: 100,
+      ataquesDelPersonaje: [
+        {
+          nombre: '',
+          dadoBase: 0,
+          ratioDado: [],
+          statReducePropio: [{ estadistica: '', valor: 0 }],
+          statReduceRival: [{ estadistica: '', valor: 0 }],
+          id: null,
+          danoAtaque: 0
+        },
+      ],
+      estadisticasDelPersonaje: [
+        {
+          nombreEstadistica: '',
+          valorPropio: 0,
+          consumible: false,
+        },
+      ],
+      id: null,
+      fotoUrl: '',
+    },
+  ];
 
   faltanEstadisticas = false;
   faltasAtaques = false;
   ataquesConNumeros = false;
   //En pos de tener un usuario (ya que todavia no existe ni login ni logout) creo un usuario de prueba
-  juegoCreado : Partida ={
+  juegoCreado: Partida = {
     id: null,
     nombre: this.nombre,
     descripcion: this.descripcion,
     idioma: this.idioma,
-    maxJugadores: this.maxJugadores
-  } 
+    maxJugadores: this.maxJugadores,
+  };
   usuarioPrueba: Usuario = {
     id: null,
     googleId: '123456789',
     email: 'usuario@prueba.com',
     nombre: 'usuario 1',
     fotoUrl: 'https://i.pinimg.com/474x/9c/0f/06/9c0f06b14aba220811331c49718d6b93.jpg',
-    partidasParticipa: []
+    partidasParticipa: [],
   };
   jugadorJuego: JugadorJuego = {
     id: null,
     usuario: this.usuarioPrueba,
     juego: this.juegoCreado,
-    rol: Rol.Admin
-  }
+    rol: Rol.Admin,
+  };
 
   irSiguiente() {
-    if(this.paso == 1) {
-      if(this.nombre == '') {
-        alert('Introduce un nombre')
+    if (this.paso == 1) {
+      if (this.nombre == '') {
+        alert('Introduce un nombre');
         return;
       }
       console.log(this.nombre, this.descripcion, this.idioma, this.maxJugadores);
     }
 
-    if(this.paso == 2) {
-      for(let estadistica of this.estadisticas) {
-        if(estadistica.nombre == '' || estadistica.valor == null) {
+    if (this.paso == 2) {
+      for (let estadistica of this.estadisticas) {
+        if (estadistica.nombre == '' || estadistica.valor == null) {
           this.faltanEstadisticas = true;
         }
       }
-      if(this.faltanEstadisticas == true) {
-          alert('Faltan campos')
-          this.faltanEstadisticas = false;
-          return;
+      if (this.faltanEstadisticas == true) {
+        alert('Faltan campos');
+        this.faltanEstadisticas = false;
+        return;
       }
       console.log(this.estadisticas);
     }
 
-    if(this.paso == 3) {
-        for(let ataque of this.ataques) {
-            if(this.ataques.length === 0) {
-            if(ataque.nombre == '' || ataque.dadoBase == null || ataque.ratioDado == null) {
-               this.faltasAtaques = true; 
-            }
-        }
-        if(this.faltasAtaques == true) {
-            this.faltasAtaques = false;
+    if (this.paso == 3) {
+      for (let personaje of this.personajes) {
+        if (personaje.estadisticasDelPersonaje[0].nombreEstadistica == '') {
+          personaje.estadisticasDelPersonaje = []; 
+          for (let estGlobal of this.estadisticas) {
+            personaje.estadisticasDelPersonaje.push({nombreEstadistica: estGlobal.nombre, valorPropio: 0, consumible: estGlobal.consumible
+            });
+          }
         }
         //console.log(this.ataques);
+      }
     }
-  }
 
-    if (this.paso < 4) {
+    if (this.paso === 4) {
+      for (let dado of this.dados) {
+        if (dado.nombre === '' || dado.cantidad == null) {
+          alert('Revisa los campos de los dados');
+          return;
+        }
+      }
+      console.log('Dados creados:', this.dados);
+    }
+
+    if (this.paso < 5) {
       this.paso = this.paso + 1;
       console.log(this.personajes);
-      console.log(this.paso);
+      console.log('Paso actual:', this.paso);
     }
-    
   }
 
   irAtras() {
@@ -135,8 +176,10 @@ export class OpcionesComponent {
 
   agregarEstadistica() {
     this.estadisticas.push({
-      nombre: '', valor: 0, consumible: false,
-      id: null
+      nombre: '',
+      valor: 0,
+      consumible: false,
+      id: null,
     });
   }
 
@@ -145,24 +188,53 @@ export class OpcionesComponent {
   }
 
   agregarAtaque() {
-    this.ataques.push({ nombre: '', id: null, dadoBase: 0, ratioDado: [], statReducePropio: [], statReduceRival: [] });
+    this.ataques.push({
+      nombre: '',
+      id: null,
+      dadoBase: 0,
+      ratioDado: [],
+      statReducePropio: [],
+      statReduceRival: [],
+      danoAtaque: 0
+    });
   }
 
   eliminarAtaque(posicion: number) {
     this.ataques.splice(posicion, 1);
   }
 
+  agregarDado() {
+    this.dados.push({ nombre: '', caras: 6, cantidad: 1 });
+  }
+
+  eliminarDado(posicion: number) {
+    this.dados.splice(posicion, 1);
+  }
+
   agregarPersonaje() {
+    let estadisticasNuevas = [];
+    for(let est of this.estadisticas) {
+      estadisticasNuevas.push({nombreEstadistica: est.nombre, valorPropio: 0, consumible: est.consumible
+      });
+    }
     this.personajes.push({
-      nombre: '', urlSprite: 'https://i.pinimg.com/474x/9c/0f/06/9c0f06b14aba220811331c49718d6b93.jpg', vida: 0, ataquesDelPersonaje: [{
-        nombre: '', dadoBase: 0, ratioDado: [], statReducePropio: [{ estadistica: '', valor: 0 }], statReduceRival: [{ estadistica: '', valor: 0 }],
-        id: null
-      }], estadisticasDelPersonaje: [{
-        nombreEstadistica: '', valorPropio: 0,
-        consumible: false
-      }],
+      nombre: '',
+      urlSprite: 'https://i.pinimg.com/474x/9c/0f/06/9c0f06b14aba220811331c49718d6b93.jpg',
+      vida: 0,
+      ataquesDelPersonaje: [
+        {
+          nombre: '',
+          dadoBase: 0,
+          ratioDado: [],
+          statReducePropio: [{ estadistica: '', valor: 0 }],
+          statReduceRival: [{ estadistica: '', valor: 0 }],
+          id: null,
+          danoAtaque: 0
+        },
+      ],
+      estadisticasDelPersonaje: estadisticasNuevas,
       id: null,
-      fotoUrl: ''
+      fotoUrl: '',
     });
   }
 
@@ -176,8 +248,13 @@ export class OpcionesComponent {
 
   agregarAtaqueAPersonaje(posicionPersonaje: number) {
     this.personajes[posicionPersonaje].ataquesDelPersonaje.push({
-      nombre: '', dadoBase: 0, ratioDado: [], statReducePropio: [{ estadistica: '', valor: 0 }], statReduceRival: [{ estadistica: '', valor: 0 }],
-      id: null
+      nombre: '',
+      dadoBase: 0,
+      ratioDado: [],
+      statReducePropio: [{ estadistica: '', valor: 0 }],
+      statReduceRival: [{ estadistica: '', valor: 0 }],
+      id: null,
+      danoAtaque: 0
     });
   }
 
@@ -187,8 +264,9 @@ export class OpcionesComponent {
 
   agregarEstadisticaAPersonaje(posicionPersonaje: number) {
     this.personajes[posicionPersonaje].estadisticasDelPersonaje.push({
-      nombreEstadistica: '', valorPropio: 0,
-      consumible: false
+      nombreEstadistica: '',
+      valorPropio: 0,
+      consumible: false,
     }); // Actualizado
   }
 
@@ -197,16 +275,21 @@ export class OpcionesComponent {
   }
 
   alCambiarAtaque(nombreElegido: string, posicionPersonaje: number, posicionAtaque: number) {
-    const ataqueOriginal = this.ataques.find(a => a.nombre === nombreElegido);
+    const ataqueOriginal = this.ataques.find((a) => a.nombre === nombreElegido);
     if (ataqueOriginal) {
       this.personajes[posicionPersonaje].ataquesDelPersonaje[posicionAtaque] = ataqueOriginal;
     }
   }
-  alCambiarEstadistica(nombreElegido: string, posicionPersonaje: number, posicionEstadistica: number) {
-    const estOriginal = this.estadisticas.find(e => e.nombre === nombreElegido);
-    
+  alCambiarEstadistica(
+    nombreElegido: string,
+    posicionPersonaje: number,
+    posicionEstadistica: number,
+  ) {
+    const estOriginal = this.estadisticas.find((e) => e.nombre === nombreElegido);
+
     if (estOriginal) {
-      this.personajes[posicionPersonaje].estadisticasDelPersonaje[posicionEstadistica].valorPropio = estOriginal.valor;
+      this.personajes[posicionPersonaje].estadisticasDelPersonaje[posicionEstadistica].valorPropio =
+        estOriginal.valor;
     }
   }
 
@@ -222,6 +305,7 @@ export class OpcionesComponent {
 
   ratioDadoMin: number | null = null;
   ratioDadoMax: number | null = null;
+  danoAtaque: number = 0;
 
   iniciarArrastre(item: any) {
     this.itemArrastrado = item;
@@ -234,8 +318,8 @@ export class OpcionesComponent {
   soltarEnCoste() {
     if (this.itemArrastrado) {
       this.costesEnMesa.push({
-        nombre: this.itemArrastrado.nombre || this.itemArrastrado, 
-        valor: 0
+        nombre: this.itemArrastrado.nombre || this.itemArrastrado,
+        valor: 0,
       });
       this.itemArrastrado = null;
     }
@@ -245,15 +329,15 @@ export class OpcionesComponent {
     if (this.itemArrastrado) {
       this.efectosEnMesa.push({
         nombre: this.itemArrastrado.nombre || this.itemArrastrado,
-        valor: 1.0,     
-        ratioMin: null, 
-        ratioMax: null   
+        valor: 1.0,
+        ratioMin: null,
+        ratioMax: null,
       });
       this.itemArrastrado = null;
     }
   }
   incrementar(item: any) {
-  item.valor += 1;
+    item.valor += 1;
   }
 
   decrementar(item: any) {
@@ -301,24 +385,36 @@ export class OpcionesComponent {
 
     const ataqueFinal = {
       nombre: this.nombreAtaqueActual,
-      manaAtacante: mapaManaAtacante,               
+      manaAtacante: mapaManaAtacante,
       estadisticasDefensor: mapaEstadisticasDefensor,
-      dadoBase: 20,                                
-      ratioDado: [this.ratioDadoMin, this.ratioDadoMax] 
+      dadoBase: 20,
+      ratioDado: [this.ratioDadoMin, this.ratioDadoMax],
+      danoAtaque: this.danoAtaque,
     };
 
-    console.log("¡Hechizo creado y listo para enviar!", ataqueFinal);
+    console.log('¡Hechizo creado y listo para enviar!', ataqueFinal);
     let ataqueParaEnviar: Ataque = {
       id: null,
       nombre: ataqueFinal.nombre,
       dadoBase: ataqueFinal.dadoBase,
       ratioDado: ataqueFinal.ratioDado,
-      statReducePropio: ataqueFinal.manaAtacante ? Object.entries(ataqueFinal.manaAtacante).map(([nombre, valor]) => ({ estadistica: nombre, valor })) : [],
-      statReduceRival: ataqueFinal.estadisticasDefensor ? Object.entries(ataqueFinal.estadisticasDefensor).map(([nombre, valor]) => ({ estadistica: nombre, valor })) : []
-    }
+      statReducePropio: ataqueFinal.manaAtacante
+        ? Object.entries(ataqueFinal.manaAtacante).map(([nombre, valor]) => ({
+          estadistica: nombre,
+          valor,
+        }))
+        : [],
+      statReduceRival: ataqueFinal.estadisticasDefensor
+        ? Object.entries(ataqueFinal.estadisticasDefensor).map(([nombre, valor]) => ({
+          estadistica: nombre,
+          valor,
+        }))
+        : [],
+      danoAtaque: ataqueFinal.danoAtaque
+    };
     this.ataques.push(ataqueParaEnviar);
-    console.log("Ataque para enviar a la API:", ataqueParaEnviar);
-    
+    console.log('Ataque para enviar a la API:', ataqueParaEnviar);
+
     alert('¡Hechizo "' + this.nombreAtaqueActual + '" creado con éxito!');
 
     this.nombreAtaqueActual = '';
@@ -326,22 +422,25 @@ export class OpcionesComponent {
     this.efectosEnMesa = [];
     this.ratioDadoMin = null;
     this.ratioDadoMax = null;
+    this.danoAtaque = 0;
+
   }
 
- 
   mandarPartida() {
     let jugadores = [];
-    
+    const adminId = this.usuarioService.usuarioActual()?.id
+
     for (let personaje of this.personajes) {
-      
       // 1. Procesamos las estadísticas del personaje
       let estadisticasPersonaje = [];
       for (let estadistica of personaje.estadisticasDelPersonaje) {
         let estadisticaPersonaje = {
-          "nombre": estadistica.nombreEstadistica,
+          nombre: estadistica.nombreEstadistica,
           // ¡Importante! Lo convertimos a String porque el DTO de Kotlin pide String
-          "valor": estadistica.valorPropio.toString(), 
-          "consumible": this.estadisticas.find(e => e.nombre === estadistica.nombreEstadistica)?.consumible || false
+          valor: estadistica.valorPropio.toString(),
+          consumible:
+            this.estadisticas.find((e) => e.nombre === estadistica.nombreEstadistica)?.consumible ||
+            false,
         };
         estadisticasPersonaje.push(estadisticaPersonaje);
       }
@@ -349,7 +448,6 @@ export class OpcionesComponent {
       // 2. Procesamos los ataques del personaje (El Mapper de Arrays a Mapas)
       let ataquesPersonaje = [];
       for (let ataque of personaje.ataquesDelPersonaje) {
-        
         // Convertimos el array de Maná a Diccionario {}
         let diccionarioMana: { [key: string]: number } = {};
         if (ataque.statReducePropio) {
@@ -371,39 +469,41 @@ export class OpcionesComponent {
         }
 
         let ataquepersonaje = {
-          "nombre": ataque.nombre,
-          "manaAtacante": diccionarioMana, 
-          "estadisticasDefensor": diccionarioDefensa,
-          "dadoBase": ataque.dadoBase,
-          "ratioDado": ataque.ratioDado
+          nombre: ataque.nombre,
+          manaAtacante: diccionarioMana,
+          estadisticasDefensor: diccionarioDefensa,
+          dadoBase: ataque.dadoBase,
+          ratioDado: ataque.ratioDado,
+          danoAtaque: ataque.danoAtaque
         };
         ataquesPersonaje.push(ataquepersonaje);
       }
 
       // 3. Montamos el DTO del Personaje
       let personajePayload = {
-        "personajeNombre": personaje.nombre,
-        "personajeVida": personaje.vida,
-        "personajeFotoUrl": personaje.fotoUrl,
-        "personajeEstadisticas": estadisticasPersonaje,
-        "personajeAtaques": ataquesPersonaje
-      }
+        personajeNombre: personaje.nombre,
+        personajeVida: personaje.vida,
+        personajeFotoUrl: personaje.urlSprite,
+        personajeEstadisticas: estadisticasPersonaje,
+        personajeAtaques: ataquesPersonaje,
+      };
       jugadores.push(personajePayload);
     }
 
     // 4. Montamos el Payload Final (Fíjate que ya NO está envuelto en "juego: {}")
     const payload = {
-      "juego": {
-        "nombre": this.nombre,
-        "descripcion": this.descripcion,
-        "idioma": this.idioma,
-        "maximoJugadores": this.maxJugadores,
-        "jugadores": jugadores
-      }
+      juego: {
+        nombre: this.nombre,
+        descripcion: this.descripcion,
+        idioma: this.idioma,
+        maximoJugadores: this.maxJugadores,
+        jugadores: jugadores,
+        adminId: adminId
+      },
     };
 
-    console.log("El payload final queda como ", payload);
-    
+    console.log('El payload final queda como ', payload);
+
     // 5. ¡Enviamos al servidor!
     this.servicioAPI.mandarPartida(payload).subscribe({
       next: (response) => {
@@ -413,8 +513,31 @@ export class OpcionesComponent {
       error: (error) => {
         console.error('Error al enviar la partida:', error);
         alert('Error al enviar la partida. Revisa la consola.');
-      }
+      },
     });
   }
-
+  obtenerImagenDado(caras: number): string {
+    switch (caras) {
+      case 4:
+        return 'assets/img/dados/d4.png';
+      case 6:
+        return 'assets/img/dados/d6.png';
+      case 8:
+        return 'assets/img/dados/d8.png';
+      case 10:
+        return 'assets/img/dados/d10.png';
+      case 12:
+        return 'assets/img/dados/d12.png';
+      case 20:
+        return 'assets/img/dados/d20.png';
+      case 100:
+        return 'assets/img/dados/d100.jpg';
+      default:
+        return 'assets/img/dados/default.jpg';
+    }
+  }
 }
+
+
+
+

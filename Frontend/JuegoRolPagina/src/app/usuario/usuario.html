@@ -1,0 +1,73 @@
+<div id="ContenedorPrincipal">
+  <div id="ContenedorIzquierda">
+  </div>
+
+  <div id="ContenedorDerecha">
+
+    @if (cargando) {
+      <div class="TopeContenedor1">
+        <h1 class="fuente-pirata">Leyendo Pergaminos...</h1>
+      </div>
+    } @else if (usuario) {
+
+      <div class="TopeContenedor1">
+        <h1 class="fuente-pirata">Hoja de Personaje</h1>
+        <br>
+      </div>
+
+      <div class="Contenedor1">
+        <div class="layout-perfil">
+          <div class="marco-avatar">
+            <img [src]="usuario.fotoUrl" class="img-avatar">
+          </div>
+          <div class="datos-personaje">
+           @if (!modoEdicion) {
+              <!-- MODO LECTURA NORMAL -->
+              <h2 class="texto-hueso">{{ usuario.nombre }}</h2>
+              <p class="texto-hueso email">{{ usuario.email }}</p>
+              <div class="divisor-hueso"></div>
+              <p class="texto-hueso sub">UID: {{ usuario.googleId }}</p>
+              <button class="btn-editar" (click)="activarEdicion()">Editar perfil</button>
+            } @else {
+              <!-- MODO EDICIÓN -->
+              <input type="text" class="input-perfil" [(ngModel)]="editNombre" placeholder="Tu nombre épico...">
+              <input type="text" class="input-perfil" [(ngModel)]="editFotoUrl" placeholder="Pega URL de tu retrato...">
+              <p class="texto-hueso email">{{ usuario.email }}</p>
+              <div class="divisor-hueso"></div>
+              <div class="botones-edicion">
+                <button class="btn-cancelar" (click)="cancelarEdicion()">Cancelar</button>
+                <button class="btn-guardar" (click)="guardarEdicion()">Guardar Cambios</button>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="TopeContenedor1">
+        <h1 class="fuente-pirata">Crónicas de Guerra ({{ usuario.partidasParticipa.length }})</h1>
+      </div>
+
+      <div class="grid-cartas">
+        @for (item of usuario.partidasParticipa; track item.id) {
+          <div class="ClaseGeneralPersonajes tarjeta-rol">
+            <div class="interior-pergamino">
+              <div class="cabecera-carta">
+                <h2 class="fuente-almendra">{{ item.juego.nombre }}</h2>
+                <span class="badget" [class.es-admin]="item.rol === Rol.Admin">
+                  {{ item.rol | uppercase }}
+                </span>
+              </div>
+
+              <p class="descripcion-carta">{{ item.juego.descripcion }}</p>
+
+              <div class="pie-carta">
+                <p><strong>Idioma:</strong> {{ item.juego.idioma }}</p>
+                <p><strong>Cupo:</strong> {{ item.juego.maxJugadores }}</p>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

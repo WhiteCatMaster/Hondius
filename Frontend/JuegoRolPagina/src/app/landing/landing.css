@@ -7,6 +7,8 @@ body {
   background-image: linear-gradient(rgba(255, 255, 255, 0.172), rgba(255, 255, 255, 0.172)), url('https://i.imgur.com/L6ux5lw.jpeg');
   background-size: cover;
   overflow: auto;
+  height: 100vh;
+  width: 100vw;
 }
 
 .bloque1 {
@@ -16,7 +18,7 @@ body {
 }
 
 .container {
-  height: 100vh;
+  height: 5vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -83,6 +85,7 @@ body {
   max-width: 600px;
 }
 
+
 button {
   padding: 12px 28px;
   font-size: 1.1rem;
@@ -103,6 +106,57 @@ button:active {
   transform: scale(0.98);
 }
 
+#botonLogin {
+  background: white;
+  padding: 0;
+  display: flex;         
+  align-items: center;   
+  justify-content: center; 
+  width: 200px;
+}
+
+.DivBotonInicio {
+  display: flex;
+  justify-content: center;
+}
+
+.FuenteNoIniciado {
+  color:black;
+}
+
+#botonLogin img {
+  width: 20%;
+  margin-right: 5px;
+}
+
+.IniciarSesion {
+  color:black;
+}
+
 .card {
   margin: 7%;
 }
+
+.perfil {
+  margin-left: 80%;
+  margin-bottom: 30%;
+
+}
+
+.fotoPerfil {
+  border-radius: 80px;
+  border: 5px solid #4e3522;
+  height: 10vh;
+  width: auto;
+}
+
+.contenedorPerfil {
+  margin-left: 10%;
+}
+
+.contenedor-usuario {
+  text-align: center;
+  display: block;
+  margin-top: 1%;
+}
+

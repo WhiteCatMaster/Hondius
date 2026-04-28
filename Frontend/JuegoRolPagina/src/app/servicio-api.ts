@@ -1,43 +1,47 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Personaje } from './models/personaje';
-import { Observable } from 'rxjs';
-import { Ataque } from './models/ataque';
-import { Estadistica } from './models/estadistica';
+import { Observable, of } from 'rxjs';
+import { delay } from 'rxjs/operators';
+import { Usuario } from './models/usuario';
+import { MOCK_USUARIO } from './usuario/usuario.mock';
+
 
 @Injectable({
   providedIn: 'root',
 })
 export class ServicioAPI {
-  private apiUrl = 'http://localhost:8080'; 
-  constructor(private http: HttpClient) {
-
-  }
+  private apiUrl = 'http://localhost:8081';
+  constructor(private http: HttpClient) {}
 
   mandarPartida(payload: any): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/partida`, payload);
   }
 
+  recogerPartidas(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/partida`);
+  }
 
-  mandarPersonaje(personaje: Personaje):Observable<Personaje> {
-    return this.http.post<Personaje>(`${this.apiUrl}/personajes`, personaje);
+  obtenerDatosUsuario(googleId: string|undefined): Observable<Usuario> {
+    //return of(MOCK_USUARIO).pipe(delay(0));
+    return this.http.get<any>(`${this.apiUrl}/usuario/${googleId}`);
   }
-  mandarAtaque(ataque: Ataque):Observable<Ataque> {
-    return this.http.post<Ataque>(`${this.apiUrl}/ataques`, ataque);
+  obtenerDatosPartida(id:number|string): Observable<any> {
+    //Deberia de devolver lo que necesita selectorELIMINAR para poder cargar una partida y sus personajes
+    return this.http.get<any>(`${this.apiUrl}/partida/${id}`)
   }
-  mandarEstadistica(estadistica: Estadistica):Observable<Estadistica> {
-    return this.http.post<Estadistica>(`${this.apiUrl}/estadisticas`, estadistica);
+
+  enviarCombate(payload: any): Observable<any>{
+    return this.http.post<any>(`${this.apiUrl}/partida/combate`, payload);
   }
-  mandarPersonajes(personajes: Personaje[]):Observable<Personaje[]> {
-    return this.http.post<Personaje[]>(`${this.apiUrl}/personajes/batch`, personajes);
+
+  obtenerCombate(id: number|string): Observable<any>{
+    return this.http.get<any>(`${this.apiUrl}/partida/combate/${id}`)
   }
-  mandarAtaques(ataques: Ataque[]):Observable<Ataque[]> {
-    return this.http.post<Ataque[]>(`${this.apiUrl}/ataques/batch`, ataques);
+  loginConGoogle(token: string) {
+    // Lo enviamos en un objeto JSON simple
+    return this.http.post<any>(`${this.apiUrl}/auth/login`, { token: token });
   }
-  mandarEstadisticas(estadisticas: Estadistica[]):Observable<Estadistica[]> {
-    return this.http.post<Estadistica[]>(`${this.apiUrl}/estadisticas/batch`, estadisticas);
-  }
-  mandarDatosPartida(datos: any):Observable<any>{
-    return this.http.post<any>(`${this.apiUrl}/partidas`, datos);
+  obtenerPersonajexId(id:number|string):Observable<any>{
+    return this.http.get<any>(`${this.apiUrl}/personaje/${id}`)
   }
 }

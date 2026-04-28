@@ -1,0 +1,96 @@
+<div>
+  @if (personajeTuyo() === null || rival() === null) {
+    <p>Cargando datos del combate...</p>
+  } @else {
+    
+    <div class="PantallaPartida">
+      
+      <div class="BatallaIzquierda">
+        <h1>{{ personajeTuyo().nombre }}</h1>
+        <div class="DivBarra">
+          <progress class="BarraVidaTuya" [value]="personajeTuyo().vida" [max]="personajeTuyo().vidaMaxima"></progress>
+          <p>{{personajeTuyo().vida}}/{{vidaTuya()}}</p>
+        </div>
+        <div class="EstadisticasFlotantes1">
+        @for (estadistica of personajeTuyo().estadisticasDelPersonaje; track estadistica.nombreEstadistica) {
+          @if (estadistica.consumible == true) {
+            <p>{{ estadistica.nombreEstadistica }}: {{estadistica.valorPropio}}</p>
+          }
+        }
+        </div>
+        <img class="PersonajeTuyo" [src]="personajeTuyo().fotoUrl">
+      </div>
+
+      <div class="BatallaDerecha">
+        <h1>{{ rival().nombre }}</h1>
+        <div class="DivBarra">
+          <progress class="BarraVidaTuya" [value]="rival().vida" [max]="rival().vidaMaxima"></progress>
+          <p>{{rival().vida}}/{{vidaRival()}}</p>
+        </div>
+        <div class="EstadisticasFlotantes1">
+        @for (estadistica of rival().estadisticasDelPersonaje; track estadistica.nombreEstadistica) {
+          @if (estadistica.consumible == true) {
+            <p>{{ estadistica.nombreEstadistica }}: {{estadistica.valorPropio}}</p>
+          }
+        }
+        </div>
+        <img class="ImagenRival" [src]="rival().fotoUrl">
+      </div>
+      
+    </div>
+
+    <div class="PantallaDatos">
+
+      <!-- MENU ATAQUES IZQUIERDA -->
+      <div class="ClaseIzquierda" [class.inactivo]="!TuTurno">
+        <div class="IzquierdaIzquierda">
+          <h1 class="Ataques">ATAQUES de {{ personajeTuyo().nombre }}:</h1>   
+          @for (ataque of personajeTuyo().ataquesDelPersonaje; track ataque.nombre) {
+  
+            @if (ataqueSeleccionado() == null) {
+              <button (click)="seleccionarAtaque(ataque)" class="AtaqueBoton">{{ ataque.nombre }}</button>
+            } @else {
+                @if (ataqueSeleccionado() === ataque) {
+                  <button (click)="seleccionarAtaque(ataque)" class="AtaqueBoton"><strong>{{ ataque.nombre }}</strong></button>
+                } @else {
+                  <button (click)="seleccionarAtaque(ataque)" class="AtaqueBotonNoSeleccionado"><strong>{{ ataque.nombre }}</strong></button>
+                } 
+            }  
+          }
+        </div>
+    
+        <div class="IzquierdaDerecha">
+          <app-lanzador-dados (dadoLanzado)="ejecutarTurnoConDado($event)"></app-lanzador-dados>
+        </div>
+      </div>
+
+      <!-- MENU ATAQUES DERECHA -->
+      <div class="ClaseDerecha" [class.inactivo]="TuTurno">
+
+        <div class="IzquierdaIzquierda">
+          <h1 class="Ataques">ATAQUES de {{ rival().nombre }}</h1>   
+          @for (ataque of rival().ataquesDelPersonaje; track ataque.nombre) {
+  
+            @if (ataqueSeleccionado() == null) {
+              <button (click)="seleccionarAtaque(ataque)" class="AtaqueBoton">{{ ataque.nombre }}</button>
+            } @else {
+                @if (ataqueSeleccionado() === ataque) {
+                  <button (click)="seleccionarAtaque(ataque)" class="AtaqueBoton"><strong>{{ ataque.nombre }}</strong></button>
+                } @else {
+                  <button (click)="seleccionarAtaque(ataque)" class="AtaqueBotonNoSeleccionado"><strong>{{ ataque.nombre }}</strong></button>
+                } 
+            }  
+
+          }
+        </div>
+      
+        <div class="IzquierdaDerecha">
+          <app-lanzador-dados (dadoLanzado)="ejecutarTurnoConDado($event)"></app-lanzador-dados>
+        </div>
+
+      </div>
+
+    </div>
+
+  }
+</div>

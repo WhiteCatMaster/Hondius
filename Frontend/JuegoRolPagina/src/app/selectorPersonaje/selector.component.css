@@ -1,0 +1,204 @@
+/* Contenedor Principal */
+.selector-container {
+  min-height: 100vh;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.172), rgba(255, 255, 255, 0.172)), url('https://i.imgur.com/L6ux5lw.jpeg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  font-family: 'Almendra', system-ui;
+  overflow-y: auto;
+  padding: 10px 20px 80px 20px;
+  box-sizing: border-box;
+}
+
+/* Scrollbar */
+.selector-container::-webkit-scrollbar {
+  width: 10px;
+}
+
+.selector-container::-webkit-scrollbar-track {
+  background: rgba(91, 49, 36, 0.2);
+  border-radius: 10px;
+}
+
+.selector-container::-webkit-scrollbar-thumb {
+  background: #5B3124;
+  border-radius: 10px;
+  border: 2px solid #f4e4bc;
+}
+
+.selector-container::-webkit-scrollbar-thumb:hover {
+  background: #8c450f; 
+}
+
+/* Titulo Principal */
+.titulo-selector {
+  font-family: 'Pirata One', system-ui;
+  font-size: 4.5rem;
+  color: #4e3522;
+  text-shadow: 2px 2px 5px rgba(0,0,0,0.4);
+  margin-top: 0px;
+  margin-bottom: 20px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.cargando {
+  font-size: 1.8rem;
+  color: #5B3124;
+  font-weight: bold;
+}
+
+/* =========================================
+   NUEVO LAYOUT EN COLUMNAS (HORIZONTAL) 
+   ========================================= */
+
+.columnas-wrapper {
+  display: flex;
+  flex-direction: row;
+  width: 95%;
+  max-width: 1400px;
+  gap: 40px;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.columna {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.titulo-columna {
+  font-family: 'Pirata One', system-ui;
+  font-size: 3rem;
+  color: #4e3522;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  margin-top: 0;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+/* Personajes en Grid de 2x2 */
+.personajes-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Crea 2 columnas por cada lado */
+  gap: 20px;
+  width: 100%;
+  margin-bottom: 50px;
+  justify-items: center;
+}
+
+/* Tarjetas */
+.personaje-card {
+  background-color: #f4e4bc; 
+  border: 4px solid #5B3124;
+  border-radius: 15px;
+  width: 100%;
+  max-width: 260px; /* Un poco más estrechas para que quepan 4 en pantalla (2 y 2) */
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0px 10px 20px rgba(0,0,0,0.6);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.personaje-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0px 15px 30px rgba(0,0,0,0.8);
+}
+
+.personaje-card.selected {
+  transform: scale(1.03); /* Se hace un poco más grande al seleccionarse */
+  box-shadow: 0px 15px 30px rgba(0,0,0,0.8);
+}
+
+.disabled-card {
+  filter: grayscale(0.8);
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Detalles de la Tarjeta */
+.card-header {
+  background-color: #5B3124;
+  color: #f4e4bc;
+  padding: 15px;
+  text-align: center;
+  border-bottom: 2px solid #392919;
+}
+
+.card-header h2 {
+  margin: 0;
+  font-family: 'Pirata One', system-ui;
+  font-size: 2rem;
+  letter-spacing: 1px;
+}
+
+.card-imagen {
+  width: 100%;
+  height: 250px;
+  background-color: #3e2723;
+  border-bottom: 4px solid #5B3124;
+}
+
+.card-imagen img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card-footer {
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  background-color: rgba(0,0,0,0.05);
+  border-top: 2px solid rgba(91, 49, 36, 0.2);
+}
+
+/* Botones */
+.btn-seleccionar {
+  background: linear-gradient(90deg, #8c450f, #f18c09);
+  color: white;
+  border: 2px solid #4e3522;
+  padding: 12px 20px;
+  font-size: 1.4rem;
+  font-family: 'Pirata One', system-ui;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.4);
+  width: 100%;
+}
+
+.btn-seleccionar:hover {
+ transform: scale(1.05);
+ color: #fff;
+}
+
+.btn-seleccionar:disabled {
+  background: #666 !important;
+  border-color: #444;
+  cursor: not-allowed;
+  filter: grayscale(1);
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Estilo para el botón de enemigo (Rojizo) */
+.btn-enemigo {
+  background: linear-gradient(90deg, #8c450f, #f18c09);
+  border: 2px solid #3b0b0b;
+}
+
+.btn-enemigo:hover {
+  transform: scale(1.05);
+  box-shadow: 0px 10px 20px rgba(107, 20, 20, 0.6);
+  color: #fff;
+}

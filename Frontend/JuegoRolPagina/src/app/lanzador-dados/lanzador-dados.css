@@ -1,0 +1,170 @@
+.dados-container {
+  background: rgba(15, 23, 42, 0.9);
+  padding: 5px;
+  border-radius: 15px;
+  border: 2px solid #8c450f;
+  color: white;
+  max-width: 600px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  height: 100%;
+  box-sizing: border-box;
+  background: rgba(15, 23, 42, 0.9);
+}
+
+.selector-dados {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.dado-control {
+  background: #1e293b;
+  padding: 15px;
+  border-radius: 10px;
+  border: 1px solid #4e3522;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.info-dado {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dado-label {
+  font-family: "Pirata One", system-ui, serif;
+  font-size: 1.5rem;
+  color: #f18c09;
+  letter-spacing: 2px;
+}
+
+.icono-dado {
+  max-height: 40px;
+  max-width: 40px;
+}
+
+.botones {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.botones button {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: none;
+  background: #4e3522;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.1s;
+}
+
+.botones button:active {
+  transform: scale(0.9);
+}
+
+.cantidad {
+  font-size: 1.2rem;
+  font-weight: bold;
+  min-width: 20px;
+}
+
+.btn-lanzar {
+  margin-top: 3px;
+  width: 100%;
+  background: linear-gradient(90deg, #8c450f, #f18c09);
+  color: white;
+  font-family: "Almendra", serif;
+  font-weight: bold;
+  font-size: 20px;
+  border: none;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-lanzar:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.arena-dados {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 30px;
+  min-height: 60px;
+}
+
+.dado-visual {
+  width: 60px;
+  height: 60px;
+  background: #fff;
+  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.5), inset 0 0 10px rgba(0,0,0,0.2);
+  font-size: 1.5rem;
+  transition: all 0.3s ease;
+  border: 2px solid #ddd;
+}
+
+/* Formas diferentes basadas en tu atributo 'caras' */
+.dado-visual[data-caras="4"] { background: #fee2e2; }
+.dado-visual[data-caras="6"] { background: #fef3c7; }
+.dado-visual[data-caras="20"] {
+  background: #b91c1c;
+  color: white;
+  border-color: #7f1d1d;
+  border-radius: 50%; /* Simulamos un dado redondo por ahora */
+}
+
+/* Animaciones */
+.girando {
+  animation: vibrar 0.1s infinite, rotar 0.5s infinite;
+  background: #f18c09 !important;
+  color: white !important;
+  border-color: white;
+}
+
+@keyframes vibrar {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(3px, -3px); }
+  50% { transform: translate(-3px, 3px); }
+  75% { transform: translate(3px, 3px); }
+  100% { transform: translate(0, 0); }
+}
+
+@keyframes rotar {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.resultado-final {
+  margin-top: 30px;
+  font-family: "Pirata One", serif;
+  font-size: 2.5rem;
+  color: #f18c09;
+  text-shadow: 0 0 15px rgba(241, 140, 9, 0.4);
+}
+
+h2 {
+  margin: 0px;
+}
