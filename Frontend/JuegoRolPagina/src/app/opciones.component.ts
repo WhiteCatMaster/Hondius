@@ -498,7 +498,7 @@ export class OpcionesComponent {
         idioma: this.idioma,
         maximoJugadores: this.maxJugadores,
         jugadores: jugadores,
-        adminID: adminId
+        adminId: adminId
       },
     };
 
