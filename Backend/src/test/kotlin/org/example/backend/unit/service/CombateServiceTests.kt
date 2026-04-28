@@ -37,7 +37,6 @@ class CombateServiceTests {
     private val combateService = CombateService(combateRepo, juegoRepo, personajeRepo, jugadorJuegoRepo, usuarioRepo)
 
 
-    /*
 
     @Test
     fun testCrearCombatexDTO() {
@@ -112,7 +111,6 @@ class CombateServiceTests {
         verify(jugadorJuegoRepo, times(2)).save(any())
         verify(combateRepo).save(any())
     }
-     */
     @Test
     fun testObtenerCombateById_Exito() {
         // 1. ARRANGE

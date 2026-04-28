@@ -12,6 +12,7 @@ import org.example.backend.repository.UsuarioRepository
 import org.example.backend.entity.Ataque
 import org.example.backend.entity.Estadistica
 import org.example.backend.entity.Personaje
+import org.example.backend.entity.RolJugador
 import org.example.backend.entity.Usuario
 import org.example.backend.service.EstadisticaService
 import org.example.backend.service.JuegoService
@@ -275,6 +276,84 @@ class JuegoServiceTests {
         verify(estadisticaRepository, atLeastOnce()).saveAll(any<List<Estadistica>>())
         verify(ataqueRepository, atLeastOnce()).saveAll(any<List<Ataque>>())
     }
+    @Test
+    fun testObtenerIdAdminxPartida_AdminEncontrado() {
+        // 1. ARRANGE
+        val idPartida = 1L
+        val idAdminEsperado = 42L
 
+        // Creamos el mock del usuario que será el admin
+        val usuarioAdminMock = mock<Usuario> {
+            on { id } doReturn idAdminEsperado
+        }
+        // Creamos el mock de un usuario normal (para despistar)
+        val usuarioNormalMock = mock<Usuario> {
+            on { id } doReturn 99L
+        }
+
+        // Mockeamos la partida asegurando que devuelva el ID correcto
+        val juegoMock = mock<Juego> {
+            on { id } doReturn idPartida
+        }
+
+        // Creamos un jugador normal
+        val jugadorNormal = mock<JugadorJuego> {
+            on { juego } doReturn juegoMock
+            on { rol } doReturn RolJugador.JUGADOR // O el rol por defecto que uses
+            on { usuario } doReturn usuarioNormalMock
+        }
+
+        // Creamos el jugador que sí es ADMIN
+        val jugadorAdmin = mock<JugadorJuego> {
+            on { juego } doReturn juegoMock
+            on { rol } doReturn RolJugador.ADMIN
+            on { usuario } doReturn usuarioAdminMock
+        }
+
+        // Hacemos que la partida devuelva nuestra lista mezclada de jugadores
+        whenever(juegoMock.jugadores).thenReturn(mutableListOf(jugadorNormal, jugadorAdmin))
+
+        // El repositorio devuelve la partida mockeada
+        whenever(juegoRepository.findById(idPartida)).thenReturn(Optional.of(juegoMock))
+
+        // 2. ACT
+        val resultado = juegoService.obtenerIdAdminxPartida(idPartida)
+
+        // 3. ASSERT
+        // Debe ignorar al jugador normal y devolver el ID del admin (42)
+        assertEquals(idAdminEsperado, resultado)
+        verify(juegoRepository).findById(idPartida)
+    }
+
+    @Test
+    fun testObtenerIdAdminxPartida_SinAdminDevuelveMenosUno() {
+        // 1. ARRANGE
+        val idPartida = 1L
+
+        val juegoMock = mock<Juego> {
+            on { id } doReturn idPartida
+        }
+
+        val usuarioNormalMock = mock<Usuario> {
+            on { id } doReturn 99L
+        }
+
+        // Creamos solo un jugador normal, sin ningún admin en la lista
+        val jugadorNormal = mock<JugadorJuego> {
+            on { juego } doReturn juegoMock
+            on { rol } doReturn RolJugador.JUGADOR
+            on { usuario } doReturn usuarioNormalMock
+        }
+
+        whenever(juegoMock.jugadores).thenReturn(mutableListOf(jugadorNormal))
+        whenever(juegoRepository.findById(idPartida)).thenReturn(Optional.of(juegoMock))
+
+        // 2. ACT
+        val resultado = juegoService.obtenerIdAdminxPartida(idPartida)
+
+        // 3. ASSERT
+        // Al no encontrar coincidencia con RolJugador.ADMIN, la variable 'resultado' se queda en -1L
+        assertEquals(-1L, resultado)
+    }
 
 }
