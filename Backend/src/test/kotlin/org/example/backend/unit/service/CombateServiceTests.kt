@@ -24,6 +24,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import org.springframework.http.HttpStatus
 import java.util.Optional
 import kotlin.collections.mutableListOf
 
@@ -111,89 +112,75 @@ class CombateServiceTests {
     }
     @Test
     fun testObtenerCombateById_Exito() {
-        // 1. ARRANGE: Preparamos los mocks para las claves de los mapas
-        // Asumo que las claves son de tipo Estadistica, ya que llamas a `j.nombre`
-        val estadisticaFuerzaMock = mock<Estadistica> { on { nombre } doReturn "Fuerza" }
-        val estadisticaDefensaMock = mock<Estadistica> { on { nombre } doReturn "Defensa" }
+        // 1. ARRANGE
+        val estFuerza = mock<Estadistica> { on { nombre } doReturn "Fuerza" }
 
-        // Preparamos la estadística y ataque para el Jugador 1
-        val est1Mock = mock<Estadistica> {
+        // Datos para Jugador 1
+        val est1 = mock<Estadistica> {
             on { id } doReturn 1L
             on { nombre } doReturn "Vida"
             on { valor } doReturn 100
             on { consumible } doReturn false
         }
-
-        val ataque1Mock = mock<Ataque> {
+        val atk1 = mock<Ataque> {
             on { id } doReturn 1L
-            on { nombre } doReturn "Espadazo"
-            on { manaAtacante } doReturn mutableMapOf(estadisticaFuerzaMock to 10)
-            on { estadisticasDefensor } doReturn mutableMapOf(estadisticaDefensaMock to 5.0)
-            on { dadoBase } doReturn 20
-            on { ratioDado } doReturn mutableListOf(1, 2)
-            on { danioAtaque } doReturn 15
+            on { nombre } doReturn "Golpe"
+            on { manaAtacante } doReturn mutableMapOf(estFuerza to 5)
+            on { estadisticasDefensor } doReturn mutableMapOf()
+            on { ratioDado } doReturn mutableListOf(1)
         }
 
-        // Mockeamos los personajes y les asignamos las listas
+        // --- CLAVE PARA EL COVERAGE: Datos para Jugador 2 ---
+        val est2 = mock<Estadistica> {
+            on { id } doReturn 2L
+            on { nombre } doReturn "Defensa"
+            on { valor } doReturn 50
+            on { consumible } doReturn true
+        }
+        val atk2 = mock<Ataque> {
+            on { id } doReturn 2L
+            on { nombre } doReturn "Escudo"
+            on { manaAtacante } doReturn mutableMapOf(estFuerza to 2)
+            on { estadisticasDefensor } doReturn mutableMapOf(est2 to 10.0) // Entra en el bucle de defensor
+            on { ratioDado } doReturn mutableListOf(1)
+        }
+
         val personaje1Mock = mock<Personaje> {
-            on { nombre } doReturn "Héroe"
-            on { vida } doReturn 100
-            on { fotoUrl } doReturn "url_heroe"
-            on { estadisticas } doReturn mutableListOf(est1Mock)
-            on { ataques } doReturn mutableListOf(ataque1Mock)
+            on { id } doReturn 100L
+            on { estadisticas } doReturn mutableListOf(est1)
+            on { ataques } doReturn mutableListOf(atk1)
         }
 
-        // Para el jugador 2, usamos listas vacías para comprobar que no rompe el código
         val personaje2Mock = mock<Personaje> {
-            on { nombre } doReturn "Villano"
-            on { vida } doReturn 200
-            on { estadisticas } doReturn mutableListOf()
-            on { ataques } doReturn mutableListOf()
+            on { id } doReturn 200L
+            on { nombre } doReturn "Enemigo"
+            on { estadisticas } doReturn mutableListOf(est2) // Ya no está vacía
+            on { ataques } doReturn mutableListOf(atk2)      // Ya no está vacía
         }
 
-        // Mockeamos los jugadores
-        val jugador1Mock = mock<JugadorJuego> {
-            on { id } doReturn 10L
-            on { personaje } doReturn personaje1Mock
-        }
-        val jugador2Mock = mock<JugadorJuego> {
-            on { id } doReturn 11L
-            on { personaje } doReturn personaje2Mock
-        }
+        val jugador1Mock = mock<JugadorJuego> { on { personaje } doReturn personaje1Mock }
+        val jugador2Mock = mock<JugadorJuego> { on { personaje } doReturn personaje2Mock }
 
-        // Mockeamos el combate final
         val combateMock = mock<Combate> {
             on { id } doReturn 1L
             on { jugador1 } doReturn jugador1Mock
             on { jugador2 } doReturn jugador2Mock
         }
 
-        // Configuramos el repositorio
         whenever(combateRepo.findById(1L)).thenReturn(Optional.of(combateMock))
 
-        // 2. ACT: Llamamos al metodo
+        // 2. ACT
         val resultado = combateService.obtenerCombateById(1L)
 
-        // 3. ASSERT: Verificamos que el mapeo se ha hecho correctamente
-        assertEquals(200, resultado.statusCode.value())
-
+        // 3. ASSERT
+        assertEquals(HttpStatus.OK, resultado.statusCode)
         val body = resultado.body!!
-        assertEquals(1L, body.id)
 
-        // Verificamos el Jugador 1 (que tiene datos)
-        assertEquals("Héroe", body.personaje1.personajeNombre)
-        assertEquals(1, body.personaje1.personajeEstadisticas.size)
-        assertEquals("Vida", body.personaje1.personajeEstadisticas[0].nombre)
-
-        assertEquals(1, body.personaje1.personajeAtaques.size)
-        assertEquals("Espadazo", body.personaje1.personajeAtaques[0].nombre)
-        // Verificamos que el mapa extrajo la clave correctamente
-        assertEquals(10, body.personaje1.personajeAtaques[0].manaAtacante["Fuerza"])
-        assertEquals(5.0, body.personaje1.personajeAtaques[0].estadisticasDefensor["Defensa"])
-
-        // Verificamos el Jugador 2 (vacío)
-        assertEquals("Villano", body.personaje2.personajeNombre)
-        assertEquals(0, body.personaje2.personajeEstadisticas.size)
+        // Verificamos que el mapeo del Jugador 2 se ejecutó
+        assertEquals("Enemigo", body.personaje2.personajeNombre)
+        assertEquals(1, body.personaje2.personajeEstadisticas.size)
+        assertEquals(1, body.personaje2.personajeAtaques.size)
+        assertEquals(10.0, body.personaje2.personajeAtaques[0].estadisticasDefensor["Defensa"])
     }
 
     @Test

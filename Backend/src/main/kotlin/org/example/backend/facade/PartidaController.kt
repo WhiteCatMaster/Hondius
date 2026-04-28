@@ -47,17 +47,6 @@ class PartidaController(
         return partida
     }
 
-    /*
-    @GetMapping("/{nombrePartida}")
-    fun obtenerDatosCompletosPartida(@PathVariable nombrePartida: String): ResponseEntity<JuegoDto> {
-        val datosCompletosPartida: JuegoDto? = partidaService.getDatosPartida(nombrePartida)
-        return if (datosCompletosPartida == null) {
-            ResponseEntity.notFound().build()
-        } else {
-            ResponseEntity.status(HttpStatus.OK).body(datosCompletosPartida)
-        }
-    }
-     */
 }
 
 private val jsonMapper = jacksonObjectMapper()
