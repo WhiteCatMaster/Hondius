@@ -1,8 +1,7 @@
 import { Component, OnInit, signal } from '@angular/core'; // 1. Añadimos OnInit
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router'; // 2. Añadimos ActivatedRoute y Router
-
-// 3. IMPORTANTE: Asegúrate de importar tu servicio API (ajusta la ruta si es necesario)
+import { Location } from '@angular/common';
 import { ServicioAPI } from '../servicio-api';
 import { PersonajeDto } from '../selectorELIMINAR.component';
 
@@ -57,6 +56,7 @@ export class EditarPersonaje implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private servicioAPI: ServicioAPI,
+    private location: Location
   ) {}
 
   ngOnInit() {
@@ -81,16 +81,26 @@ export class EditarPersonaje implements OnInit {
   }
 
   subirStat(index: number) {
-    this.personaje.estadisticas[index].valor++;
+    this.personajeEditar.update((pj) => {
+      pj.estadisticas[index].valor++;
+      return { ...pj };
+    });
   }
 
   bajarStat(index: number) {
-    this.personaje.estadisticas[index].valor--;
+    this.personajeEditar.update((pj) => {
+      pj.estadisticas[index].valor--;
+      return { ...pj };
+    });
+  }
+
+  volver() {
+    this.location.back(); 
   }
 
   guardar() {
-    console.log('Enviando datos al backend para:', this.nombreOriginal);
     /* 
+    console.log('Enviando datos al backend para:', this.nombreOriginal);
     this.api.actualizarPersonaje(this.nombreOriginal, this.personaje).subscribe({
       next: (respuesta) => {
         console.log('¡Guardado exitoso en BD!', respuesta);
