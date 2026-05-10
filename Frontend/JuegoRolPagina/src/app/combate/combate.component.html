@@ -18,7 +18,7 @@
           }
         }
         </div>
-        <img class="PersonajeTuyo" [src]="personajeTuyo().fotoUrl">
+        <img class="PersonajeTuyo" [class.AnimacionTuyo]="estaAtacandoTuyo" [class.recibiendoDano]="recibiendoTuyo" [class.muerte]="muerteTuyo" [src]="personajeTuyo().fotoUrl">
       </div>
 
       <div class="BatallaDerecha">
@@ -34,7 +34,7 @@
           }
         }
         </div>
-        <img class="ImagenRival" [src]="rival().fotoUrl">
+        <img class="ImagenRival" [class.AnimacionRival]="estaAtacandoRival" [class.recibiendoDano]="recibiendoRival" [class.muerte]="muerteRival" [src]="rival().fotoUrl">
       </div>
       
     </div>

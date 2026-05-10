@@ -27,6 +27,13 @@ export class CombateComponent implements OnInit {
   ambasEstatsBien = false;
   turnoTuyo = true;
 
+  estaAtacandoTuyo = false;
+  estaAtacandoRival = false;
+  recibiendoTuyo = false;
+  recibiendoRival = false;
+  muerteTuyo = false;
+  muerteRival = false;
+
   TuTurno = true;
   constructor(
     private route: ActivatedRoute,
@@ -105,11 +112,24 @@ export class CombateComponent implements OnInit {
           dano = dano * 1.5; 
         }
 
+        this.recibiendoRival = true;
+        setTimeout(() => {
+          this.recibiendoRival = false;
+        }, 300);
+
+        this.estaAtacandoTuyo = true;
+        setTimeout(() => {
+          this.estaAtacandoTuyo = false;
+        }, 200);
+
         datosPaloma.vida = datosPaloma.vida - dano;
 
         if (datosPaloma.vida <= 0) {
-          alert("¡Has ganado la batalla!");
-          this.router.navigate(['/']); 
+          this.muerteRival = true;
+          setTimeout(() => {
+            alert("¡Has ganado la batalla!");
+            this.router.navigate(['/']); 
+          }, 1500);
         }
 
         this.rival.set(datosPaloma);
@@ -179,11 +199,26 @@ export class CombateComponent implements OnInit {
           dano = dano * 1.5; 
         }
 
+        this.estaAtacandoRival = true;
+        setTimeout(() => {
+          this.estaAtacandoRival = false;
+        }, 200);
+
+        this.recibiendoTuyo = true;
+        setTimeout(() => {
+          this.recibiendoTuyo = false;
+        }, 300);
+
+
+
         datosCanario.vida = datosCanario.vida - dano;
 
         if (datosCanario.vida <= 0) {
-          alert("¡Has perdido la batalla!");
-          this.router.navigate(['/landing']); 
+          this.muerteTuyo = true;
+          setTimeout(() => {
+            alert("¡Has perdido la batalla!");
+            this.router.navigate(['/']); 
+          }, 1500);
         }
 
 

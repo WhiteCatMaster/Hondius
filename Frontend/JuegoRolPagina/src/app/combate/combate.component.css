@@ -90,6 +90,49 @@ p {
     margin: 0 auto;
 }
 
+.AnimacionTuyo {
+    animation: atacarTuyo 0.2s ease-in-out;
+  }
+
+  @keyframes atacarTuyo {
+    0%   { transform: translateX(0); }
+    50%  { transform: translateX(100px); }
+    100% { transform: translateX(0); }    
+}
+
+.AnimacionRival {
+    animation: atacarRival 0.2s ease-in-out;  
+}
+
+@keyframes atacarRival {
+    0%   { transform: translateX(0); }
+    50%  { transform: translateX(-100px); }
+    100% { transform: translateX(0); }    
+}
+
+.recibiendoDano {
+    animation: atacado 0.3s ease-in-out;
+}
+
+@keyframes atacado {
+    0%   { transform: translate(0, 0) rotate(0deg); }
+    20%  { transform: translate(-5px, 5px) rotate(-2deg); }
+    40%  { transform: translate(5px, -5px) rotate(2deg); }
+    60%  { transform: translate(-5px, -5px) rotate(-2deg); }
+    80%  { transform: translate(5px, 5px) rotate(2deg); }
+    100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+.muerte {
+    animation: desplome 1s forwards; 
+}
+
+@keyframes desplome {
+    0%   { filter: grayscale(0%); opacity: 1; transform: translateY(0); }
+    50%  { filter: grayscale(100%); opacity: 0.8; transform: translateY(30px); }
+    100% { filter: grayscale(100%); opacity: 0; transform: translateY(100px); }
+}
+
 .ImagenRival {
     height: 450px;
     width: 340px;
