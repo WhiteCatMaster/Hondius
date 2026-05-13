@@ -20,5 +20,6 @@ ng serve
 ```
 
 CPU
+
 <img width="948" height="827" alt="image" src="https://github.com/user-attachments/assets/602ee063-fede-4cbb-b0e0-069980a6aaa0" />
 
