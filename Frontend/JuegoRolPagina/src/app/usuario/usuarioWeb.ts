@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { Usuario } from '../models/usuario';
 import { Rol } from '../models/jugador-juego';
 import { ServicioAPI } from '.././servicio-api';
+import { FirebaseAuthService } from '../../auth/firebase-auth.service';
+import { Router } from '@angular/router';
 import { UsuarioService } from '../servicios/usuario-service';
 
 @Component({
@@ -25,7 +27,9 @@ export class UsuarioWebComponent implements OnInit {
   constructor(
     private apiService: ServicioAPI,
     private cdRef: ChangeDetectorRef,
-    public usuarioService: UsuarioService
+    public usuarioService: UsuarioService,
+    private firebaseAuth: FirebaseAuthService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -64,6 +68,18 @@ export class UsuarioWebComponent implements OnInit {
 
       this.usuarioService.iniciarSesion(this.usuario);
 
+    }
+  }
+
+  async logout() {
+    try {
+      await this.firebaseAuth.signOut(); 
+      this.usuarioService.cerrarSesion(); 
+      this.router.navigate(['/']);
+      
+      console.log('Sesión cerrada correctamente');
+    } catch (error) {
+      console.error('Error al cerrar sesión', error);
     }
   }
 }
