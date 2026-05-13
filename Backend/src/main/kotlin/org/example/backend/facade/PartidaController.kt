@@ -43,8 +43,8 @@ class PartidaController(
             return objectNode
         }
 
-        if (adminIdNode.isTextual) {
-            val adminIdTexto = adminIdNode.asText().trim()
+        if (adminIdNode.isString) {
+            val adminIdTexto = adminIdNode.asString().trim()
             val adminId = adminIdTexto.toLongOrNull()
             if (adminId == null) {
                 objectNode.remove("adminId")
@@ -58,7 +58,7 @@ class PartidaController(
     @GetMapping
     fun obtenerPartidas(): ResponseEntity<List<PartidaDto>>{
         val listaPartidas: List<PartidaDto> = partidaService.getAllPartidas()
-        var partidasDto = mutableListOf<PartidaDto>()
+        val partidasDto = mutableListOf<PartidaDto>()
         for (partida in listaPartidas) {
             val partidaDto = PartidaDto(
                 id = partida.id,

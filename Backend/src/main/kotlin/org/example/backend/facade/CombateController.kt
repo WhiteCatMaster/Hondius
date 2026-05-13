@@ -2,7 +2,6 @@ package org.example.backend.facade
 
 import org.example.backend.dto.CombatePersonajesDto
 import org.example.backend.dto.CrearCombateDto
-import org.example.backend.entity.Combate
 import org.example.backend.service.CombateService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping

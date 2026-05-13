@@ -4,8 +4,6 @@ import jakarta.transaction.Transactional
 import org.example.backend.dto.CrearPartidaDto
 import org.example.backend.dto.DatosPartidaDto
 import org.example.backend.dto.PartidaDto
-import org.example.backend.entity.Ataque
-import org.example.backend.entity.Estadistica
 import org.example.backend.entity.Juego
 import org.example.backend.entity.JugadorJuego
 import org.example.backend.entity.Personaje
@@ -27,7 +25,8 @@ class JuegoService(
     private val personajeRepo: PersonajeRepository,
     private val estadisticaRepo: EstadisticaRepository,
     private val ataqueRepo: AtaqueRepository,
-    private val estadisticaService: EstadisticaService
+    private val estadisticaService: EstadisticaService,
+    private val personajeService: PersonajeService
 ) {
     fun getAllJuegos() = juegoRepo.findAll()
 
@@ -55,61 +54,25 @@ class JuegoService(
     }
 
     fun obtenerDatosPartida(id: Long): ResponseEntity<DatosPartidaDto> {
-        val partida : Juego = juegoRepo.findById(id).orElse(null)
-        var personajes = mutableListOf<DatosPartidaDto.PersonajeDto>()
-        for (personaje in partida.personajes) {
-            var ataques = mutableListOf<DatosPartidaDto.PersonajeDto.AtaqueDto>()
-            var estadisticas = mutableListOf<DatosPartidaDto.PersonajeDto.EstadisticaDto>()
-            for (i in personaje.estadisticas){
-                val estadisticaDto = DatosPartidaDto.PersonajeDto.EstadisticaDto(
-                    id = i.id,
-                    nombre = i.nombre,
-                    valor = i.valor,
-                    consumible = i.consumible,
-                )
-                estadisticas.add(estadisticaDto)
+        val partida = juegoRepo.findById(id).orElse(null)
+        val personajes = mutableListOf<DatosPartidaDto.PersonajeDto>()
+        if (partida != null) {
+            for (personaje in partida.personajes) {
+                val personajeDto = personajeService.personajeToDto(personaje)
+                personajes.add(personajeDto)
             }
-            for (i in personaje.ataques){
-                var manaAtacanteDto = mutableMapOf<String, Int>()
-                var estadisticasDefensorDto = mutableMapOf<String, Double>()
-                for (j in i.manaAtacante.keys){
-                    val clave = j.nombre
-                    manaAtacanteDto[clave] = i.manaAtacante[j] ?: 0
-                }
-                for (j in i.estadisticasDefensor.keys){
-                    val clave = j.nombre
-                    estadisticasDefensorDto[clave] = i.estadisticasDefensor[j] ?: 0.0
-                }
-                val ataqueDto = DatosPartidaDto.PersonajeDto.AtaqueDto(
-                    id = i.id,
-                    nombre = i.nombre,
-                    manaAtacante = manaAtacanteDto,
-                    estadisticasDefensor = estadisticasDefensorDto,
-                    dadoBase = i.dadoBase,
-                    ratioDado = i.ratioDado,
-                    danoAtaque = i.danioAtaque
-                )
-                ataques.add(ataqueDto)
-            }
-            val personajeDto = DatosPartidaDto.PersonajeDto(
-                id = personaje.id,
-                personajeNombre = personaje.nombre,
-                personajeVida = personaje.vida,
-                personajeFotoUrl = personaje.fotoUrl,
-                personajeEstadisticas = estadisticas,
-                personajeAtaques = ataques
+            val resultado = DatosPartidaDto(
+                id = partida.id,
+                nombre = partida.nombre,
+                descripcion = partida.descripcion,
+                idioma = partida.idioma,
+                maximoJugadores = partida.maximoJugadores,
+                jugadores = personajes
             )
-            personajes.add(personajeDto)
+            return ResponseEntity.ok(resultado)
         }
-        val resultado = DatosPartidaDto(
-            id = partida.id,
-            nombre = partida.nombre,
-            descripcion = partida.descripcion,
-            idioma = partida.idioma,
-            maximoJugadores = partida.maximoJugadores,
-            jugadores = personajes
-        )
-        return ResponseEntity.ok(resultado)
+        return ResponseEntity.notFound().build()
+
     }
     fun createJuego(juego: Juego) = juegoRepo.save(juego)
 
@@ -134,7 +97,7 @@ class JuegoService(
     }
     @Transactional
     fun crearJuegoxDTO(juegoDTO: CrearPartidaDto): PartidaDto {
-        var personajes = mutableListOf<Personaje>()
+        val personajes = mutableListOf<Personaje>()
         val juego = Juego(
             nombre = juegoDTO.nombre ?: "",
             idioma = juegoDTO.idioma,
@@ -159,72 +122,7 @@ class JuegoService(
         for (personajeDTO in juegoDTO.jugadores){
             println("Guardando estats desde DTO...")
 
-            val estats = mutableListOf<Estadistica>()
-            val buscadorEstadisticas = mutableMapOf<String, Estadistica>()
-
-            // 1. Cargamos las estadísticas y las indexamos por nombre
-            for (estatDTO in personajeDTO.personajeEstadisticas){
-                val estat = Estadistica(
-                    nombre = estatDTO.nombre ?: "",
-                    valor = estatDTO.valor ?: 0,
-                    consumible = estatDTO.consumible,
-                )
-                println("Guardando estadistica: nombre=${estat.nombre}, valor=${estat.valor}, consumible=${estat.consumible}")
-                estats.add(estat)
-                buscadorEstadisticas[estat.nombre] = estat
-            }
-
-            val ataques = mutableListOf<Ataque>()
-
-            // 2. Cargamos los ataques buscando las referencias directas en el diccionario
-            for (ataqueDTO in personajeDTO.personajeAtaques){
-
-                val estatsDefensor = mutableMapOf<Estadistica, Double>()
-                for ((nombreEst, valorDef) in ataqueDTO.estadisticasDefensor) {
-                    val estadisticaEncontrada = buscadorEstadisticas[nombreEst]
-                    if (estadisticaEncontrada != null) {
-                        estatsDefensor[estadisticaEncontrada] = valorDef
-                    }
-                }
-
-                val manaAtacante = mutableMapOf<Estadistica, Int>()
-                for ((nombreEst, valorMana) in ataqueDTO.manaAtacante) {
-                    val estadisticaEncontrada = buscadorEstadisticas[nombreEst]
-                    if (estadisticaEncontrada != null) {
-                        manaAtacante[estadisticaEncontrada] = valorMana
-                    }
-                }
-
-                val ataque = Ataque(
-                    nombre = ataqueDTO.nombre ?: "",
-                    dadoBase = ataqueDTO.dadoBase,
-                    ratioDado = ataqueDTO.ratioDado,
-                    estadisticasDefensor = estatsDefensor,
-                    manaAtacante = manaAtacante,
-                    danioAtaque = ataqueDTO.danoAtaque
-                )
-                ataques.add(ataque)
-            }
-
-            println("Guardando ataques desde DTO...")
-            println("Guardando personajes desde DTO...")
-
-            // 3. Montamos el personaje con sus listas ya enlazadas
-            val personaje = Personaje(
-                nombre = personajeDTO.personajeNombre ?: "",
-                vida = personajeDTO.personajeVida ?: 0,
-                fotoUrl = personajeDTO.personajeFotoUrl ?: "",
-                estadisticas = estats,
-                ataques = ataques,
-            )
-
-            // Relaciones bidireccionales
-            for (i in personaje.estadisticas){
-                i.personaje = personaje
-            }
-            for (i in personaje.ataques){
-                i.owner = personaje
-            }
+            val personaje = personajeService.dtoToPersonaje(personajeDTO)
 
             personajes.add(personaje)
         }

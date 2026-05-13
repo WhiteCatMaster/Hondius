@@ -1,6 +1,7 @@
 package org.example.backend.unit.service
 
 import org.example.backend.dto.CrearCombateDto
+import org.example.backend.dto.DatosPartidaDto
 import org.example.backend.entity.Ataque
 import org.example.backend.entity.Usuario
 import org.example.backend.entity.JugadorJuego
@@ -15,6 +16,7 @@ import org.example.backend.repository.JugadorJuegoRepository
 import org.example.backend.repository.PersonajeRepository
 import org.example.backend.repository.UsuarioRepository
 import org.example.backend.service.CombateService
+import org.example.backend.service.PersonajeService
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -29,12 +31,20 @@ import java.util.Optional
 import kotlin.collections.mutableListOf
 
 class CombateServiceTests {
+    private val personajeService: PersonajeService = mock<PersonajeService>()
     private val combateRepo: CombateRepository = mock<CombateRepository>()
     private val juegoRepo: JuegoRepository = mock<JuegoRepository>()
     private val personajeRepo: PersonajeRepository = mock<PersonajeRepository>()
     private val jugadorJuegoRepo: JugadorJuegoRepository = mock<JugadorJuegoRepository>()
     private val usuarioRepo: UsuarioRepository = mock<UsuarioRepository>()
-    private val combateService = CombateService(combateRepo, juegoRepo, personajeRepo, jugadorJuegoRepo, usuarioRepo)
+    private val combateService = CombateService(
+        combateRepo,
+        juegoRepo,
+        personajeRepo,
+        jugadorJuegoRepo,
+        usuarioRepo,
+        personajeService
+    )
 
 
 
@@ -169,6 +179,45 @@ class CombateServiceTests {
         }
 
         whenever(combateRepo.findById(1L)).thenReturn(Optional.of(combateMock))
+        val dto1Falso = DatosPartidaDto.PersonajeDto(
+            id = 100L,
+            personajeNombre = "Heroe",
+            personajeVida = 100,
+            personajeFotoUrl = "url",
+            personajeEstadisticas = mutableListOf(),
+            personajeAtaques = mutableListOf()
+        )
+
+        // 2. DTO falso para el Jugador 2 (¡Este es vital porque tus ASSERTS lo comprueban!)
+        val atk2DtoFalso = DatosPartidaDto.PersonajeDto.AtaqueDto(
+            id = 2L,
+            nombre = "Escudo",
+            manaAtacante = mutableMapOf("Fuerza" to 2),
+            estadisticasDefensor = mutableMapOf("Defensa" to 10.0), // El assert busca este 10.0
+            dadoBase = 10,
+            ratioDado = mutableListOf(1),
+            danoAtaque = 5
+        )
+
+        val stat2DtoFalsa = DatosPartidaDto.PersonajeDto.EstadisticaDto(
+            id = 2L,
+            nombre = "Defensa",
+            valor = 50,
+            consumible = true
+        )
+
+        val dto2Falso = DatosPartidaDto.PersonajeDto(
+            id = 200L,
+            personajeNombre = "Enemigo", // El assert busca "Enemigo"
+            personajeVida = 100,
+            personajeFotoUrl = "url",
+            personajeEstadisticas = mutableListOf(stat2DtoFalsa),
+            personajeAtaques = mutableListOf(atk2DtoFalso)
+        )
+
+        // 3. ¡Le damos el guion al actor (mock)!
+        whenever(personajeService.personajeToDto(personaje1Mock)).thenReturn(dto1Falso)
+        whenever(personajeService.personajeToDto(personaje2Mock)).thenReturn(dto2Falso)
 
         // 2. ACT
         val resultado = combateService.obtenerCombateById(1L)

@@ -1,6 +1,5 @@
 package org.example.backend.dto
 
-import org.example.backend.dto.CrearPartidaDto.PersonajeDto
 import java.io.Serializable
 
 class DatosPartidaDto (

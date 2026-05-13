@@ -1,6 +1,7 @@
 package org.example.backend.unit.service
 
 import org.example.backend.dto.CrearPartidaDto
+import org.example.backend.dto.DatosPartidaDto
 import org.example.backend.entity.Juego
 import org.example.backend.entity.JugadorJuego
 import org.example.backend.repository.AtaqueRepository
@@ -16,9 +17,9 @@ import org.example.backend.entity.RolJugador
 import org.example.backend.entity.Usuario
 import org.example.backend.service.EstadisticaService
 import org.example.backend.service.JuegoService
+import org.example.backend.service.PersonajeService
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import org.mockito.kotlin.any
 import org.mockito.kotlin.atLeastOnce
 import org.mockito.kotlin.doReturn
@@ -26,11 +27,11 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import org.springframework.aot.hint.TypeReference.listOf
 import java.util.Optional
 
 class JuegoServiceTests {
 
+    private val personajeService: PersonajeService = mock<PersonajeService>()
     private val juegoRepository: JuegoRepository = mock<JuegoRepository>()
     private val usuarioRepository: UsuarioRepository = mock<UsuarioRepository>()
     private val jugadorJuegoRepository: JugadorJuegoRepository = mock<JugadorJuegoRepository>()
@@ -45,7 +46,8 @@ class JuegoServiceTests {
         personajeRepository,
         estadisticaRepository,
         ataqueRepository,
-        estadisticaService
+        estadisticaService,
+        personajeService
     )
 
     @Test
@@ -111,6 +113,35 @@ class JuegoServiceTests {
 
         whenever(juegoRepository.findById(1L)).thenReturn(Optional.of(partidaMock))
 
+        val estDtoFalsa = DatosPartidaDto.PersonajeDto.EstadisticaDto(
+            id = 10L,
+            nombre = "Vida",
+            valor = 100,
+            consumible = false
+        )
+
+        val atkDtoFalso = DatosPartidaDto.PersonajeDto.AtaqueDto(
+            id = 20L,
+            nombre = "Tajo",
+            manaAtacante = mutableMapOf("Fuerza" to 10),
+            estadisticasDefensor = mutableMapOf("Defensa" to 5.0),
+            dadoBase = 20,
+            ratioDado = mutableListOf(1, 2),
+            danoAtaque = 15
+        )
+
+        // 2. Creamos el DTO principal con los datos que espera el ASSERT
+        val personajeDtoFalso = DatosPartidaDto.PersonajeDto(
+            id = 100L,
+            personajeNombre = "Guerrero", // El assert buscará esta palabra exacta
+            personajeVida = 150,
+            personajeFotoUrl = "url_guerrero",
+            personajeEstadisticas = mutableListOf(estDtoFalsa),
+            personajeAtaques = mutableListOf(atkDtoFalso)
+        )
+
+        // 3. ¡Le entregamos el guion al actor!
+        whenever(personajeService.personajeToDto(personajeMock)).thenReturn(personajeDtoFalso)
         // 2. ACT
         val resultado = juegoService.obtenerDatosPartida(1L)
 
@@ -143,12 +174,11 @@ class JuegoServiceTests {
         // ARRANGE
         whenever(juegoRepository.findById(99L)).thenReturn(Optional.empty())
 
+        val resultado = juegoService.obtenerDatosPartida(99L)
         // ACT & ASSERT
         // Como el código usa .orElse(null) e inmediatamente después llama a `partida.personajes`,
         // al no encontrar la partida se producirá un NullPointerException.
-        assertThrows<NullPointerException> {
-            juegoService.obtenerDatosPartida(99L)
-        }
+        assertEquals(404, resultado.statusCode.value())
     }
 
     @Test
@@ -255,13 +285,24 @@ class JuegoServiceTests {
             adminId = 1L
         )
 
+        val personajeFalso = Personaje(
+            id = 100L,
+            nombre = "Paco",
+            vida = 100,
+            fotoUrl = "url",
+            estadisticas = mutableListOf(), // Lista vacía para que el bucle de estats no explote
+            ataques = mutableListOf()       // Lista vacía para que el bucle de ataques no explote
+        )
+
+        // 2. Le enseñamos al mock qué devolver cuando llamen a dtoToPersonaje
+        whenever(personajeService.dtoToPersonaje(any())).thenReturn(personajeFalso)
         //Mocks para las llamadas a la BD
         val juegoSimulado = Juego(1L, "Partida Test", "Desc", "ES", 4, mutableListOf())
 
         whenever(juegoRepository.save(any<Juego>())).thenReturn(juegoSimulado)
-        whenever(personajeRepository.saveAll(any<List<Personaje>>())).thenReturn(listOf() as List<Personaje>)
-        whenever(estadisticaRepository.saveAll(any<List<Estadistica>>())).thenReturn(listOf() as List<Estadistica>)
-        whenever(ataqueRepository.saveAll(any<List<Ataque>>())).thenReturn(listOf() as List<Ataque>)
+        whenever(personajeRepository.saveAll(any<List<Personaje>>())).thenReturn(emptyList())
+        whenever(estadisticaRepository.saveAll(any<List<Estadistica>>())).thenReturn(emptyList())
+        whenever(ataqueRepository.saveAll(any<List<Ataque>>())).thenReturn(emptyList())
         whenever(usuarioRepository.findById(1L)).thenReturn(Optional.of(mock<Usuario>()))
         whenever(jugadorJuegoRepository.save(any())).thenAnswer { invocation -> invocation.arguments[0] }
 

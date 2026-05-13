@@ -1,7 +1,5 @@
 package org.example.backend.dto
 
-import org.example.backend.entity.Estadistica
-import org.example.backend.entity.RolJugador
 import java.io.Serializable
 
 
