@@ -65,9 +65,7 @@ export class UsuarioWebComponent implements OnInit {
       this.usuario.nombre = this.editNombre;
       this.usuario.fotoUrl = this.editFotoUrl;
       this.modoEdicion = false;
-
-      this.usuarioService.iniciarSesion(this.usuario);
-
+      this.enviarCambiosPerfil()
     }
   }
 
@@ -82,4 +80,25 @@ export class UsuarioWebComponent implements OnInit {
       console.error('Error al cerrar sesión', error);
     }
   }
+
+  enviarCambiosPerfil(){
+    let payload: ActualizarUsuarioDto = {
+      nombre: this.editNombre,
+      fotoUrl: this.editFotoUrl
+    }
+    this.apiService.actualizarUsuario(this.usuarioService.usuarioActual()?.googleId, payload).subscribe({
+      next: (respuesta) => {
+        console.log("Se actualizo el usuario con exito")
+        console.log(respuesta)
+        this.usuarioService.usuarioActual.set(respuesta)
+      },
+      error: (e)=> {
+        console.log('Ha ocurrido un error: ', e)
+      }
+    })
+  }
+}
+export interface ActualizarUsuarioDto{
+  nombre: string, 
+  fotoUrl: string
 }
