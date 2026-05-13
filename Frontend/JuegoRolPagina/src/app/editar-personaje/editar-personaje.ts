@@ -1,20 +1,23 @@
 import { Component, OnInit, signal } from '@angular/core'; // 1. Añadimos OnInit
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router'; // 2. Añadimos ActivatedRoute y Router
-import { Location } from '@angular/common';
+import { ActivatedRoute, Router} from '@angular/router'; // 2. Añadimos ActivatedRoute y Router
+
+// 3. IMPORTANTE: Asegúrate de importar tu servicio API (ajusta la ruta si es necesario)
 import { ServicioAPI } from '../servicio-api';
 import { PersonajeDto } from '../selectorELIMINAR.component';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-editar-personaje',
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule],
   templateUrl: './editar-personaje.html',
   styleUrl: './editar-personaje.css',
 })
 export class EditarPersonaje implements OnInit {
   personajeEditar = signal<any>(null);
   nombreOriginal = '';
-  combateDto: PersonajeDto|null = null;
+  combateDto: PersonajeDto | null = null;
+  idPersonaje = '';
 
   personaje: any = {
     nombre: 'Guerrero Valiente',
@@ -60,25 +63,22 @@ export class EditarPersonaje implements OnInit {
   ) {}
 
   ngOnInit() {
-    const nombreEnUrl = this.route.snapshot.paramMap.get('nombre');
-
-    if (nombreEnUrl) {
-      this.nombreOriginal = nombreEnUrl;
-
-      this.personaje.nombre = nombreEnUrl;
-    }
+    
     let id = this.route.snapshot.paramMap.get('id');
     console.log(id)
-    if(id){
+    if (id) {
+      this.idPersonaje = id;
       this.servicioAPI.obtenerPersonajexId(id).subscribe({
-        next: (personjaeBD) =>{
+        next: (personjaeBD) => {
           this.combateDto = personjaeBD;
           this.obtenerPersonajeBD();
+          this.nombreOriginal = this.personajeEditar().nombre
           console.log(this.combateDto)
         }
       })
     }
   }
+
 
   subirStat(index: number) {
     this.personajeEditar.update((pj) => {
@@ -99,39 +99,53 @@ export class EditarPersonaje implements OnInit {
   }
 
   guardar() {
-    /* 
     console.log('Enviando datos al backend para:', this.nombreOriginal);
-    this.api.actualizarPersonaje(this.nombreOriginal, this.personaje).subscribe({
-      next: (respuesta) => {
-        console.log('¡Guardado exitoso en BD!', respuesta);
-        this.router.navigate(['/selector-master']);
-      },
-      error: (error) => {
-        console.warn('El servidor no responde, activando modo simulación...', error);
-        alert('Modo simulación: Backend no disponible. Fingiendo guardado exitoso.');
-        
-        this.router.navigate(['/selector-master']);
+    let estats: EstatDto[] = [];
+    for (let i of this.personajeEditar().estadisticas) {
+      console.log(`metiendo valores: `, i["nombre"],', ', i["valor"])
+      let estat: EstatDto = {
+        nombre: i["nombre"],
+        valorNuevo: i["valor"]
       }
-    });
-    */
+      estats.push(estat)
+    }
+
+    let payload: ActualizarPersonajeDto = {
+      nombre: this.personajeEditar().nombre,
+      estadisticas: estats
+    };
+    console.log('Payload de personja enviado: ', payload);
+
+    this.servicioAPI.actualizarPersonaje(this.idPersonaje, payload).subscribe({
+      next: (respuesta) => {
+        console.log('Se actualizo el personaje con exito')
+        console.log(respuesta)
+      },
+      error: (error) =>{
+        console.log('Ha ocurrido un error: ', error)
+      }
+    })
   }
   obtenerPersonajeBD() {
 
     //Supongo que deberia de hacer un GET a backend y recoger el combate por el id 
     //Para hacerlo mas sencillo solo voy a recoger los personajes del combate 
-    let estadisticas1:any[] = []
-    let ataques1:any[] = []
+    let estadisticas1: any[] = []
+    let ataques1: any[] = []
     let ataques1mana: any[] = []
     let ataques1propio: any[] = []
     this.combateDto?.personajeEstadisticas.forEach(element => {
       let estat = {
-          id: element.id, nombre: element.nombre, valor: element.valor, consumible: element.consumible
-        }
-        estadisticas1.push(estat)
+        id: element.id,
+        nombre: element.nombre,
+        valor: element.valor,
+        consumible: element.consumible
+      }
+      estadisticas1.push(estat)
     });
     this.combateDto?.personajeAtaques.forEach(element => {
       console.log(element.manaAtacante)
-      for(let i in element.manaAtacante){
+      for (let i in element.manaAtacante) {
         console.log(i)
         let mana = {
           estadistica: i,
@@ -140,7 +154,7 @@ export class EditarPersonaje implements OnInit {
         console.log(mana)
         ataques1mana.push(mana)
       }
-      for(let i in element.estadisticasDefensor.keys){
+      for (let i in element.estadisticasDefensor.keys) {
         let estat = {
           estadistica: i,
           valor: element.estadisticasDefensor.get(i)
@@ -148,27 +162,38 @@ export class EditarPersonaje implements OnInit {
         ataques1propio.push(estat)
       }
       let ataque = {
-            id: element.id,
-              nombre: element.nombre,
-              dadoBase: element.dadoBase,
-              ratioDado: element.ratioDado,
-              danoAtaque: element.danoAtaque,
-              statReducePropio: ataques1mana,
-              statReduceRival: ataques1propio,
-        }
-        console.log(ataque)
-        ataques1.push(ataque)
+        id: element.id,
+        nombre: element.nombre,
+        dadoBase: element.dadoBase,
+        ratioDado: element.ratioDado,
+        danoAtaque: element.danoAtaque,
+        statReducePropio: ataques1mana,
+        statReduceRival: ataques1propio,
+      }
+      console.log(ataque)
+      ataques1.push(ataque)
     });
-    
+
     this.personajeEditar.set({
       id: this.combateDto?.id,
       nombre: this.combateDto?.personajeNombre,
       fotoUrl: this.combateDto?.personajeFotoUrl,
       urlSprite: this.combateDto?.personajeFotoUrl,
-      vidaMaxima: this.combateDto?.personajeVida, 
+      vidaMaxima: this.combateDto?.personajeVida,
       vida: this.combateDto?.personajeVida,
       estadisticas: estadisticas1,
       ataques: ataques1
     });
   }
+}
+
+
+export interface EstatDto {
+  nombre: string,
+  valorNuevo: number
+}
+export interface ActualizarPersonajeDto {
+  nombre: string;
+  //Un array en el que cada objeto es una estadistica con sus atibutos (nombre, id, ...)
+  estadisticas: EstatDto[];
 }

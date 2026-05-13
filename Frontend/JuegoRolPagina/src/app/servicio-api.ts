@@ -4,6 +4,7 @@ import { Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import { Usuario } from './models/usuario';
 import { MOCK_USUARIO } from './usuario/usuario.mock';
+import { ActualizarPersonajeDto } from './editar-personaje/editar-personaje';
 
 
 @Injectable({
@@ -43,5 +44,8 @@ export class ServicioAPI {
   }
   obtenerPersonajexId(id:number|string):Observable<any>{
     return this.http.get<any>(`${this.apiUrl}/personaje/${id}`)
+  }
+  actualizarPersonaje(id:number|string, payload: ActualizarPersonajeDto):Observable<any>{
+    return this.http.put<any>(`${this.apiUrl}/personaje/${id}`, payload)
   }
 }
