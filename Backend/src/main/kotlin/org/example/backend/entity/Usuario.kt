@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
+import org.example.backend.dto.UsuarioDto
 
 @Entity
 @Table(name = "usuarios")
@@ -30,5 +31,33 @@ class Usuario(
 
     @OneToMany(mappedBy = "usuario", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.LAZY)
     val partidasParticipa: MutableList<JugadorJuego> = mutableListOf()
-)
+){
+    fun usuarioToDto(): UsuarioDto{
+        val partidasDto = mutableListOf<UsuarioDto.JugadorJuegoDto>()
+        for(jugadorJuego in this.partidasParticipa){
+            val juegoDto = UsuarioDto.JuegoDto(
+                id = jugadorJuego.juego?.id,
+                nombre = jugadorJuego.juego?.nombre,
+                descripcion = jugadorJuego.juego?.descripcion,
+                idioma = jugadorJuego.juego?.idioma,
+                maxJugadores = jugadorJuego.juego?.maximoJugadores
+            )
+            val jugadorJuegoDto = UsuarioDto.JugadorJuegoDto(
+                id = jugadorJuego.id,
+                juego =juegoDto,
+                rol = jugadorJuego.rol.toString()
+            )
+            partidasDto.add(jugadorJuegoDto)
+        }
+        val resultado = UsuarioDto(
+            id = this.id,
+            googleId = this.googleId,
+            email = this.email,
+            nombre = this.nombre,
+            fotoUrl = this.fotoUrl,
+            partidasParticipa = partidasDto,
+        )
+        return resultado
+    }
+}
 
