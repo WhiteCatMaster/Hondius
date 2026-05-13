@@ -73,7 +73,7 @@
       </div>
 
       <!-- MENU ATAQUES DERECHA -->
-      <div class="ClaseDerecha" [class.inactivo]="TuTurno">
+      <div class="ClaseDerecha" [class.inactivo]="TuTurno || usarCpu">
 
         <div class="IzquierdaIzquierda">
           <h1 class="Ataques">ATAQUES de {{ rival().nombre }}</h1>   

@@ -1,13 +1,15 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ServicioAPI } from '../servicio-api';
 import { UsuarioService } from '../servicios/usuario-service';
+import { CpuComponent } from '../combate/cpu.component';
 
 @Component({
   selector: 'app-combate',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './selector.component.html',
   styleUrl: './selector.component.css',
 })
@@ -26,7 +28,8 @@ export class SelectorPersonajeComponent implements OnInit {
     private router: Router,
     private servicioAPI: ServicioAPI,
     private route: ActivatedRoute,
-    public usuarioService : UsuarioService
+    public usuarioService : UsuarioService,
+    public cpu: CpuComponent
   ) {}
 
   // Lo otro, lo de la base de datos temporal

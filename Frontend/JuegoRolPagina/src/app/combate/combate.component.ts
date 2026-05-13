@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { PersonajeDto } from '../selectorELIMINAR.component';
 import { UsuarioService } from '../servicios/usuario-service';
 import { LanzadorDadosComponent } from '../lanzador-dados/lanzador-dados.component';
+import { CpuComponent } from './cpu.component';
 
 @Component({
   selector: 'app-combate',
@@ -35,11 +36,16 @@ export class CombateComponent implements OnInit {
   muerteRival = false;
 
   TuTurno = true;
+
+  get usarCpu(): boolean { return this.cpu.usarCpu; }
+  get dificultadCpu(): number { return this.cpu.dificultad; }
+
   constructor(
     private route: ActivatedRoute,
     private servicioAPI: ServicioAPI,
     public usuarioService: UsuarioService,
-    private router: Router
+    private router: Router,
+    private cpu: CpuComponent
   ){}
 
   // El computed este es para que se actualice en tiempo real
@@ -52,10 +58,46 @@ export class CombateComponent implements OnInit {
     this.resultadoUltimoDado.set(resultadoDado);
     if (this.turnoTuyo == true) {
       this.pasarTurnoTuyo();
+      if (this.usarCpu && !this.turnoTuyo && this.rival() && this.rival().vida > 0) {
+        setTimeout(() => this.ejecutarTurnoCpu(), 1000);
+      }
     } else {
-      this.pasarTurnoRival() 
+      this.pasarTurnoRival()
     }
-    
+
+  }
+
+  ejecutarTurnoCpu() {
+    const rivalActual = this.rival();
+    if (!rivalActual || !rivalActual.ataquesDelPersonaje) {
+      this.turnoTuyo = true;
+      this.TuTurno = true;
+      return;
+    }
+
+    const ataquesAsequibles = rivalActual.ataquesDelPersonaje.filter((atc: any) => {
+      if (!atc.statReducePropio) return true;
+      for (const coste of atc.statReducePropio) {
+        const stat = rivalActual.estadisticasDelPersonaje.find((e: any) => e.nombreEstadistica === coste.estadistica);
+        if (!stat || stat.valorPropio < coste.valor) return false;
+      }
+      return true;
+    });
+
+    const ataque = this.cpu.elegirAtaque(ataquesAsequibles, this.dificultadCpu);
+    if (!ataque) {
+      this.turnoTuyo = true;
+      this.TuTurno = true;
+      return;
+    }
+
+    this.ataqueSeleccionado.set(ataque);
+
+    const total = ataque.dadoBase && ataque.dadoBase > 0 ? ataque.dadoBase : 6;
+    const dado = Math.floor(Math.random() * total) + 1;
+    this.resultadoUltimoDado.set(dado);
+
+    this.pasarTurnoRival();
   }
 
   pasarTurnoTuyo() {
