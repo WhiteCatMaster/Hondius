@@ -21,5 +21,6 @@ ng serve
 
 CPU
 
-<img width="948" height="827" alt="image" src="https://github.com/user-attachments/assets/602ee063-fede-4cbb-b0e0-069980a6aaa0" />
+<img width="987" height="669" alt="imagen" src="https://github.com/user-attachments/assets/584467d0-ca12-4b2a-8162-274d0495edae" />
+
 
