@@ -75,16 +75,13 @@ export class CombateComponent implements OnInit {
       return;
     }
 
-    const ataquesAsequibles = rivalActual.ataquesDelPersonaje.filter((atc: any) => {
-      if (!atc.statReducePropio) return true;
-      for (const coste of atc.statReducePropio) {
-        const stat = rivalActual.estadisticasDelPersonaje.find((e: any) => e.nombreEstadistica === coste.estadistica);
-        if (!stat || stat.valorPropio < coste.valor) return false;
-      }
-      return true;
-    });
-
-    const ataque = this.cpu.elegirAtaque(ataquesAsequibles, this.dificultadCpu);
+    // MCTS filtra internamente via getLegalActions() — pasamos todo
+    const ataque = this.cpu.elegirAtaque(
+      rivalActual.ataquesDelPersonaje,
+      this.dificultadCpu,
+      rivalActual.estadisticasDelPersonaje,
+      this.personajeTuyo()?.vida ?? 100
+    );
     if (!ataque) {
       this.turnoTuyo = true;
       this.TuTurno = true;
