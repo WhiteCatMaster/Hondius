@@ -1,5 +1,10 @@
 package org.example.backend.facade
 
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.responses.ApiResponses
+import io.swagger.v3.oas.annotations.tags.Tag
 import org.example.backend.dto.CrearPartidaDto
 import org.example.backend.dto.DatosPartidaDto
 import org.example.backend.dto.PartidaDto
@@ -16,12 +21,23 @@ import tools.jackson.module.kotlin.jacksonObjectMapper
 
 @RestController
 @RequestMapping("/api/partida", "/partida")
+@Tag(name = "Partidas", description = "Operaciones relacionadas con la creación, consulta y gestión de las partidas (juegos)")
 class PartidaController(
     private val partidaService: JuegoService
 ) {
-
+    @Operation(
+        summary = "Crear una nueva partida",
+        description = "Recibe un objeto JSON con los datos de la partida, lo normaliza (asegurando el ID del administrador) y crea la partida en la base de datos."
+    )
+    @ApiResponses(value = [
+        ApiResponse(responseCode = "201", description = "Partida creada y guardada con éxito"),
+        ApiResponse(responseCode = "400", description = "Error en el formato del JSON o datos inválidos")
+    ])
     @PostMapping
-    fun crearPartida(@RequestBody payload: JsonNode): ResponseEntity<Any> {
+    fun crearPartida(
+        @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "JSON dinámico con los datos de la partida y el adminId")
+        @RequestBody payload: JsonNode
+    ): ResponseEntity<Any> {
         return try {
             val juegoNode = payload.get("juego") ?: payload
             val juegoDto = jsonMapper.treeToValue(normalizarNodoPartida(juegoNode), CrearPartidaDto::class.java)
@@ -55,6 +71,12 @@ class PartidaController(
 
         return objectNode
     }
+    @Operation(
+        summary = "Obtener una lista con todas las partidas",
+        description = "Devuelve un array con todas las partidas disponibles en el sistema y quién es el administrador de cada una."
+    )
+    @ApiResponse(responseCode = "200", description = "Lista de partidas obtenida correctamente")
+
     @GetMapping
     fun obtenerPartidas(): ResponseEntity<List<PartidaDto>>{
         val listaPartidas: List<PartidaDto> = partidaService.getAllPartidas()
@@ -72,8 +94,15 @@ class PartidaController(
         }
         return ResponseEntity.status(HttpStatus.OK).body(partidasDto)
     }
+    @Operation(
+        summary = "Obtener los datos detallados de una partida concreta",
+        description = "Busca una partida por su ID y devuelve toda su información."
+    )
+    @ApiResponse(responseCode = "200", description = "Datos de la partida devueltos con éxito")
     @GetMapping("/{id}")
-    fun obtenerDatosPartida(@PathVariable id: Long): ResponseEntity<DatosPartidaDto>? {
+    fun obtenerDatosPartida(
+        @Parameter(description = "El ID único de la partida", example = "10") @PathVariable id: Long
+    ): ResponseEntity<DatosPartidaDto>? {
         val partida = partidaService.obtenerDatosPartida(id)
         return partida
     }
