@@ -85,6 +85,20 @@
   text-align: center;
 }
 
+.titulo-musica {
+  font-family: 'Pirata One', system-ui;
+  font-size: 3rem;
+  margin-bottom: 0px;
+  color: #4e3522;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  margin-top: 0;
+  text-align: center;
+}
+
+.barraYT {
+  width: 30%;
+}
+
 /* Personajes en Grid de 2x2 */
 .personajes-grid {
   display: grid;

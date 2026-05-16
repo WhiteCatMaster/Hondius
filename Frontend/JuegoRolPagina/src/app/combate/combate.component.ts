@@ -1,9 +1,11 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Partida } from '../models/partida';
 import { computed } from '@angular/core'; 
 import { ActivatedRoute } from '@angular/router';
 import { ServicioAPI } from '../servicio-api';
+import { MusicaService } from '../servicio/musica.service';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { PersonajeDto } from '../selectorELIMINAR.component';
 import { UsuarioService } from '../servicios/usuario-service';
@@ -27,6 +29,9 @@ export class CombateComponent implements OnInit {
   
   ambasEstatsBien = false;
   turnoTuyo = true;
+
+  // Esto hay que hacerlo porque, de lo contrario, angular bloquea enlaces (al parecer)
+  musicaSegurizada: SafeResourceUrl | null = null;
 
   estaAtacandoTuyo = false;
   estaAtacandoRival = false;
@@ -154,11 +159,13 @@ export class CombateComponent implements OnInit {
         this.recibiendoRival = true;
         setTimeout(() => {
           this.recibiendoRival = false;
-        }, 300);
+          this.cdr.detectChanges();
+        }, 1000);
 
         this.estaAtacandoTuyo = true;
         setTimeout(() => {
           this.estaAtacandoTuyo = false;
+          this.cdr.detectChanges();
         }, 200);
 
         datosPaloma.vida = datosPaloma.vida - dano;
@@ -246,7 +253,8 @@ export class CombateComponent implements OnInit {
         this.recibiendoTuyo = true;
         setTimeout(() => {
           this.recibiendoTuyo = false;
-        }, 300);
+          this.cdr.detectChanges();
+        }, 1000);
 
 
 
@@ -290,6 +298,12 @@ export class CombateComponent implements OnInit {
             console.log(this.combateDto)
         },
       });
+    }
+
+    const urlGuardada = this.musicaService.urlYoutube();
+    
+    if (urlGuardada) {
+      this.musicaSegurizada = this.sanitizer.bypassSecurityTrustResourceUrl(urlGuardada);
     }
   }
 

@@ -9,6 +9,70 @@
     box-sizing: border-box;
   }
 
+@media (max-width: 1000px) {
+    .ImagenRival, .PersonajeTuyo {
+        height: 379px;
+        width: 286px;
+        display: block;
+        margin: 0 auto;
+    }
+}
+
+@media (min-width: 1000px) {
+    .ImagenRival, .PersonajeTuyo {
+        height: 450px;
+        width: 340px;
+        display: block;
+        margin: 0 auto;
+    }
+}
+
+@media (max-width: 700px) {
+    .ImagenRival, .PersonajeTuyo {
+        height: 322px;
+        width: 243px;
+        display: block;
+        margin: 0 auto;
+    }
+}
+
+.ContenedorRival {
+    position: relative;
+    display: block;
+    width: fit-content;
+    margin: 0 auto;
+}
+
+.ImagenGif.recibiendoDano {
+    visibility: visible; 
+}
+
+.ImagenGifTuyo.recibiendoDano {
+    visibility: visible; 
+}
+
+.ImagenGif {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    visibility: hidden;
+}
+
+.ImagenGifTuyo {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    visibility: hidden;
+}
+
+.ContenedorRival {
+    position: relative;
+    display: block;
+    margin: 0 auto;
+}
+
 .PantallaDatos {
     height: 30vh; 
     display: flex;
@@ -83,13 +147,6 @@ p {
     padding: 20px;  
 }
 
-.PersonajeTuyo {
-    height: 450px;
-    width: 340px;
-    display: block;
-    margin: 0 auto;
-}
-
 .AnimacionTuyo {
     animation: atacarTuyo 0.2s ease-in-out;
   }
@@ -116,11 +173,12 @@ p {
 
 @keyframes atacado {
     0%   { transform: translate(0, 0) rotate(0deg); }
-    20%  { transform: translate(-5px, 5px) rotate(-2deg); }
+    20%  { transform: translate(-5px, 5px) rotate(-2deg);   filter: invert(12%) sepia(94%) saturate(7436%) hue-rotate(358deg) brightness(114%) contrast(114%); }
     40%  { transform: translate(5px, -5px) rotate(2deg); }
     60%  { transform: translate(-5px, -5px) rotate(-2deg); }
-    80%  { transform: translate(5px, 5px) rotate(2deg); }
-    100% { transform: translate(0, 0) rotate(0deg); }
+    80%  { transform: translate(5px, 5px) rotate(2deg)}
+    100% { transform: translate(0, 0) rotate(0deg);}
+    
 }
 
 .muerte {
@@ -133,13 +191,6 @@ p {
     100% { filter: grayscale(100%); opacity: 0; transform: translateY(100px); }
 }
 
-.ImagenRival {
-    height: 450px;
-    width: 340px;
-    display: block;
-    margin: 0 auto;
-}
-
 .DivBarra {
     display: flex;
     width: 50%;
@@ -148,11 +199,11 @@ p {
 
 .BarraVidaTuya {
     accent-color: green;
-    width: 340px;
+    width: 100%;
 }
 
 .AtaqueBoton {
-    width: 200px;
+    width: 100%;
     padding: 20px;
     border-radius: 6px;
     margin: 5px;

@@ -1,10 +1,12 @@
-<iframe 
-  width="10" 
-  height="10" 
-  src="https://www.youtube.com/embed/LINKautoplay=1" 
-  style="display: none;" 
-  allow="autoplay">
-</iframe>
+@if (musicaSegurizada !== null) {
+  <iframe 
+    width="10" 
+    height="10" 
+    [src]="musicaSegurizada" 
+    style="display: none;" 
+    allow="autoplay">
+  </iframe>
+}
 
 <div>
   @if (personajeTuyo() === null || rival() === null) {
@@ -26,8 +28,11 @@
           }
         }
         </div>
-        <img class="PersonajeTuyo" [class.AnimacionTuyo]="estaAtacandoTuyo" [class.recibiendoDano]="recibiendoTuyo" [class.muerte]="muerteTuyo" [src]="personajeTuyo().fotoUrl">
-      </div>
+        <div class="ContenedorRival">
+          <img class="PersonajeTuyo" [class.AnimacionTuyo]="estaAtacandoTuyo" [class.recibiendoDano]="recibiendoTuyo" [class.muerte]="muerteTuyo" [src]="personajeTuyo().fotoUrl">
+          <img class="PersonajeTuyo ImagenGifTuyo" [class.AnimacionTuyo]="estaAtacandoTuyo" [class.recibiendoDano]="recibiendoTuyo" [class.muerte]="muerteTuyo" src="https://i.imgur.com/dqf7meC.gif">
+        </div>
+        </div>
 
       <div class="BatallaDerecha">
         <h1>{{ rival().nombre }}</h1>
@@ -42,7 +47,10 @@
           }
         }
         </div>
-        <img class="ImagenRival" [class.AnimacionRival]="estaAtacandoRival" [class.recibiendoDano]="recibiendoRival" [class.muerte]="muerteRival" [src]="rival().fotoUrl">
+        <div class="ContenedorRival">
+          <img class="ImagenRival" [class.AnimacionRival]="estaAtacandoRival" [class.recibiendoDano]="recibiendoRival" [class.muerte]="muerteRival" [src]="rival().fotoUrl">
+          <img class="ImagenRival ImagenGif" [class.AnimacionRival]="estaAtacandoRival" [class.recibiendoDano]="recibiendoRival" [class.muerte]="muerteRival" src="https://i.imgur.com/dqf7meC.gif">
+        </div>
       </div>
       
     </div>

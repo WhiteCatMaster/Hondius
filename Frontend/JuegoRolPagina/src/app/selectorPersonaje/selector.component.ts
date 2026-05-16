@@ -4,11 +4,15 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ServicioAPI } from '../servicio-api';
 import { UsuarioService } from '../servicios/usuario-service';
+import { FormsModule } from '@angular/forms';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { MusicaService } from '../servicio/musica.service';
 import { CpuComponent } from '../combate/cpu.component';
 
 @Component({
   selector: 'app-combate',
   standalone: true,
+  imports: [CommonModule, FormsModule],
   imports: [CommonModule, FormsModule],
   templateUrl: './selector.component.html',
   styleUrl: './selector.component.css',
@@ -17,6 +21,8 @@ export class SelectorPersonajeComponent implements OnInit {
   partidaActual = signal<any | null>(null);
   partidaDto: DatosPartidaDto | null = null;
   combateID= signal<number>(-1);
+
+  enlace = '';
 
   // Dado
   estaRodando = true;
@@ -29,7 +35,9 @@ export class SelectorPersonajeComponent implements OnInit {
     private servicioAPI: ServicioAPI,
     private route: ActivatedRoute,
     public usuarioService : UsuarioService,
-    public cpu: CpuComponent
+    public cpu: CpuComponent,
+    private sanitizer: DomSanitizer,
+    private musicaService: MusicaService
   ) {}
 
   // Lo otro, lo de la base de datos temporal
@@ -44,6 +52,33 @@ export class SelectorPersonajeComponent implements OnInit {
           console.log(this.partidaActual());
         },
       });
+    }
+
+  }
+
+  pasarMusica() {
+    if (this.enlace) {
+      let codigoVideo = ''; 
+
+      // enlaces largos
+      if (this.enlace.includes("v=")) {
+        codigoVideo = this.enlace.split("v=")[1]; 
+      } 
+      // enlaces cortos
+      else if (this.enlace.includes("youtu.be/")) {
+        codigoVideo = this.enlace.split("youtu.be/")[1];
+      }
+
+      if (codigoVideo && codigoVideo !== "") {
+        let urlCompleta = "https://www.youtube.com/embed/" + codigoVideo + "?autoplay=1";
+      
+        this.musicaService.urlYoutube.set(urlCompleta);
+      } else {
+        this.musicaService.urlYoutube.set(null);
+      }
+
+    } else {
+       this.musicaService.urlYoutube.set(null);
     }
   }
 
@@ -67,7 +102,8 @@ export class SelectorPersonajeComponent implements OnInit {
     this.enemigoSeleccionado = personaje;
     console.log('Enemigo elegido:', personaje.nombre);
 
-    
+    this.pasarMusica();
+
     this.enviarCombateBackend().subscribe({
       next: (combateBackend) => {
         // 1. Guardamos el ID real que nos dio Spring Boot
