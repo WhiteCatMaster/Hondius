@@ -50,7 +50,10 @@ export class CombateComponent implements OnInit {
     private servicioAPI: ServicioAPI,
     public usuarioService: UsuarioService,
     private router: Router,
-    private cpu: CpuComponent
+    private cpu: CpuComponent,
+    private cdr: ChangeDetectorRef, 
+    private musicaService: MusicaService,
+    private sanitizer: DomSanitizer 
   ){}
 
   // El computed este es para que se actualice en tiempo real

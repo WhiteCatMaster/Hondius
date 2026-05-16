@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ServicioAPI } from '../servicio-api';
 import { UsuarioService } from '../servicios/usuario-service';
-import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { MusicaService } from '../servicio/musica.service';
 import { CpuComponent } from '../combate/cpu.component';
@@ -12,7 +11,6 @@ import { CpuComponent } from '../combate/cpu.component';
 @Component({
   selector: 'app-combate',
   standalone: true,
-  imports: [CommonModule, FormsModule],
   imports: [CommonModule, FormsModule],
   templateUrl: './selector.component.html',
   styleUrl: './selector.component.css',
