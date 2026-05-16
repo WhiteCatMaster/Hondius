@@ -3,9 +3,9 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router} from '@angular/router'; // 2. Añadimos ActivatedRoute y Router
 
 // 3. IMPORTANTE: Asegúrate de importar tu servicio API (ajusta la ruta si es necesario)
-import { ServicioAPI } from '../servicio-api';
-import { PersonajeDto } from '../selectorELIMINAR.component';
+import { PersonajeDto, ServicioAPI, toPersonaje } from '../servicio-api';
 import { Location } from '@angular/common';
+import { Personaje } from '../models/personaje';
 
 @Component({
   selector: 'app-editar-personaje',
@@ -14,45 +14,24 @@ import { Location } from '@angular/common';
   styleUrl: './editar-personaje.css',
 })
 export class EditarPersonaje implements OnInit {
-  personajeEditar = signal<any>(null);
+  personajeEditar = signal<Personaje>({
+    id: null,
+    nombre: '',
+    urlSprite: '',
+    vida: 0,
+    ataquesDelPersonaje: [],
+    estadisticasDelPersonaje: []
+  });
   nombreOriginal = '';
-  combateDto: PersonajeDto | null = null;
   idPersonaje = '';
 
-  personaje: any = {
-    nombre: 'Guerrero Valiente',
-    fotoUrl:
-      'https://img.freepik.com/vector-gratis/caballero-personaje-dibujos-animados-espada_1308-127704.jpg?semt=ais_hybrid&w=740&q=80',
-    estadisticas: [
-      { nombre: 'Fuerza Bruta', valor: 25 },
-      { nombre: 'Armadura', valor: 15 },
-      { nombre: 'Maná Oscuro', valor: 100 },
-      { nombre: 'Velocidad', valor: 8 },
-      { nombre: 'Suerte', valor: 2 },
-    ],
-    ataques: [
-      {
-        nombre: 'Hachazo Feroz',
-        dadoBase: 20,
-        statReducePropio: [{ estadistica: 'Estamina', valor: 10 }],
-        statReduceRival: [{ estadistica: 'Vida', valor: 20 }],
-      },
-      {
-        nombre: 'Grito de Guerra',
-        dadoBase: 12,
-        statReducePropio: [{ estadistica: 'Maná', valor: 5 }],
-        statReduceRival: [
-          { estadistica: 'Defensa', valor: 5 },
-          { estadistica: 'Esquiva', valor: 2 },
-        ],
-      },
-      {
-        nombre: 'Embestida',
-        dadoBase: 8,
-        statReducePropio: [{ estadistica: 'Fuerza', valor: 3 }],
-        statReduceRival: [],
-      },
-    ],
+  personaje: Personaje = {
+    id: null,
+    nombre: '',
+    urlSprite: '',
+    vida: 0,
+    ataquesDelPersonaje: [],
+    estadisticasDelPersonaje: []
   };
 
   constructor(
@@ -69,11 +48,10 @@ export class EditarPersonaje implements OnInit {
     if (id) {
       this.idPersonaje = id;
       this.servicioAPI.obtenerPersonajexId(id).subscribe({
-        next: (personjaeBD) => {
-          this.combateDto = personjaeBD;
-          this.obtenerPersonajeBD();
+        next: (personajeBD) => {
+          this.obtenerPersonajeBD(personajeBD);
           this.nombreOriginal = this.personajeEditar().nombre
-          console.log(this.combateDto)
+          console.log(personajeBD)
         }
       })
     }
@@ -82,14 +60,14 @@ export class EditarPersonaje implements OnInit {
 
   subirStat(index: number) {
     this.personajeEditar.update((pj) => {
-      pj.estadisticas[index].valor++;
+      pj.estadisticasDelPersonaje[index].valorPropio++;
       return { ...pj };
     });
   }
 
   bajarStat(index: number) {
     this.personajeEditar.update((pj) => {
-      pj.estadisticas[index].valor--;
+      pj.estadisticasDelPersonaje[index].valorPropio--;
       return { ...pj };
     });
   }
@@ -101,11 +79,11 @@ export class EditarPersonaje implements OnInit {
   guardar() {
     console.log('Enviando datos al backend para:', this.nombreOriginal);
     let estats: EstatDto[] = [];
-    for (let i of this.personajeEditar().estadisticas) {
-      console.log(`metiendo valores: `, i["nombre"],', ', i["valor"])
+    for (let i of this.personajeEditar().estadisticasDelPersonaje) {
+      console.log(`metiendo valores: `, i.nombreEstadistica,', ', i.valorPropio)
       let estat: EstatDto = {
-        nombre: i["nombre"],
-        valorNuevo: i["valor"]
+        nombre: i.nombreEstadistica,
+        valorNuevo: i.valorPropio
       }
       estats.push(estat)
     }
@@ -126,64 +104,11 @@ export class EditarPersonaje implements OnInit {
       }
     })
   }
-  obtenerPersonajeBD() {
+  obtenerPersonajeBD(personajeDto: PersonajeDto) {
 
     //Supongo que deberia de hacer un GET a backend y recoger el combate por el id 
     //Para hacerlo mas sencillo solo voy a recoger los personajes del combate 
-    let estadisticas1: any[] = []
-    let ataques1: any[] = []
-    let ataques1mana: any[] = []
-    let ataques1propio: any[] = []
-    this.combateDto?.personajeEstadisticas.forEach(element => {
-      let estat = {
-        id: element.id,
-        nombre: element.nombre,
-        valor: element.valor,
-        consumible: element.consumible
-      }
-      estadisticas1.push(estat)
-    });
-    this.combateDto?.personajeAtaques.forEach(element => {
-      console.log(element.manaAtacante)
-      for (let i in element.manaAtacante) {
-        console.log(i)
-        let mana = {
-          estadistica: i,
-          valor: 10
-        }
-        console.log(mana)
-        ataques1mana.push(mana)
-      }
-      for (let i in element.estadisticasDefensor.keys) {
-        let estat = {
-          estadistica: i,
-          valor: element.estadisticasDefensor.get(i)
-        }
-        ataques1propio.push(estat)
-      }
-      let ataque = {
-        id: element.id,
-        nombre: element.nombre,
-        dadoBase: element.dadoBase,
-        ratioDado: element.ratioDado,
-        danoAtaque: element.danoAtaque,
-        statReducePropio: ataques1mana,
-        statReduceRival: ataques1propio,
-      }
-      console.log(ataque)
-      ataques1.push(ataque)
-    });
-
-    this.personajeEditar.set({
-      id: this.combateDto?.id,
-      nombre: this.combateDto?.personajeNombre,
-      fotoUrl: this.combateDto?.personajeFotoUrl,
-      urlSprite: this.combateDto?.personajeFotoUrl,
-      vidaMaxima: this.combateDto?.personajeVida,
-      vida: this.combateDto?.personajeVida,
-      estadisticas: estadisticas1,
-      ataques: ataques1
-    });
+    this.personajeEditar.set(toPersonaje(personajeDto))
   }
 }
 

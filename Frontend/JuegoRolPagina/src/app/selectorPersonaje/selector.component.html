@@ -23,7 +23,7 @@
       <div class="columna">
         <h2 class="titulo-columna">Tu Héroe</h2>
         <div class="personajes-grid">
-          @for (personaje of $any(partidaActual())?.personajes; track personaje.id) {
+          @for (personaje of personajesActual(); track personaje.id) {
             @if (personaje == null) {
 
             }
@@ -51,7 +51,7 @@
       <div class="columna">
         <h2 class="titulo-columna">Tu Enemigo</h2>
         <div class="personajes-grid">
-          @for (enemigo of $any(partidaActual())?.personajes; track enemigo.id) {
+          @for (enemigo of personajesActual(); track enemigo.id) {
             <div class="personaje-card" 
                  [class.selected]="enemigoSeleccionado === enemigo"
                  [class.disabled-card]="enemigo === heroeSeleccionado"> 

@@ -33,6 +33,14 @@ const relacionAjedrez: JugadorJuego = {
   usuario: MOCK_USUARIO,
   juego: partidaElementos,
   rol: Rol.Admin,
+  personaje: {
+    id: null,
+    nombre: '',
+    urlSprite: '',
+    vida: 0,
+    ataquesDelPersonaje: [],
+    estadisticasDelPersonaje: []
+  }
 };
 
 const relacionDungeon: JugadorJuego = {
@@ -40,6 +48,14 @@ const relacionDungeon: JugadorJuego = {
   usuario: MOCK_USUARIO,
   juego: partidaDungeon,
   rol: Rol.Jugador,
+  personaje: {
+    id: null,
+    nombre: '',
+    urlSprite: '',
+    vida: 0,
+    ataquesDelPersonaje: [],
+    estadisticasDelPersonaje: []
+  }
 };
 
 MOCK_USUARIO.partidasParticipa = [relacionAjedrez, relacionDungeon];

@@ -8,7 +8,7 @@ import { Ataque } from './models/ataque';
 import { Usuario } from './models/usuario';
 import { JugadorJuego, Rol } from './models/jugador-juego';
 import { Partida } from './models/partida';
-import { ServicioAPI } from './servicio-api';
+import { CrearPartidaDto, DatosPartidaDto, PersonajeDto, ServicioAPI, toPersonajeDto } from './servicio-api';
 import { Dado } from './models/dado';
 import { UsuarioService } from './servicios/usuario-service';
 import { Objeto } from './models/objeto';
@@ -95,10 +95,10 @@ export class OpcionesComponent {
           nombreEstadistica: '',
           valorPropio: 0,
           consumible: false,
+          id: 0
         },
       ],
       id: null,
-      fotoUrl: '',
     },
   ];
 
@@ -238,6 +238,14 @@ export class OpcionesComponent {
     usuario: this.usuarioPrueba,
     juego: this.juegoCreado,
     rol: Rol.Admin,
+    personaje: {
+      id: null,
+      nombre: '',
+      urlSprite: '',
+      vida: 0,
+      ataquesDelPersonaje: [],
+      estadisticasDelPersonaje: []
+    }
   };
 
   irSiguiente() {
@@ -268,8 +276,9 @@ export class OpcionesComponent {
           for (let estGlobal of this.estadisticas) {
             personaje.estadisticasDelPersonaje.push({
               nombreEstadistica: estGlobal.nombre,
-              valorPropio: 0,
+              valorPropio: estGlobal.valor,
               consumible: estGlobal.consumible,
+              id: estGlobal.id ?? -1
             });
           }
         }
@@ -330,12 +339,13 @@ export class OpcionesComponent {
   }
 
   agregarPersonaje() {
-    let estadisticasNuevas = [];
+    let estadisticasNuevas: EstadisticaPersonaje[] = [];
     for (let est of this.estadisticas) {
       estadisticasNuevas.push({
         nombreEstadistica: est.nombre,
-        valorPropio: 0,
+        valorPropio: est.valor,
         consumible: est.consumible,
+        id: est.id ?? -1
       });
     }
     this.personajes.push({
@@ -350,7 +360,6 @@ export class OpcionesComponent {
       }],
       estadisticasDelPersonaje: estadisticasNuevas,
       id: null,
-      fotoUrl: '',
     });
   }
 
@@ -378,6 +387,7 @@ export class OpcionesComponent {
   agregarEstadisticaAPersonaje(posicionPersonaje: number) {
     this.personajes[posicionPersonaje].estadisticasDelPersonaje.push({
       nombreEstadistica: '', valorPropio: 0, consumible: false,
+      id: 0
     });
   }
 
@@ -404,61 +414,93 @@ export class OpcionesComponent {
   }
 
   // ── DRAG & DROP – ATAQUES ────────────────────────────────────────────────────
-  itemArrastrado: any = null;
-  costesEnMesa: any[] = [];
-  efectosEnMesa: any[] = [];
+  itemArrastrado: Estadistica |null= null;
+  costesEnMesa: {nombre: string, valor: number}[] = [];
+  efectosEnMesa: {nombre: string, valor: number, ratioMin: number|null, ratioMax: number|null}[] = [];
+  
   ratioDadoMin: number | null = null;
   ratioDadoMax: number | null = null;
   danoAtaque: number = 0;
+  nombreAtaqueActual = '';
 
-  iniciarArrastre(item: any) {
-    this.itemArrastrado = item;
+
+  finalizarArrastre(){
+    this.itemArrastrado = null;
   }
 
-  permitirDrop(event: any) {
+  iniciarArrastre(item: Estadistica) {
+    this.itemArrastrado = item;
+    console.log(this.itemArrastrado)
+  }
+
+  permitirDrop(event: DragEvent) {
     event.preventDefault();
   }
 
   soltarEnCoste() {
     if (this.itemArrastrado) {
-      this.costesEnMesa.push({ nombre: this.itemArrastrado.nombre || this.itemArrastrado, valor: 0 });
+      console.log(this.itemArrastrado)
+      const nombreItem = this.itemArrastrado.nombre
+      const yaExiste = this.costesEnMesa.some(c => c.nombre === nombreItem)
+      if(yaExiste){
+        alert('¡Esa estadística ya está en los costes!');
+      } else{
+        this.costesEnMesa.push(this.itemArrastrado);
+      }
       this.itemArrastrado = null;
     }
   }
 
   soltarEnEfecto() {
     if (this.itemArrastrado) {
-      this.efectosEnMesa.push({
-        nombre: this.itemArrastrado.nombre || this.itemArrastrado,
-        valor: 1.0, ratioMin: null, ratioMax: null,
-      });
+      console.log(this.itemArrastrado)
+      const nombreItem = this.itemArrastrado.nombre;
+      const yaExiste = this.efectosEnMesa.some(e => e.nombre === nombreItem);
+      if(yaExiste){
+        alert('¡Esa estadística ya está en los efectos!');
+      }else{
+        this.efectosEnMesa.push({
+          nombre: this.itemArrastrado.nombre,
+          valor: 1.0, 
+          ratioMin: null, 
+          ratioMax: null,
+        });
+      }
+
       this.itemArrastrado = null;
     }
   }
 
-  incrementar(item: any) { item.valor += 1; }
-  decrementar(item: any) { if (item.valor > 0) item.valor -= 1; }
-  incrementarMultiplicador(item: any) { item.valor = Number((item.valor + 0.1).toFixed(1)); }
-  decrementarMultiplicador(item: any) { if (item.valor > 0) item.valor = Number((item.valor - 0.1).toFixed(1)); }
+  incrementar(item: {nombre: string, valor: number}) { item.valor += 1; console.log(item)}
+  decrementar(item: {nombre: string, valor: number}) { if (item.valor > 0) item.valor -= 1; }
+  incrementarMultiplicador(item: {nombre: string, valor: number, ratioMin: number|null, ratioMax: number|null}) { item.valor = Number((item.valor + 0.1).toFixed(1)); console.log(item)}
+  decrementarMultiplicador(item: {nombre: string, valor: number, ratioMin: number|null, ratioMax: number|null}) { if (item.valor > 0) item.valor = Number((item.valor - 0.1).toFixed(1)); console.log(item) }
   eliminarCoste(index: number) { this.costesEnMesa.splice(index, 1); }
   eliminarEfecto(index: number) { this.efectosEnMesa.splice(index, 1); }
 
-  nombreAtaqueActual: string = '';
 
   guardarAtaqueActual() {
     if (this.nombreAtaqueActual.trim() === '') {
       alert('¡Tu hechizo necesita un nombre para poder ser creado!');
       return;
     }
-
-    const mapaManaAtacante: { [key: string]: number } = {};
-    for (let coste of this.costesEnMesa) {
-      mapaManaAtacante[coste.nombre] = coste.valor;
+    if (this.ratioDadoMin === null || this.ratioDadoMax === null) {
+      alert('¡Debes especificar el ratio mínimo y máximo del dado!');
+      return;
+    }
+    if (this.ratioDadoMin > this.ratioDadoMax) {
+      alert('¡El ratio mínimo no puede ser mayor que el máximo!');
+      return;
     }
 
-    const mapaEstadisticasDefensor: { [key: string]: number } = {};
+    let mapaManaAtacante: { estadistica: string, valor: number }[] = [];
+    for (let coste of this.costesEnMesa) {
+      mapaManaAtacante.push({estadistica: coste.nombre, valor: coste.valor});
+    }
+
+    let mapaEstadisticasDefensor: { estadistica: string, valor: number }[] = [];
     for (let efecto of this.efectosEnMesa) {
-      mapaEstadisticasDefensor[efecto.nombre] = efecto.valor;
+      mapaEstadisticasDefensor.push({estadistica: efecto.nombre, valor: efecto.valor})
     }
 
     let ataqueParaEnviar: Ataque = {
@@ -466,11 +508,12 @@ export class OpcionesComponent {
       nombre: this.nombreAtaqueActual,
       dadoBase: 20,
       ratioDado: [this.ratioDadoMin, this.ratioDadoMax],
-      statReducePropio: Object.entries(mapaManaAtacante).map(([nombre, valor]) => ({ estadistica: nombre, valor })),
-      statReduceRival: Object.entries(mapaEstadisticasDefensor).map(([nombre, valor]) => ({ estadistica: nombre, valor })),
+      statReducePropio: mapaManaAtacante,
+      statReduceRival: mapaEstadisticasDefensor,
       danoAtaque: this.danoAtaque,
     };
     this.ataques.push(ataqueParaEnviar);
+    console.log(ataqueParaEnviar)
 
     alert('¡Hechizo "' + this.nombreAtaqueActual + '" creado con éxito!');
     this.nombreAtaqueActual = '';
@@ -482,68 +525,27 @@ export class OpcionesComponent {
   }
 
   mandarPartida() {
-    let jugadores = [];
+    
+    let jugadores: PersonajeDto[] = [];
     const adminId = this.usuarioService.usuarioActual()?.id;
 
     for (let personaje of this.personajes) {
-      let estadisticasPersonaje = [];
-      for (let estadistica of personaje.estadisticasDelPersonaje) {
-        estadisticasPersonaje.push({
-          nombre: estadistica.nombreEstadistica,
-          valor: estadistica.valorPropio.toString(),
-          consumible: this.estadisticas.find((e) => e.nombre === estadistica.nombreEstadistica)?.consumible || false,
-        });
+      jugadores.push(toPersonajeDto(personaje))
+      for(let i of personaje.ataquesDelPersonaje){
+        console.log(i)
       }
-
-      let ataquesPersonaje = [];
-      for (let ataque of personaje.ataquesDelPersonaje) {
-        let diccionarioMana: { [key: string]: number } = {};
-        if (ataque.statReducePropio) {
-          for (let stat of ataque.statReducePropio) {
-            if (stat.estadistica && stat.estadistica.trim() !== '') {
-              diccionarioMana[stat.estadistica] = stat.valor;
-            }
-          }
-        }
-        let diccionarioDefensa: { [key: string]: number } = {};
-        if (ataque.statReduceRival) {
-          for (let stat of ataque.statReduceRival) {
-            if (stat.estadistica && stat.estadistica.trim() !== '') {
-              diccionarioDefensa[stat.estadistica] = stat.valor;
-            }
-          }
-        }
-        ataquesPersonaje.push({
-          nombre: ataque.nombre,
-          manaAtacante: diccionarioMana,
-          estadisticasDefensor: diccionarioDefensa,
-          dadoBase: ataque.dadoBase,
-          ratioDado: ataque.ratioDado,
-          danoAtaque: ataque.danoAtaque,
-        });
-      }
-
-      jugadores.push({
-        personajeNombre: personaje.nombre,
-        personajeVida: personaje.vida,
-        personajeFotoUrl: personaje.urlSprite,
-        personajeEstadisticas: estadisticasPersonaje,
-        personajeAtaques: ataquesPersonaje,
-      });
     }
 
-    const payload = {
-      juego: {
-        nombre: this.nombre,
-        descripcion: this.descripcion,
-        idioma: this.idioma,
-        maximoJugadores: this.maxJugadores,
-        jugadores: jugadores,
-        adminId: adminId,
-        objetos: this.objetos,
-      },
+    let payload : CrearPartidaDto  = {
+      adminId: adminId ?? -1,
+      id: -1,
+      nombre: this.nombre,
+      descripcion: this.descripcion,
+      idioma: this.idioma,
+      maximoJugadores: this.maxJugadores,
+      jugadores: jugadores
     };
-
+    
     console.log('El payload final queda como ', payload);
 
     this.servicioAPI.mandarPartida(payload).subscribe({

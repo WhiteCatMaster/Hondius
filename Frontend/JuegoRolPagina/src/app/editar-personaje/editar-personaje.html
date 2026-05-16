@@ -4,7 +4,7 @@
     
    <div class="columna-izq">
       <div class="marco-retrato">
-        <img [src]="personajeEditar()?.fotoUrl" alt="Retrato de {{ personajeEditar().nombre }}">
+        <img [src]="personajeEditar().urlSprite" alt="Retrato de {{ personajeEditar().nombre }}">
       </div>
       
       <div class="contenedor-nombre-editable">
@@ -16,12 +16,12 @@
       <h3 class="titulo-seccion">Estadísticas</h3>
       
       <div class="lista-stats">
-        @for (stat of personajeEditar().estadisticas; track stat.nombre; let i = $index) {
+        @for (stat of personajeEditar().estadisticasDelPersonaje; track stat.nombreEstadistica; let i = $index) {
           <div class="stat-fila">
-            <span class="stat-nombre">{{ stat.nombre }}</span>
+            <span class="stat-nombre">{{ stat.nombreEstadistica }}</span>
             <div class="stat-controles">
               <button class="btn-minidado" (click)="bajarStat(i)">-</button>
-              <input type="number" class="input-stat" [(ngModel)]="stat.valor">
+              <input type="number" class="input-stat" [(ngModel)]="stat.valorPropio">
               <button class="btn-minidado" (click)="subirStat(i)">+</button>
             </div>
           </div>
@@ -34,7 +34,7 @@
       <h3 class="titulo-seccion">Ataques</h3>
       
       <div class="lista-ataques">
-        @for (ataque of personajeEditar().ataques; track ataque.nombre) {
+        @for (ataque of personajeEditar().ataquesDelPersonaje; track ataque.nombre) {
           <div class="ataque-tarjeta">
             <h4>{{ ataque.nombre }}</h4>
             
@@ -42,7 +42,10 @@
 
             @if (ataque.statReducePropio && ataque.statReducePropio.length > 0) {
               <p class="ataque-detalles">
-                
+                <strong>Consume:</strong>
+                @for (consum of ataque.statReducePropio; track consum.estadistica; let isLast = $last) {
+                  {{ consum.estadistica }} {{ !isLast ? ', ': '' }}
+                }
               </p>
             }
 

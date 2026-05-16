@@ -18,7 +18,7 @@
       <div class="BatallaIzquierda">
         <h1>{{ personajeTuyo().nombre }}</h1>
         <div class="DivBarra">
-          <progress class="BarraVidaTuya" [value]="personajeTuyo().vida" [max]="personajeTuyo().vidaMaxima"></progress>
+          <progress class="BarraVidaTuya" [value]="personajeTuyo().vida" [max]="vidaMaximaTuyo()"></progress>
           <p>{{personajeTuyo().vida}}/{{vidaTuya()}}</p>
         </div>
         <div class="EstadisticasFlotantes1">
@@ -29,7 +29,7 @@
         }
         </div>
         <div class="ContenedorRival">
-          <img class="PersonajeTuyo" [class.AnimacionTuyo]="estaAtacandoTuyo" [class.recibiendoDano]="recibiendoTuyo" [class.muerte]="muerteTuyo" [src]="personajeTuyo().fotoUrl">
+          <img class="PersonajeTuyo" [class.AnimacionTuyo]="estaAtacandoTuyo" [class.recibiendoDano]="recibiendoTuyo" [class.muerte]="muerteTuyo" [src]="personajeTuyo().urlSprite">
           <img class="PersonajeTuyo ImagenGifTuyo" [class.AnimacionTuyo]="estaAtacandoTuyo" [class.recibiendoDano]="recibiendoTuyo" [class.muerte]="muerteTuyo" src="https://i.imgur.com/dqf7meC.gif">
         </div>
         </div>
@@ -37,7 +37,7 @@
       <div class="BatallaDerecha">
         <h1>{{ rival().nombre }}</h1>
         <div class="DivBarra">
-          <progress class="BarraVidaTuya" [value]="rival().vida" [max]="rival().vidaMaxima"></progress>
+          <progress class="BarraVidaTuya" [value]="rival().vida" [max]="vidaMaximaRival()"></progress>
           <p>{{rival().vida}}/{{vidaRival()}}</p>
         </div>
         <div class="EstadisticasFlotantes1">
@@ -48,7 +48,7 @@
         }
         </div>
         <div class="ContenedorRival">
-          <img class="ImagenRival" [class.AnimacionRival]="estaAtacandoRival" [class.recibiendoDano]="recibiendoRival" [class.muerte]="muerteRival" [src]="rival().fotoUrl">
+          <img class="ImagenRival" [class.AnimacionRival]="estaAtacandoRival" [class.recibiendoDano]="recibiendoRival" [class.muerte]="muerteRival" [src]="rival().urlSprite">
           <img class="ImagenRival ImagenGif" [class.AnimacionRival]="estaAtacandoRival" [class.recibiendoDano]="recibiendoRival" [class.muerte]="muerteRival" src="https://i.imgur.com/dqf7meC.gif">
         </div>
       </div>

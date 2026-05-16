@@ -116,7 +116,7 @@
           <h3>Tus Estadísticas</h3>
           <div class="carrusel">
             @for (stat of estadisticas; track stat.nombre) {
-              <div class="caja-stat" draggable="true" (dragstart)="iniciarArrastre(stat)">
+              <div class="caja-stat" draggable="true" (dragstart)="iniciarArrastre(stat)" (dragend)="finalizarArrastre()">
                 <div class="icono">{{ stat.nombre }}</div>
               </div>
             }
@@ -126,7 +126,7 @@
           <h3>Estadísticas del rival</h3>
           <div class="carrusel">
             @for (stat of estadisticas; track stat.nombre) {
-              <div class="caja-stat" draggable="true" (dragstart)="iniciarArrastre(stat)">
+              <div class="caja-stat" draggable="true" (dragstart)="iniciarArrastre(stat)" (dragend)="finalizarArrastre()">
                 <div class="icono">{{ stat.nombre }}</div>
               </div>
             }
