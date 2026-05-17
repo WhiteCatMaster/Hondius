@@ -30,35 +30,49 @@
       
     </div>
 
-    <div class="columna-der con-scroll">
-      <h3 class="titulo-seccion">Ataques</h3>
+    <div class="columna-der">
       
-      <div class="lista-ataques">
-        @for (ataque of personajeEditar().ataquesDelPersonaje; track ataque.nombre) {
-          <div class="ataque-tarjeta">
-            <h4>{{ ataque.nombre }}</h4>
-            
-            <p><strong>Daño Base:</strong> {{ ataque.danoAtaque }}</p>
+      <div class="seccion-mitad con-scroll">
+        <h3 class="titulo-seccion">Ataques</h3>
+        
+        <div class="lista-ataques">
+          @for (ataque of personajeEditar().ataquesDelPersonaje; track ataque.nombre) {
+            <div class="ataque-tarjeta">
+              <h4>{{ ataque.nombre }}</h4>
+              <p><strong>Daño Base:</strong> {{ ataque.danoAtaque }}</p>
+            </div>
+          }
+        </div>
+      </div>
 
-            @if (ataque.statReducePropio && ataque.statReducePropio.length > 0) {
-              <p class="ataque-detalles">
-                <strong>Consume:</strong>
-                @for (consum of ataque.statReducePropio; track consum.estadistica; let isLast = $last) {
-                  {{ consum.estadistica }} {{ !isLast ? ', ': '' }}
-                }
-              </p>
+      <div class="seccion-mitad"> <h3 class="titulo-seccion">Inventario</h3>
+        
+        <div class="asignador-objetos">
+          <select [(ngModel)]="objetoSeleccionadoId" class="select-objeto">
+            <option [ngValue]="null">-- Seleccionar Objeto --</option>
+            @for (obj of objetosDisponibles; track obj.id) {
+              <option [ngValue]="obj.id">{{ obj.nombre }} (+{{ obj.valorBonus }} {{ obj.statAfectada }})</option>
             }
+          </select>
+          <button class="btn-minidado" (click)="asignarObjeto()">+</button>
+        </div>
 
-            @if (ataque.statReduceRival && ataque.statReduceRival.length > 0) {
-              <p class="ataque-detalles">
-                <strong>Afecta a:</strong> 
-                @for (efecto of ataque.statReduceRival; track efecto.estadistica; let isLast = $last) {
-                  {{ efecto.estadistica }}{{ !isLast ? ', ' : '' }}
-                }
-              </p>
-            }
-          </div>
-        }
+        <div class="lista-inventario con-scroll">
+          @if (personajeEditar().inventario?.length === 0) {
+            <p style="text-align: center; opacity: 0.6;">El inventario está vacío...</p>
+          }
+
+          @for (item of personajeEditar().inventario; track $index) {
+            <div class="item-tarjeta">
+              <img [src]="item.urlImagen" alt="Icono" class="item-icono">
+              <div class="item-info">
+                <span class="item-nombre">{{ item.nombre }}</span>
+                <span class="item-efecto">+{{ item.valorBonus }} {{ item.statAfectada }}</span>
+              </div>
+              <button class="btn-quitar" (click)="quitarObjeto($index)">X</button>
+            </div>
+          }
+        </div>
       </div>
 
     </div>
