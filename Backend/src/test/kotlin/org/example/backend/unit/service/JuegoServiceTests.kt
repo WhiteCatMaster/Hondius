@@ -12,9 +12,11 @@ import org.example.backend.repository.PersonajeRepository
 import org.example.backend.repository.UsuarioRepository
 import org.example.backend.entity.Ataque
 import org.example.backend.entity.Estadistica
+import org.example.backend.entity.ObjetoCompleto
 import org.example.backend.entity.Personaje
 import org.example.backend.entity.RolJugador
 import org.example.backend.entity.Usuario
+import org.example.backend.repository.ObjetoCompletoRepository
 import org.example.backend.service.EstadisticaService
 import org.example.backend.service.JuegoService
 import org.example.backend.service.PersonajeService
@@ -38,6 +40,7 @@ class JuegoServiceTests {
     private val personajeRepository: PersonajeRepository = mock<PersonajeRepository>()
     private val estadisticaRepository: EstadisticaRepository = mock<EstadisticaRepository>()
     private val ataqueRepository: AtaqueRepository = mock<AtaqueRepository>()
+    private val objetoCompletoRepository: ObjetoCompletoRepository = mock<ObjetoCompletoRepository>()
     private val estadisticaService = EstadisticaService(estadisticaRepository)
     private val juegoService = JuegoService(
         juegoRepository,
@@ -46,6 +49,7 @@ class JuegoServiceTests {
         personajeRepository,
         estadisticaRepository,
         ataqueRepository,
+        objetoCompletoRepository,
         estadisticaService,
         personajeService
     )

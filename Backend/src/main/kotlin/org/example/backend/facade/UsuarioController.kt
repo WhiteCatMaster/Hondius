@@ -79,6 +79,7 @@ class UsuarioController(
         @Parameter(description = "El ID único proporcionado por Google al iniciar sesión") @PathVariable googleId: String
     ): ResponseEntity<UsuarioDto> {
         val usuario = usuarioService.findByGoogleId(googleId).get()
+        println(usuario)
         val resultado = usuario.usuarioToDto()
         return ResponseEntity.ok(resultado)
     }

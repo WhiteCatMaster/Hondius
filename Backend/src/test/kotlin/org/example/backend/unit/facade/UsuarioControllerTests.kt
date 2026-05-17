@@ -2,10 +2,12 @@ package org.example.backend.unit.facade
 
 import org.example.backend.entity.Juego
 import org.example.backend.entity.JugadorJuego
+import org.example.backend.entity.Personaje
 import org.example.backend.entity.RolJugador
 import org.example.backend.entity.Usuario
 import org.example.backend.facade.RegistrarUsuarioRequest
 import org.example.backend.facade.UsuarioController
+import org.example.backend.repository.UsuarioRepository
 import org.example.backend.service.UsuarioService
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -21,7 +23,8 @@ import java.util.Optional
 
 class UsuarioControllerTests {
     private val usuarioService = mock<UsuarioService>()
-    private val usuarioController = UsuarioController(usuarioService)
+    private val usuarioRepository = mock<UsuarioRepository>()
+    private val usuarioController = UsuarioController(usuarioService, usuarioRepository)
 
     @Test
     fun testRegistrarUsuario() {
@@ -59,34 +62,47 @@ class UsuarioControllerTests {
         // 1. ARRANGE
         val googleIdBuscado = "google-123"
 
-        // Preparamos el juego falso
-        val juegoMock = mock<Juego> {
-            on { id } doReturn 100L
-            on { nombre } doReturn "Juego Test"
-            on { descripcion } doReturn "Descripción Test"
-            on { idioma } doReturn "ES"
-            on { maximoJugadores } doReturn 4
-        }
+        // Usamos objetos REALES en lugar de Mocks para las entidades
+        val personajeReal = Personaje(
+            id = 50L,
+            nombre = "Heroe Test",
+            vida = 100,
+            estadisticas = mutableListOf(),
+            ataques = mutableListOf(),
+            inventario = mutableListOf()
+        )
 
-        // Preparamos el registro intermedio (JugadorJuego)
-        val jugadorJuegoMock = mock<JugadorJuego> {
-            on { id } doReturn 10L
-            on { juego } doReturn juegoMock
-            // Asumo que tienes un enum llamado RolJugador, ajusta el nombre si es distinto
-            on { rol } doReturn RolJugador.ADMIN
-        }
+        val juegoReal = Juego(
+            id = 100L,
+            nombre = "Juego Test",
+            descripcion = "Descripción Test",
+            idioma = "ES",
+            maximoJugadores = 4,
+            jugadores = mutableListOf(),
+            personajes = mutableListOf()
+        )
 
-        // Preparamos el usuario devuelto por la base de datos
-        val usuarioMock = mock<Usuario> {
-            on { id } doReturn 1L
-            on { googleId } doReturn googleIdBuscado
-            on { email } doReturn "test@test.com"
-            on { nombre } doReturn "Usuario Test"
-            on { fotoUrl } doReturn "url_foto"
-            on { partidasParticipa } doReturn mutableListOf(jugadorJuegoMock)
-        }
+        val jugadorJuegoReal = JugadorJuego(
+            id = 10L,
+            juego = juegoReal,
+            rol = RolJugador.ADMIN,
+            personaje = personajeReal
+        )
 
-        whenever(usuarioService.findByGoogleId(googleIdBuscado)).thenReturn(Optional.of(usuarioMock))
+        val usuarioReal = Usuario(
+            id = 1L,
+            googleId = googleIdBuscado,
+            email = "test@test.com",
+            nombre = "Usuario Test",
+            fotoUrl = "url_foto",
+            partidasParticipa = mutableListOf(jugadorJuegoReal)
+        )
+
+        // Cerramos la referencia circular igual que hace Hibernate
+        jugadorJuegoReal.usuario = usuarioReal
+
+        // El servicio sí es un mock, y devuelve nuestro usuario real
+        whenever(usuarioService.findByGoogleId(googleIdBuscado)).thenReturn(Optional.of(usuarioReal))
 
         // 2. ACT
         val resultado = usuarioController.obtenerUsuarioxGoogleId(googleIdBuscado)
@@ -99,13 +115,11 @@ class UsuarioControllerTests {
         assertEquals(googleIdBuscado, body.googleId)
         assertEquals("test@test.com", body.email)
 
-        // Verificamos el mapeo de la lista de partidas
         assertEquals(1, body.partidasParticipa.size)
         val partidaDto = body.partidasParticipa[0]
         assertEquals(10L, partidaDto.id)
-        assertEquals("ADMIN", partidaDto.rol)
+        assertEquals("ADMIN", partidaDto.rol.toString())
 
-        // Verificamos los datos del juego anidado
         assertEquals(100L, partidaDto.juego?.id)
         assertEquals("Juego Test", partidaDto.juego?.nombre)
     }
