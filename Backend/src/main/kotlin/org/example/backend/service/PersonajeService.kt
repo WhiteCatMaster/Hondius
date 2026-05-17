@@ -6,6 +6,7 @@ import org.example.backend.dto.CrearPartidaDto
 import org.example.backend.dto.DatosPartidaDto
 import org.example.backend.entity.Ataque
 import org.example.backend.entity.Estadistica
+import org.example.backend.entity.ObjetoCompleto
 import org.example.backend.entity.Personaje
 import org.example.backend.repository.PersonajeRepository
 import org.springframework.stereotype.Service
@@ -113,9 +114,50 @@ class PersonajeService(private val personajeRepo: PersonajeRepository) {
             )
             ataques.add(ataque)
         }
+        val inventarioEntidad = mutableListOf<ObjetoCompleto>()
+
+// Verificamos que el inventario venga en el DTO (si lo añadiste a CrearPartidaDto)
+        personajeDTO.personajeInventario?.forEach { objetoDto : CrearPartidaDto.PersonajeDto.ObjetoDto ->
+
+            val efectosPropiosReales = mutableMapOf<Estadistica, Double>()
+
+// 1. El ?: emptyMap() protege contra nulos si el JSON no incluyó el campo
+// 2. Forzamos los tipos (nombreEst: String, valor: Double) para ayudar al compilador
+            for ((nombreEst: String, valor: Double) in objetoDto.efectosPropios ?: emptyMap()) {
+
+                // 3. Buscamos la estadística
+                val estadisticaEncontrada = buscadorEstadisticas[nombreEst]
+
+                // 4. Usamos un 'if' normal en lugar de 'let' para evitar confusiones de inferencia
+                if (estadisticaEncontrada != null) {
+                    efectosPropiosReales[estadisticaEncontrada] = valor
+                }
+            }
+
+            val efectosRivalReales = mutableMapOf<Estadistica, Double>()
+
+            for ((nombreEst: String, valor: Double) in objetoDto.efectosRival ?: emptyMap()) {
+                val estadisticaEncontrada = buscadorEstadisticas[nombreEst]
+                if (estadisticaEncontrada != null) {
+                    efectosRivalReales[estadisticaEncontrada] = valor
+                }
+            }
+
+            val nuevoObjeto = ObjetoCompleto(
+                nombre = objetoDto.nombre ?: "",
+                descripcion = objetoDto.descripcion ?: "",
+                imagen = objetoDto.imagen ?: "",
+                usos = objetoDto.usos ?: 1,
+                efectosPropios = efectosPropiosReales,
+                efectosRival = efectosRivalReales
+                // No te olvides de asignar el owner (personaje) más abajo
+            )
+            inventarioEntidad.add(nuevoObjeto)
+        }
 
         println("Guardando ataques desde DTO...")
         println("Guardando personajes desde DTO...")
+        println("Guardando inventario desde DTO...")
 
         // 3. Montamos el personaje con sus listas ya enlazadas
         val personaje = Personaje(
@@ -133,6 +175,11 @@ class PersonajeService(private val personajeRepo: PersonajeRepository) {
         for (i in personaje.ataques){
             i.owner = personaje
         }
+        for (objeto in personaje.inventario) {
+            objeto.personaje = personaje
+        }
+        personaje.inventario = inventarioEntidad
+
         return personaje
     }
     fun personajeToDto(personaje: Personaje): DatosPartidaDto.PersonajeDto{
@@ -168,6 +215,34 @@ class PersonajeService(private val personajeRepo: PersonajeRepository) {
                 danoAtaque = i.danioAtaque
             )
             ataquesDto.add(ataqueDto)
+
+            val inventarioDto = mutableListOf<DatosPartidaDto.PersonajeDto.ObjetoDto>()
+
+            for (objeto in personaje.inventario) {
+                // Transformamos Map<Estadistica, Double> a Map<String, Double>
+                val efectosPropiosDto = mutableMapOf<String, Double>()
+                for ((estadistica, valor) in objeto.efectosPropios) {
+                    efectosPropiosDto[estadistica.nombre] = valor
+                }
+
+                val efectosRivalDto = mutableMapOf<String, Double>()
+                for ((estadistica, valor) in objeto.efectosRival) {
+                    efectosRivalDto[estadistica.nombre] = valor
+                }
+
+                // Creamos el DTO (asegúrate de que esta clase exista en tu DatosPartidaDto)
+                val objetoDto = DatosPartidaDto.PersonajeDto.ObjetoDto(
+                    id = objeto.id,
+                    nombre = objeto.nombre,
+                    descripcion = objeto.descripcion,
+                    imagen = objeto.imagen,
+                    usos = objeto.usos,
+                    efectosPropios = efectosPropiosDto,
+                    efectosRival = efectosRivalDto
+                )
+                inventarioDto.add(objetoDto)
+            }
+
         }
         val personajeDto = DatosPartidaDto.PersonajeDto(
             id = personaje.id,

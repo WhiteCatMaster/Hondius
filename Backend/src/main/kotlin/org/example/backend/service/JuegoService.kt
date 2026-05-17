@@ -12,6 +12,7 @@ import org.example.backend.repository.AtaqueRepository
 import org.example.backend.repository.EstadisticaRepository
 import org.example.backend.repository.JuegoRepository
 import org.example.backend.repository.JugadorJuegoRepository
+import org.example.backend.repository.ObjetoCompletoRepository
 import org.example.backend.repository.PersonajeRepository
 import org.example.backend.repository.UsuarioRepository
 import org.springframework.http.ResponseEntity
@@ -25,6 +26,7 @@ class JuegoService(
     private val personajeRepo: PersonajeRepository,
     private val estadisticaRepo: EstadisticaRepository,
     private val ataqueRepo: AtaqueRepository,
+    private val objetoRepo: ObjetoCompletoRepository,
     private val estadisticaService: EstadisticaService,
     private val personajeService: PersonajeService
 ) {
@@ -126,6 +128,7 @@ class JuegoService(
 
             personajes.add(personaje)
         }
+
         // --- FIN DEL BLOQUE MODIFICADO ---
 
         juego.personajes = personajes
@@ -141,6 +144,8 @@ class JuegoService(
             println("Estadisticas guardadas: ${estatsGuardadas.size}")
             val ataquesGuardados = ataqueRepo.saveAll(i.ataques)
             println("Ataques guardados: ${ataquesGuardados.size}")
+            val objetosGuardados = objetoRepo.saveAll(i.inventario)
+            println("Objetos guardados: ${objetosGuardados.size}")
         }
 
         println("Devolviendo partida creada...")
