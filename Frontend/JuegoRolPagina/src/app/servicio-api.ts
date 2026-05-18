@@ -9,7 +9,7 @@ import { ActualizarUsuarioDto } from './usuario/usuarioWeb';
 import { Estadistica } from './models/estadistica';
 import { Ataque } from './models/ataque';
 import { EstadisticaPersonaje, Personaje, toPersonajeEstadistica, toPersonajeEstadisticaDto } from './models/personaje';
-import { Partida } from './models/partida';
+import { Partida, Plantilla } from './models/partida';
 
 
 @Injectable({
@@ -56,6 +56,20 @@ export class ServicioAPI {
   actualizarUsuario(googleId: string|undefined, payload: ActualizarUsuarioDto): Observable<Usuario>{
     return this.http.put<any>(`${this.apiUrl}/usuario/${googleId}`, payload)
   }
+
+  obtenerPlantillas(): Observable<Plantilla[]>{
+    return this.http.get<any[]>(`${this.apiUrl}/plantilla`);
+  }
+  //El jsonConfig deberia de ser un json cuando llegue aqui
+  guardarPlantilla(nombre: string, jsonConfig: CrearPartidaDto): Observable<Plantilla>{
+    let payload: Plantilla = {
+      id: null,
+      nombre: nombre,
+      jsonConfiguration: jsonConfig
+    }
+    return this.http.post<any>(`${this.apiUrl}/plantilla`, payload);
+  }
+
 
 }
 export interface EstadisticaDto{

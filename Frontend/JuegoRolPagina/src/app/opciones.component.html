@@ -30,7 +30,10 @@
       </div>
 
       <div class="step" [class.active]="paso === 4" [class.completed]="paso > 4">
-        <div class="v-stepper"><div class="circle"></div><div class="line"></div></div>
+        <div class="v-stepper">
+          <div class="circle"></div>
+          <div class="line"></div>
+        </div>
         <div class="content">Dados</div>
       </div>
 
@@ -43,7 +46,10 @@
       </div>
 
       <div class="step" [class.active]="paso === 6" [class.completed]="paso > 6">
-        <div class="v-stepper"><div class="circle"></div><div class="line"></div></div>
+        <div class="v-stepper">
+          <div class="circle"></div>
+          <div class="line"></div>
+        </div>
         <div class="content">Personajes</div>
       </div>
     </div>
@@ -53,6 +59,23 @@
       <h1>Configuración</h1>
     </div>
     <div class="Contenedor1" [hidden]="paso !== 1">
+      <!-- PLANTILLAS -->
+      <div class="ClaseGeneralEstadisticas">
+        <h3>Plantillas disponibles</h3>
+        <div>
+          <select name="CajaTexto" [(ngModel)]="plantillaSeleccionada">
+            <option [ngValue]="null">-- Selecciona una plantilla --</option>
+            @for (plantilla of listaPlantillas; track plantilla.id) {
+            <option [ngValue]="plantilla">{{ plantilla.nombre }}</option>
+            }
+          </select>
+          <button class="btn-sellar-pergamino" [disabled]="!plantillaSeleccionada" (click)="ejecutarCarga()">
+            Cargar Plantilla actual
+          </button>
+        </div>
+      </div>
+
+      <!--FIN PLANTILLAS -->
       <div class="ClaseGeneralEstadisticas">
         <div>
           <p>Nombre partida:</p>
@@ -116,9 +139,9 @@
           <h3>Tus Estadísticas</h3>
           <div class="carrusel">
             @for (stat of estadisticas; track stat.nombre) {
-              <div class="caja-stat" draggable="true" (dragstart)="iniciarArrastre(stat)" (dragend)="finalizarArrastre()">
-                <div class="icono">{{ stat.nombre }}</div>
-              </div>
+            <div class="caja-stat" draggable="true" (dragstart)="iniciarArrastre(stat)" (dragend)="finalizarArrastre()">
+              <div class="icono">{{ stat.nombre }}</div>
+            </div>
             }
           </div>
         </div>
@@ -126,9 +149,9 @@
           <h3>Estadísticas del rival</h3>
           <div class="carrusel">
             @for (stat of estadisticas; track stat.nombre) {
-              <div class="caja-stat" draggable="true" (dragstart)="iniciarArrastre(stat)" (dragend)="finalizarArrastre()">
-                <div class="icono">{{ stat.nombre }}</div>
-              </div>
+            <div class="caja-stat" draggable="true" (dragstart)="iniciarArrastre(stat)" (dragend)="finalizarArrastre()">
+              <div class="icono">{{ stat.nombre }}</div>
+            </div>
             }
           </div>
         </div>
@@ -142,15 +165,15 @@
               <h3 class="subtitulo-mesa">Coste</h3>
               <div class="mesa-grid-items">
                 @for (coste of costesEnMesa; track coste.nombre; let i = $index) {
-                  <div class="item-mesa-centered">
-                    <span class="btn-eliminar-mesa" (click)="eliminarCoste(i)">✖</span>
-                    <span class="item-nombre-mesa">{{ coste.nombre }}</span>
-                    <div class="item-controles-mesa">
-                      <span class="btn-control-mesa" (click)="decrementar(coste)">-</span>
-                      <span class="valor-control-mesa">{{ coste.valor }}</span>
-                      <span class="btn-control-mesa" (click)="incrementar(coste)">+</span>
-                    </div>
+                <div class="item-mesa-centered">
+                  <span class="btn-eliminar-mesa" (click)="eliminarCoste(i)">✖</span>
+                  <span class="item-nombre-mesa">{{ coste.nombre }}</span>
+                  <div class="item-controles-mesa">
+                    <span class="btn-control-mesa" (click)="decrementar(coste)">-</span>
+                    <span class="valor-control-mesa">{{ coste.valor }}</span>
+                    <span class="btn-control-mesa" (click)="incrementar(coste)">+</span>
                   </div>
+                </div>
                 }
               </div>
             </div>
@@ -159,15 +182,15 @@
               <h3 class="subtitulo-mesa">Efecto al rival</h3>
               <div class="mesa-grid-items">
                 @for (efecto of efectosEnMesa; track efecto.nombre; let i = $index) {
-                  <div class="item-mesa-centered" style="position: relative;">
-                    <span class="btn-eliminar-mesa" (click)="eliminarEfecto(i)">✖</span>
-                    <span class="item-nombre-mesa">{{ efecto.nombre }}</span>
-                    <div class="item-controles-mesa">
-                      <span class="btn-control-mesa" (click)="decrementarMultiplicador(efecto)">-</span>
-                      <span class="valor-control-mesa">x{{ efecto.valor }}</span>
-                      <span class="btn-control-mesa" (click)="incrementarMultiplicador(efecto)">+</span>
-                    </div>
+                <div class="item-mesa-centered" style="position: relative;">
+                  <span class="btn-eliminar-mesa" (click)="eliminarEfecto(i)">✖</span>
+                  <span class="item-nombre-mesa">{{ efecto.nombre }}</span>
+                  <div class="item-controles-mesa">
+                    <span class="btn-control-mesa" (click)="decrementarMultiplicador(efecto)">-</span>
+                    <span class="valor-control-mesa">x{{ efecto.valor }}</span>
+                    <span class="btn-control-mesa" (click)="incrementarMultiplicador(efecto)">+</span>
                   </div>
+                </div>
                 }
               </div>
             </div>
@@ -207,32 +230,32 @@
           </div>
           <div class="resumen-ataque">
             @if (costesEnMesa.length === 0 && efectosEnMesa.length === 0 && !ratioDadoMin && !ratioDadoMax) {
-              <span id="placeholder-resultado">Arrastra ingredientes y ajusta el coste para ver el hechizo final</span>
+            <span id="placeholder-resultado">Arrastra ingredientes y ajusta el coste para ver el hechizo final</span>
             } @else {
-              @if (costesEnMesa.length > 0) {
-                <h4>Coste:</h4>
-                <ul>
-                  @for (coste of costesEnMesa; track coste.nombre) {
-                    <li>{{ coste.nombre }}: {{ coste.valor }}</li>
-                  }
-                </ul>
+            @if (costesEnMesa.length > 0) {
+            <h4>Coste:</h4>
+            <ul>
+              @for (coste of costesEnMesa; track coste.nombre) {
+              <li>{{ coste.nombre }}: {{ coste.valor }}</li>
               }
-              @if (efectosEnMesa.length > 0) {
-                <h4>Efecto al Rival:</h4>
-                <ul>
-                  @for (efecto of efectosEnMesa; track efecto.nombre) {
-                    <li>{{ efecto.nombre }}: x{{ efecto.valor }}</li>
-                  }
-                </ul>
+            </ul>
+            }
+            @if (efectosEnMesa.length > 0) {
+            <h4>Efecto al Rival:</h4>
+            <ul>
+              @for (efecto of efectosEnMesa; track efecto.nombre) {
+              <li>{{ efecto.nombre }}: x{{ efecto.valor }}</li>
               }
-              @if (ratioDadoMin || ratioDadoMax) {
-                <h4>Suerte (Dado 20):</h4>
-                <p>Crítico en: {{ ratioDadoMin || '?' }} | Normal en: {{ ratioDadoMax || '?' }}</p>
-              }
-              @if (danoAtaque) {
-                <h4>Daño Directo:</h4>
-                <p>{{ danoAtaque }} pts de daño</p>
-              }
+            </ul>
+            }
+            @if (ratioDadoMin || ratioDadoMax) {
+            <h4>Suerte (Dado 20):</h4>
+            <p>Crítico en: {{ ratioDadoMin || '?' }} | Normal en: {{ ratioDadoMax || '?' }}</p>
+            }
+            @if (danoAtaque) {
+            <h4>Daño Directo:</h4>
+            <p>{{ danoAtaque }} pts de daño</p>
+            }
             }
           </div>
           <button class="btn-sellar-pergamino" (click)="guardarAtaqueActual()">Crear hechizo</button>
@@ -304,7 +327,8 @@
         <div>
           <p>Ataques:</p>
           <div *ngFor="let huecoAtaque of personaje.ataquesDelPersonaje; let j = index; trackBy: trackByFn">
-            <select class="Opcion" [(ngModel)]="personaje.ataquesDelPersonaje[j].nombre" (ngModelChange)="alCambiarAtaque($event, i, j)">
+            <select class="Opcion" [(ngModel)]="personaje.ataquesDelPersonaje[j].nombre"
+              (ngModelChange)="alCambiarAtaque($event, i, j)">
               <option *ngFor="let ataqueCreado of ataques" [value]="ataqueCreado.nombre">
                 {{ ataqueCreado.nombre }}
               </option>
@@ -318,7 +342,8 @@
           <div class="EstadisticasPersonaje" *ngFor="let estPersonaje of personaje.estadisticasDelPersonaje">
             <p>{{ estPersonaje.nombreEstadistica }}</p>
             <p>:</p>
-            <input class="CajaTexto" type="number" [(ngModel)]="estPersonaje.valorPropio" style="width: 60px; margin-left: 10px;">
+            <input class="CajaTexto" type="number" [(ngModel)]="estPersonaje.valorPropio"
+              style="width: 60px; margin-left: 10px;">
           </div>
         </div>
         <br>
@@ -330,7 +355,14 @@
     <div class="BotonesMovimiento" [hidden]="paso !== 6">
       <input type="button" value="Atras" class="sv_prev_btn" (click)="irAtras()">
       <button class="btn-sellar-pergamino" (click)="mandarPartida()" routerLink="/">Crea una nueva partida</button>
-
+    </div>
+    <!--Guardar como plantilla-->
+    <hr>
+    <div>
+      <input type="text" class="CajaTexto" placeholder="Nombre de plantilla..." [(ngModel)]="nombreNuevaPlantilla">
+      <button class="btn-sellar-pergamino" [disabled]="!nombreNuevaPlantilla" (click)="guardarPlantilla()">
+        Guardar como plantilla
+      </button>
     </div>
 
     <!-- ═══════════════════════════════════════════════════════════
@@ -352,9 +384,9 @@
           <p class="hint-objeto">Arrastra las estadísticas que el objeto mejorará al portador</p>
           <div class="carrusel">
             @for (stat of estadisticas; track stat.nombre) {
-              <div class="caja-stat" draggable="true" (dragstart)="iniciarArrastreObjeto(stat)">
-                <div class="icono icono-verde">{{ stat.nombre }}</div>
-              </div>
+            <div class="caja-stat" draggable="true" (dragstart)="iniciarArrastreObjeto(stat)">
+              <div class="icono icono-verde">{{ stat.nombre }}</div>
+            </div>
             }
           </div>
         </div>
@@ -364,9 +396,9 @@
           <p class="hint-objeto">Arrastra las estadísticas que el objeto afectará al rival</p>
           <div class="carrusel">
             @for (stat of estadisticas; track stat.nombre) {
-              <div class="caja-stat" draggable="true" (dragstart)="iniciarArrastreObjeto(stat)">
-                <div class="icono icono-rojo">{{ stat.nombre }}</div>
-              </div>
+            <div class="caja-stat" draggable="true" (dragstart)="iniciarArrastreObjeto(stat)">
+              <div class="icono icono-rojo">{{ stat.nombre }}</div>
+            </div>
             }
           </div>
         </div>
@@ -381,25 +413,28 @@
           <div class="fila-config-objeto">
             <div class="input-grupo-objeto">
               <label>Nombre del objeto:</label>
-              <input type="text" class="input-objeto" placeholder="Ej: Poción de curación" [(ngModel)]="nombreObjetoActual">
+              <input type="text" class="input-objeto" placeholder="Ej: Poción de curación"
+                [(ngModel)]="nombreObjetoActual">
             </div>
             <div class="input-grupo-objeto">
               <label>Descripción:</label>
-              <input type="text" class="input-objeto" placeholder="Ej: Restaura la vitalidad del portador" [(ngModel)]="descripcionObjetoActual">
+              <input type="text" class="input-objeto" placeholder="Ej: Restaura la vitalidad del portador"
+                [(ngModel)]="descripcionObjetoActual">
             </div>
           </div>
 
           <div class="fila-config-objeto">
             <div class="input-grupo-objeto input-grupo-imagen">
               <label>URL de la imagen:</label>
-              <input type="text" class="input-objeto input-url" placeholder="https://..." [(ngModel)]="imagenObjetoActual">
+              <input type="text" class="input-objeto input-url" placeholder="https://..."
+                [(ngModel)]="imagenObjetoActual">
             </div>
             <!-- Vista previa de la imagen -->
             <div class="preview-imagen-objeto">
               @if (imagenObjetoActual) {
-                <img [src]="imagenObjetoActual" alt="Vista previa" class="img-preview-objeto">
+              <img [src]="imagenObjetoActual" alt="Vista previa" class="img-preview-objeto">
               } @else {
-                <div class="img-preview-placeholder">Sin imagen.</div>
+              <div class="img-preview-placeholder">Sin imagen.</div>
               }
             </div>
           </div>
@@ -418,60 +453,54 @@
           <!-- Zonas drop: efectos propios y efectos rival -->
           <div class="contenedor-zonas-objeto">
 
-            <div class="zona-drop-objeto zona-verde"
-                 (dragover)="permitirDropObjeto($event)"
-                 (drop)="soltarEnEfectoPropio()">
+            <div class="zona-drop-objeto zona-verde" (dragover)="permitirDropObjeto($event)"
+              (drop)="soltarEnEfectoPropio()">
               <h3 class="subtitulo-mesa">⬆ Mejoras al portador</h3>
               <div class="mesa-grid-items">
                 @for (efecto of efectosPropiosObjeto; track efecto.nombre; let i = $index) {
-                  <div class="item-mesa-centered item-objeto-verde">
-                    <span class="btn-eliminar-mesa" (click)="eliminarEfectoPropio(i)">✖</span>
-                    <span class="item-nombre-mesa">{{ efecto.nombre }}</span>
-                    <div class="item-controles-mesa">
-                      <!-- Botón signo -->
-                      <span class="btn-signo-objeto"
-                            [class.signo-positivo]="efecto.signo === 1"
-                            [class.signo-negativo]="efecto.signo === -1"
-                            (click)="toggleSignoEfecto(efecto)">
-                        {{ efecto.signo === 1 ? '+' : '−' }}
-                      </span>
-                      <span class="btn-control-mesa" (click)="decrementarEfectoObjeto(efecto)">-</span>
-                      <span class="valor-control-mesa">{{ efecto.valor }}</span>
-                      <span class="btn-control-mesa" (click)="incrementarEfectoObjeto(efecto)">+</span>
-                    </div>
+                <div class="item-mesa-centered item-objeto-verde">
+                  <span class="btn-eliminar-mesa" (click)="eliminarEfectoPropio(i)">✖</span>
+                  <span class="item-nombre-mesa">{{ efecto.nombre }}</span>
+                  <div class="item-controles-mesa">
+                    <!-- Botón signo -->
+                    <span class="btn-signo-objeto" [class.signo-positivo]="efecto.signo === 1"
+                      [class.signo-negativo]="efecto.signo === -1" (click)="toggleSignoEfecto(efecto)">
+                      {{ efecto.signo === 1 ? '+' : '−' }}
+                    </span>
+                    <span class="btn-control-mesa" (click)="decrementarEfectoObjeto(efecto)">-</span>
+                    <span class="valor-control-mesa">{{ efecto.valor }}</span>
+                    <span class="btn-control-mesa" (click)="incrementarEfectoObjeto(efecto)">+</span>
                   </div>
+                </div>
                 }
                 @if (efectosPropiosObjeto.length === 0) {
-                  <span class="placeholder-zona">Suelta estadísticas aquí</span>
+                <span class="placeholder-zona">Suelta estadísticas aquí</span>
                 }
               </div>
             </div>
 
-            <div class="zona-drop-objeto zona-roja"
-                 (dragover)="permitirDropObjeto($event)"
-                 (drop)="soltarEnEfectoRival()">
+            <div class="zona-drop-objeto zona-roja" (dragover)="permitirDropObjeto($event)"
+              (drop)="soltarEnEfectoRival()">
               <h3 class="subtitulo-mesa">⬇ Efectos al rival</h3>
               <div class="mesa-grid-items">
                 @for (efecto of efectosRivalObjeto; track efecto.nombre; let i = $index) {
-                  <div class="item-mesa-centered item-objeto-rojo">
-                    <span class="btn-eliminar-mesa" (click)="eliminarEfectoRival(i)">✖</span>
-                    <span class="item-nombre-mesa">{{ efecto.nombre }}</span>
-                    <div class="item-controles-mesa">
-                      <!-- Botón signo -->
-                      <span class="btn-signo-objeto"
-                            [class.signo-positivo]="efecto.signo === 1"
-                            [class.signo-negativo]="efecto.signo === -1"
-                            (click)="toggleSignoEfecto(efecto)">
-                        {{ efecto.signo === 1 ? '+' : '−' }}
-                      </span>
-                      <span class="btn-control-mesa" (click)="decrementarEfectoObjeto(efecto)">-</span>
-                      <span class="valor-control-mesa">{{ efecto.valor }}</span>
-                      <span class="btn-control-mesa" (click)="incrementarEfectoObjeto(efecto)">+</span>
-                    </div>
+                <div class="item-mesa-centered item-objeto-rojo">
+                  <span class="btn-eliminar-mesa" (click)="eliminarEfectoRival(i)">✖</span>
+                  <span class="item-nombre-mesa">{{ efecto.nombre }}</span>
+                  <div class="item-controles-mesa">
+                    <!-- Botón signo -->
+                    <span class="btn-signo-objeto" [class.signo-positivo]="efecto.signo === 1"
+                      [class.signo-negativo]="efecto.signo === -1" (click)="toggleSignoEfecto(efecto)">
+                      {{ efecto.signo === 1 ? '+' : '−' }}
+                    </span>
+                    <span class="btn-control-mesa" (click)="decrementarEfectoObjeto(efecto)">-</span>
+                    <span class="valor-control-mesa">{{ efecto.valor }}</span>
+                    <span class="btn-control-mesa" (click)="incrementarEfectoObjeto(efecto)">+</span>
                   </div>
+                </div>
                 }
                 @if (efectosRivalObjeto.length === 0) {
-                  <span class="placeholder-zona">Suelta estadísticas aquí</span>
+                <span class="placeholder-zona">Suelta estadísticas aquí</span>
                 }
               </div>
             </div>
@@ -490,41 +519,41 @@
           <!-- Imagen del objeto en el pergamino -->
           <div class="imagen-en-pergamino">
             @if (imagenObjetoActual) {
-              <img [src]="imagenObjetoActual" alt="Vista previa" class="img-preview-objeto">
+            <img [src]="imagenObjetoActual" alt="Vista previa" class="img-preview-objeto">
             } @else {
-              <div class="img-preview-placeholder">Sin imagen.</div>
+            <div class="img-preview-placeholder">Sin imagen.</div>
             }
           </div>
 
           <div class="resumen-ataque">
             @if (!nombreObjetoActual && efectosPropiosObjeto.length === 0 && efectosRivalObjeto.length === 0) {
-              <span id="placeholder-resultado">Configura el objeto para ver su ficha</span>
+            <span id="placeholder-resultado">Configura el objeto para ver su ficha</span>
             } @else {
 
-              @if (descripcionObjetoActual) {
-                <p class="descripcion-objeto-pergamino"><em>{{ descripcionObjetoActual }}</em></p>
-              }
+            @if (descripcionObjetoActual) {
+            <p class="descripcion-objeto-pergamino"><em>{{ descripcionObjetoActual }}</em></p>
+            }
 
-              <h4>Usos: {{ usosObjetoActual === 0 ? '∞' : usosObjetoActual }}</h4>
-              <h4>{{ consumibleObjetoActual ? 'Se consume al usar' : 'Reutilizable' }}</h4>
+            <h4>Usos: {{ usosObjetoActual === 0 ? '∞' : usosObjetoActual }}</h4>
+            <h4>{{ consumibleObjetoActual ? 'Se consume al usar' : 'Reutilizable' }}</h4>
 
-              @if (efectosPropiosObjeto.length > 0) {
-                <h4>⬆ Al portador:</h4>
-                <ul>
-                  @for (e of efectosPropiosObjeto; track e.nombre) {
-                    <li>{{ e.nombre }}: {{ e.signo === 1 ? '+' : '−' }}{{ e.valor }}</li>
-                  }
-                </ul>
+            @if (efectosPropiosObjeto.length > 0) {
+            <h4>⬆ Al portador:</h4>
+            <ul>
+              @for (e of efectosPropiosObjeto; track e.nombre) {
+              <li>{{ e.nombre }}: {{ e.signo === 1 ? '+' : '−' }}{{ e.valor }}</li>
               }
+            </ul>
+            }
 
-              @if (efectosRivalObjeto.length > 0) {
-                <h4>⬇ Al rival:</h4>
-                <ul>
-                  @for (e of efectosRivalObjeto; track e.nombre) {
-                    <li>{{ e.nombre }}: {{ e.signo === 1 ? '+' : '−' }}{{ e.valor }}</li>
-                  }
-                </ul>
+            @if (efectosRivalObjeto.length > 0) {
+            <h4>⬇ Al rival:</h4>
+            <ul>
+              @for (e of efectosRivalObjeto; track e.nombre) {
+              <li>{{ e.nombre }}: {{ e.signo === 1 ? '+' : '−' }}{{ e.valor }}</li>
               }
+            </ul>
+            }
             }
           </div>
 
@@ -538,9 +567,9 @@
             <div class="miniatura-objeto" *ngFor="let obj of objetos; let i = index">
               <div class="preview-imagen-objeto">
                 @if (imagenObjetoActual) {
-                  <img [src]="imagenObjetoActual" alt="Vista previa" class="img-preview-objeto">
+                <img [src]="imagenObjetoActual" alt="Vista previa" class="img-preview-objeto">
                 } @else {
-                  <div class="img-miniatura-objeto">Sin imagen.</div>
+                <div class="img-miniatura-objeto">Sin imagen.</div>
                 }
               </div>
               <span class="nombre-miniatura-objeto">{{ obj.nombre }}</span>

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -7,8 +7,8 @@ import { Personaje, EstadisticaPersonaje } from './models/personaje';
 import { Ataque } from './models/ataque';
 import { Usuario } from './models/usuario';
 import { JugadorJuego, Rol } from './models/jugador-juego';
-import { Partida } from './models/partida';
-import { CrearPartidaDto, DatosPartidaDto, PersonajeDto, ServicioAPI, toPersonajeDto } from './servicio-api';
+import { Partida, Plantilla } from './models/partida';
+import { CrearPartidaDto, DatosPartidaDto, PersonajeDto, ServicioAPI, toPersonaje, toPersonajeDto } from './servicio-api';
 import { Dado } from './models/dado';
 import { UsuarioService } from './servicios/usuario-service';
 import { Objeto } from './models/objeto';
@@ -35,16 +35,22 @@ export interface ObjetoCompleto {
   templateUrl: './opciones.component.html',
   styleUrl: './opciones.component.css',
 })
-export class OpcionesComponent {
+export class OpcionesComponent implements OnInit{
   constructor(
     private servicioAPI: ServicioAPI,
     public usuarioService: UsuarioService,
   ) {}
+  ngOnInit(): void {
+      this.cargarPlantillas()
+  }
 
   nombre = '';
   descripcion = '';
   idioma = '';
   maxJugadores = 0;
+  listaPlantillas : Plantilla[] = []
+  plantillaSeleccionada: Plantilla|null = null;
+  nombreNuevaPlantilla : string = ''; 
 
   paso = 1;
   estadisticas: Estadistica[] = [
@@ -572,4 +578,102 @@ export class OpcionesComponent {
       default:  return 'assets/img/dados/default.jpg';
     }
   }
+
+
+  crearPLantillaNueva(nombrePlantilla: string){
+    let jugadores: PersonajeDto[] = [];
+    const adminId = this.usuarioService.usuarioActual()?.id;
+
+    for (let personaje of this.personajes) {
+      jugadores.push(toPersonajeDto(personaje))
+    }
+
+    let payload : CrearPartidaDto  = {
+      adminId: adminId ?? -1,
+      id: -1,
+      nombre: this.nombre,
+      descripcion: this.descripcion,
+      idioma: this.idioma,
+      maximoJugadores: this.maxJugadores,
+      jugadores: jugadores
+    };
+    this.servicioAPI.guardarPlantilla(nombrePlantilla,payload).subscribe({
+      next: (respuesta) => {
+        console.log('Plantilla guardada en el catalogo')
+        nombrePlantilla = '';
+        this.cargarPlantillas()
+        console.log(respuesta)
+      },
+      error: (error) => {
+        console.log('Ha ocurrido un error: ', error)
+      }
+    })
+    
+  }
+  //Plantillas 
+  cargarPlantilla(plantillaSeleccionada: Plantilla){
+    let payload = plantillaSeleccionada.jsonConfiguration;
+    payload.adminId = this.usuarioService.usuarioActual()?.id ?? -1
+    //Supongo que ahora seria cargar todo con el dto desde backend
+    this.nombre = payload.nombre
+    this.descripcion =payload.descripcion
+    this.idioma = payload.idioma
+    this.maxJugadores = payload.maximoJugadores
+    this.personajes = []
+    this.estadisticas = []
+    //Ahora los personajes
+    for(let i of payload.jugadores){
+      let personaje = toPersonaje(i)
+      if(!this.personajes.includes(personaje)){
+        this.personajes.push(personaje)
+      }
+      for(let ataque of personaje.ataquesDelPersonaje){
+        console.log(ataque)
+        if(this.ataques.find((value) => value.nombre === ataque.nombre) === undefined){
+          ataque.id = null
+          this.ataques.push(ataque)  
+        }
+      }
+      for(let estadisticaPersonaje of personaje.estadisticasDelPersonaje){
+        console.log(estadisticaPersonaje)
+        let estadistica: Estadistica ={
+          id: null,
+          nombre: estadisticaPersonaje.nombreEstadistica,
+          valor: estadisticaPersonaje.valorPropio,
+          consumible: estadisticaPersonaje.consumible
+        } 
+        if(this.estadisticas.find((value) => value.nombre === estadistica.nombre) === undefined){
+          this.estadisticas.push(estadistica)
+        }
+      }
+    }
+  }
+  ejecutarCarga(){
+    if(this.plantillaSeleccionada){
+      this.cargarPlantilla(this.plantillaSeleccionada)
+      alert('Plantilla cargada')
+
+    }
+  }
+  guardarPlantilla(){
+    if (this.nombreNuevaPlantilla.trim() === ''){
+      alert('Necesita un nombre valido la plantilla')
+      return;
+    }
+    this.crearPLantillaNueva(this.nombreNuevaPlantilla)
+
+  }
+  cargarPlantillas(){
+    this.servicioAPI.obtenerPlantillas().subscribe({
+      next: (respuesta) => {
+        console.log('plantillas obtenidas:', respuesta)
+        this.listaPlantillas = respuesta
+      },
+      error: (error) => {
+        console.log('Error al obtener plantillas: ', error)
+      }
+    })
+  }
+
+
 }
