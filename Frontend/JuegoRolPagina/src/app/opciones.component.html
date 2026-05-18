@@ -446,7 +446,6 @@
             </div>
             <div class="input-grupo-objeto check-grupo">
               <label>¿Se consume al usar?</label>
-              <input type="checkbox" class="checkbox-objeto" [(ngModel)]="consumibleObjetoActual">
             </div>
           </div>
 
@@ -535,8 +534,6 @@
             }
 
             <h4>Usos: {{ usosObjetoActual === 0 ? '∞' : usosObjetoActual }}</h4>
-            <h4>{{ consumibleObjetoActual ? 'Se consume al usar' : 'Reutilizable' }}</h4>
-
             @if (efectosPropiosObjeto.length > 0) {
             <h4>⬆ Al portador:</h4>
             <ul>

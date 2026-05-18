@@ -13,20 +13,6 @@ import { Dado } from './models/dado';
 import { UsuarioService } from './servicios/usuario-service';
 import { Objeto } from './models/objeto';
 
-// Interfaz ampliada para el objeto completo que se guarda
-export interface ObjetoCompleto {
-  nombre: string;
-  descripcion: string;
-  imagen: string;
-  // Efectos sobre el propio usuario (positivos o negativos)
-  efectosPropios: { estadistica: string; valor: number }[];
-  // Efectos sobre el rival (positivos o negativos)
-  efectosRival: { estadistica: string; valor: number }[];
-  // Cuántas veces se puede usar (0 = ilimitado)
-  usos: number;
-  // Si se consume al usarse
-  consumible: boolean;
-}
 
 @Component({
   selector: 'app-opciones',
@@ -50,7 +36,7 @@ export class OpcionesComponent implements OnInit{
   maxJugadores = 0;
   listaPlantillas : Plantilla[] = []
   plantillaSeleccionada: Plantilla|null = null;
-  nombreNuevaPlantilla : string = ''; 
+  nombreNuevaPlantilla : string = '';
 
   paso = 1;
   estadisticas: Estadistica[] = [
@@ -110,14 +96,13 @@ export class OpcionesComponent implements OnInit{
 
   // ── OBJETOS ──────────────────────────────────────────────────────────────────
   // Lista final de objetos ya creados y guardados
-  objetos: ObjetoCompleto[] = [];
+  objetos: Objeto[] = [];
 
   // ─ Estado del creador de objeto activo ─
   nombreObjetoActual: string = '';
   descripcionObjetoActual: string = '';
   imagenObjetoActual: string = '';
   usosObjetoActual: number = 1;
-  consumibleObjetoActual: boolean = true;
 
   // Efectos del objeto (arrastrables)
   efectosPropiosObjeto: { nombre: string; valor: number; signo: 1 | -1 }[] = [];
@@ -184,7 +169,7 @@ export class OpcionesComponent implements OnInit{
       return;
     }
 
-    const objetoFinal: ObjetoCompleto = {
+    const objetoFinal: Objeto = {
       nombre: this.nombreObjetoActual,
       descripcion: this.descripcionObjetoActual,
       imagen: this.imagenObjetoActual || 'assets/img/objetos/default.png',
@@ -197,7 +182,6 @@ export class OpcionesComponent implements OnInit{
         valor: e.signo * e.valor,
       })),
       usos: this.usosObjetoActual,
-      consumible: this.consumibleObjetoActual,
     };
 
     this.objetos.push(objetoFinal);
@@ -209,7 +193,6 @@ export class OpcionesComponent implements OnInit{
     this.descripcionObjetoActual = '';
     this.imagenObjetoActual = '';
     this.usosObjetoActual = 1;
-    this.consumibleObjetoActual = true;
     this.efectosPropiosObjeto = [];
     this.efectosRivalObjeto = [];
   }
@@ -423,7 +406,7 @@ export class OpcionesComponent implements OnInit{
   itemArrastrado: Estadistica |null= null;
   costesEnMesa: {nombre: string, valor: number}[] = [];
   efectosEnMesa: {nombre: string, valor: number, ratioMin: number|null, ratioMax: number|null}[] = [];
-  
+
   ratioDadoMin: number | null = null;
   ratioDadoMax: number | null = null;
   danoAtaque: number = 0;
@@ -467,8 +450,8 @@ export class OpcionesComponent implements OnInit{
       }else{
         this.efectosEnMesa.push({
           nombre: this.itemArrastrado.nombre,
-          valor: 1.0, 
-          ratioMin: null, 
+          valor: 1.0,
+          ratioMin: null,
           ratioMax: null,
         });
       }
@@ -531,7 +514,7 @@ export class OpcionesComponent implements OnInit{
   }
 
   mandarPartida() {
-    
+
     let jugadores: PersonajeDto[] = [];
     const adminId = this.usuarioService.usuarioActual()?.id;
 
@@ -551,7 +534,7 @@ export class OpcionesComponent implements OnInit{
       maximoJugadores: this.maxJugadores,
       jugadores: jugadores
     };
-    
+
     console.log('El payload final queda como ', payload);
 
     this.servicioAPI.mandarPartida(payload).subscribe({
@@ -608,9 +591,9 @@ export class OpcionesComponent implements OnInit{
         console.log('Ha ocurrido un error: ', error)
       }
     })
-    
+
   }
-  //Plantillas 
+  //Plantillas
   cargarPlantilla(plantillaSeleccionada: Plantilla){
     let payload = plantillaSeleccionada.jsonConfiguration;
     payload.adminId = this.usuarioService.usuarioActual()?.id ?? -1
@@ -631,7 +614,7 @@ export class OpcionesComponent implements OnInit{
         console.log(ataque)
         if(this.ataques.find((value) => value.nombre === ataque.nombre) === undefined){
           ataque.id = null
-          this.ataques.push(ataque)  
+          this.ataques.push(ataque)
         }
       }
       for(let estadisticaPersonaje of personaje.estadisticasDelPersonaje){
@@ -641,7 +624,7 @@ export class OpcionesComponent implements OnInit{
           nombre: estadisticaPersonaje.nombreEstadistica,
           valor: estadisticaPersonaje.valorPropio,
           consumible: estadisticaPersonaje.consumible
-        } 
+        }
         if(this.estadisticas.find((value) => value.nombre === estadistica.nombre) === undefined){
           this.estadisticas.push(estadistica)
         }

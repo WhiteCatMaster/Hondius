@@ -1,6 +1,6 @@
-.PantallaPartida { 
+.PantallaPartida {
     background-color: rgb(243, 194, 159);
-    display: flex; 
+    display: flex;
     width: 100%;
 }
 
@@ -21,7 +21,7 @@
     }
 
     .PantallaDatos {
-        height: 40vh; 
+        height: 40vh;
     }
 }
 
@@ -38,7 +38,7 @@
     }
 
     .PantallaDatos {
-        height: 30vh; 
+        height: 30vh;
     }
 }
 
@@ -48,7 +48,7 @@
         width: 50%;
         background-color: #5B3124;
     }
-    
+
     .ClaseDerecha {
         width: 50%;
         background-color: #5B3124;
@@ -56,9 +56,9 @@
     }
 
     .inactivo {
-        filter: grayscale(100%); 
-        opacity: 0.5; 
-        pointer-events: none; 
+        filter: grayscale(100%);
+        opacity: 0.5;
+        pointer-events: none;
     }
 }
 
@@ -87,7 +87,7 @@
     }
 
     .PantallaDatos {
-        height: 47vh; 
+        height: 47vh;
     }
 
 }
@@ -100,11 +100,11 @@
 }
 
 .ImagenGif.recibiendoDano {
-    visibility: visible; 
+    visibility: visible;
 }
 
 .ImagenGifTuyo.recibiendoDano {
-    visibility: visible; 
+    visibility: visible;
 }
 
 .ImagenGif {
@@ -154,21 +154,21 @@ p {
 
 .EstadisticasFlotantes1 {
     position: absolute;
-    z-index: 10; 
-    background-color: rgb(111, 78, 16); 
+    z-index: 10;
+    background-color: rgb(111, 78, 16);
     color: white;
     padding: 10px;
     border-radius: 8px
 }
 
 .BatallaIzquierda {
-    width: 50%; 
+    width: 50%;
     padding: 20px;
 }
 
 .BatallaDerecha {
-    width: 50%; 
-    padding: 20px; 
+    width: 50%;
+    padding: 20px;
 }
 
 .IzquierdaGrande {
@@ -177,7 +177,7 @@ p {
     background-color: #f4e4bc;
     padding: 20px;
     clip-path: polygon(3% 0, 7% 1%, 11% 0%, 16% 2%, 20% 0, 23% 2%, 28% 2%, 32% 1%, 35% 1%, 39% 3%, 41% 1%, 45% 0%, 47% 2%, 50% 2%, 53% 0, 58% 2%, 60% 2%, 63% 1%, 65% 0%, 67% 2%, 69% 2%, 73% 1%, 76% 1%, 79% 0, 82% 1%, 85% 0, 87% 1%, 89% 0, 92% 1%, 96% 0, 98% 3%, 99% 3%, 99% 6%, 100% 11%, 98% 15%, 100% 21%, 99% 28%, 100% 32%, 99% 35%, 99% 40%, 100% 43%, 99% 48%, 100% 53%, 100% 57%, 99% 60%, 100% 64%, 100% 68%, 99% 72%, 100% 75%, 100% 79%, 99% 83%, 100% 86%, 100% 90%, 99% 94%, 99% 98%, 95% 99%, 92% 99%, 89% 100%, 86% 99%, 83% 100%, 77% 99%, 72% 100%, 66% 98%, 62% 100%, 59% 99%, 54% 99%, 49% 100%, 46% 98%, 43% 100%, 40% 98%, 38% 100%, 35% 99%, 31% 100%, 28% 99%, 25% 99%, 22% 100%, 19% 99%, 16% 100%, 13% 99%, 10% 99%, 7% 100%, 4% 99%, 2% 97%, 1% 97%, 0% 94%, 1% 89%, 0% 84%, 1% 81%, 0 76%, 0 71%, 1% 66%, 0% 64%, 0% 61%, 0% 59%, 1% 54%, 0% 49%, 1% 45%, 0% 40%, 1% 37%, 0% 34%, 1% 29%, 0% 23%, 2% 20%, 1% 17%, 1% 13%, 0 10%, 1% 6%, 1% 3%);
-    width: 100%; 
+    width: 100%;
 }
 
 .DerechaGrande {
@@ -186,7 +186,7 @@ p {
     background-color: #f4e4bc;
     padding: 20px;
     clip-path: polygon(3% 0, 7% 1%, 11% 0%, 16% 2%, 20% 0, 23% 2%, 28% 2%, 32% 1%, 35% 1%, 39% 3%, 41% 1%, 45% 0%, 47% 2%, 50% 2%, 53% 0, 58% 2%, 60% 2%, 63% 1%, 65% 0%, 67% 2%, 69% 2%, 73% 1%, 76% 1%, 79% 0, 82% 1%, 85% 0, 87% 1%, 89% 0, 92% 1%, 96% 0, 98% 3%, 99% 3%, 99% 6%, 100% 11%, 98% 15%, 100% 21%, 99% 28%, 100% 32%, 99% 35%, 99% 40%, 100% 43%, 99% 48%, 100% 53%, 100% 57%, 99% 60%, 100% 64%, 100% 68%, 99% 72%, 100% 75%, 100% 79%, 99% 83%, 100% 86%, 100% 90%, 99% 94%, 99% 98%, 95% 99%, 92% 99%, 89% 100%, 86% 99%, 83% 100%, 77% 99%, 72% 100%, 66% 98%, 62% 100%, 59% 99%, 54% 99%, 49% 100%, 46% 98%, 43% 100%, 40% 98%, 38% 100%, 35% 99%, 31% 100%, 28% 99%, 25% 99%, 22% 100%, 19% 99%, 16% 100%, 13% 99%, 10% 99%, 7% 100%, 4% 99%, 2% 97%, 1% 97%, 0% 94%, 1% 89%, 0% 84%, 1% 81%, 0 76%, 0 71%, 1% 66%, 0% 64%, 0% 61%, 0% 59%, 1% 54%, 0% 49%, 1% 45%, 0% 40%, 1% 37%, 0% 34%, 1% 29%, 0% 23%, 2% 20%, 1% 17%, 1% 13%, 0 10%, 1% 6%, 1% 3%);
-    width: 100%;     
+    width: 100%;
 }
 
 .IzquierdaIzquierda {
@@ -194,7 +194,7 @@ p {
 }
 
 .IzquierdaDerecha {
-    width: 30%; 
+    width: 30%;
 }
 
 .AnimacionTuyo {
@@ -204,17 +204,17 @@ p {
   @keyframes atacarTuyo {
     0%   { transform: translateX(0); }
     50%  { transform: translateX(100px); }
-    100% { transform: translateX(0); }    
+    100% { transform: translateX(0); }
 }
 
 .AnimacionRival {
-    animation: atacarRival 0.2s ease-in-out;  
+    animation: atacarRival 0.2s ease-in-out;
 }
 
 @keyframes atacarRival {
     0%   { transform: translateX(0); }
     50%  { transform: translateX(-100px); }
-    100% { transform: translateX(0); }    
+    100% { transform: translateX(0); }
 }
 
 .recibiendoDano {
@@ -228,11 +228,11 @@ p {
     60%  { transform: translate(-5px, -5px) rotate(-2deg); }
     80%  { transform: translate(5px, 5px) rotate(2deg)}
     100% { transform: translate(0, 0) rotate(0deg);}
-    
+
 }
 
 .muerte {
-    animation: desplome 1s forwards; 
+    animation: desplome 1s forwards;
 }
 
 @keyframes desplome {
@@ -262,7 +262,7 @@ p {
 
 .AtaqueBotonNoSeleccionado {
     background-color: brown;
-    filter: grayscale(85%);   
+    filter: grayscale(85%);
 }
 
 .AtaqueBotonNoSeleccionado {
@@ -284,4 +284,232 @@ p {
     border-radius: 6px;
     margin: 0;
     cursor: pointer;
+}
+/* ══════════════════════════════════════════
+   PANEL DE OBJETOS
+══════════════════════════════════════════ */
+
+/* Botón toggle */
+.BtnToggleObjetos {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 20;
+  background-color: #3e1f0f;
+  border: 2px solid #f4e4bc;
+  color: #f4e4bc;
+  border-radius: 10px;
+  padding: 5px 10px;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background-color 0.2s, transform 0.15s;
+  font-family: "Pirata One", system-ui;
+  margin-top: 1%;
+  margin-left: 2%;
+}
+
+.BtnToggleObjetos:hover {
+  background-color: #61312E;
+  transform: scale(1.07);
+}
+
+.LabelToggle {
+  font-size: 13px;
+  letter-spacing: 0.5px;
+}
+
+/* Necesario para que el botón absolute funcione dentro de ClaseIzquierda */
+.ClaseIzquierda {
+  position: relative;
+}
+
+/* Panel objetos ocupa igual que IzquierdaGrande */
+.PanelObjetos {
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+  padding-top: 40px; /* espacio para el botón toggle */
+}
+
+/* Grid de tarjetas de objeto */
+.ContenedorObjetos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  overflow-y: auto;
+  max-height: 140px;
+  padding: 4px 2px;
+}
+
+/* Cada tarjeta de objeto */
+.TarjetaObjeto {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  background-color: #3e1f0f;
+  border: 2px solid #f4e4bc;
+  border-radius: 12px;
+  padding: 8px 10px;
+  width: 80px;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s, background-color 0.15s;
+  font-family: "Pirata One", system-ui;
+}
+
+.TarjetaObjeto:hover {
+  transform: translateY(-4px) scale(1.06);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.55);
+  background-color: #61312E;
+}
+
+.TarjetaObjeto:active {
+  animation: usarObjetoClick 0.35s ease;
+}
+
+@keyframes usarObjetoClick {
+  0%   { transform: scale(1.06); filter: brightness(1); }
+  30%  { transform: scale(0.92); filter: brightness(2) saturate(2); }
+  60%  { transform: scale(1.12); filter: brightness(1.5); }
+  100% { transform: scale(1);    filter: brightness(1); }
+}
+
+.ImgObjeto {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 2px solid #f4e4bc;
+}
+
+.ImgObjetoPlaceholder {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  border: 2px dashed #f4e4bc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  background-color: rgba(244, 228, 188, 0.1);
+}
+
+.NombreObjeto {
+  color: #f4e4bc;
+  font-size: 11px;
+  text-align: center;
+  word-break: break-word;
+  max-width: 70px;
+  line-height: 1.2;
+}
+
+.UsosObjeto {
+  color: rgba(244, 228, 188, 0.6);
+  font-size: 10px;
+}
+
+.SinObjetos {
+  color: rgba(244, 228, 188, 0.55);
+  font-style: italic;
+  font-size: 13px;
+  margin: 10px 0;
+}
+
+/* ── Tooltip ── */
+.TooltipObjeto {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 160px;
+  max-width: 220px;
+  background-color: #1e0d05;
+  border: 2px solid #f4e4bc;
+  border-radius: 10px;
+  padding: 10px 12px;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  pointer-events: none;
+  animation: fadeInTooltip 0.15s ease;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.7);
+  font-family: "Pirata One", system-ui;
+}
+
+@keyframes fadeInTooltip {
+  from { opacity: 0; transform: translateX(-50%) translateY(6px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+.TooltipObjeto strong {
+  color: #f4e4bc;
+  font-size: 14px;
+  border-bottom: 1px solid rgba(244, 228, 188, 0.3);
+  padding-bottom: 3px;
+}
+
+.TooltipObjeto em {
+  color: rgba(244, 228, 188, 0.7);
+  font-size: 11px;
+}
+
+.TooltipSeccion {
+  color: #f4e4bc;
+  font-size: 11px;
+  font-weight: bold;
+  margin-top: 4px;
+}
+
+.TooltipEfecto {
+  font-size: 12px;
+  padding-left: 6px;
+}
+
+.TooltipVerde {
+  color: #74c69d;
+}
+
+.TooltipRojo {
+  color: #f28b9a;
+}
+
+.TooltipUsar {
+  color: rgba(244, 228, 188, 0.45);
+  font-size: 10px;
+  font-style: italic;
+  margin-top: 4px;
+  text-align: center;
+}
+
+/* ── Toast de objeto usado ── */
+.ToastObjeto {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(30, 13, 5, 0.92);
+  color: #f4e4bc;
+  border: 2px solid #f4e4bc;
+  border-radius: 12px;
+  padding: 12px 22px;
+  font-size: 18px;
+  font-family: "Pirata One", system-ui;
+  z-index: 50;
+  pointer-events: none;
+  animation: toastEntrada 0.3s ease, toastSalida 0.4s ease 1.4s forwards;
+}
+
+@keyframes toastEntrada {
+  from { opacity: 0; transform: translate(-50%, -60%) scale(0.85); }
+  to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+@keyframes toastSalida {
+  from { opacity: 1; }
+  to   { opacity: 0; transform: translate(-50%, -40%) scale(0.9); }
 }
