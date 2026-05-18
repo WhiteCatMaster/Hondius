@@ -18,7 +18,7 @@ services:
 
   backend:
     build:
-      context: .
+      context: ./Backend
       dockerfile: Dockerfile
     depends_on:
       base-de-datos:
@@ -31,12 +31,21 @@ services:
     ports:
       - "8081:8081"
 
+  frontend:
+    build:
+      context: ./Frontend/JuegoRolPagina
+      dockerfile: Dockerfile
+    depends_on:
+      - backend
+    ports:
+      - "4200:80"
+
   prometheus:
     image: prom/prometheus:v3.5.0
     depends_on:
       - backend
     volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro,Z
+      - ./Backend/prometheus.yml:/etc/prometheus/prometheus.yml:ro,Z
       - datos_prometheus:/prometheus
     command:
       - --config.file=/etc/prometheus/prometheus.yml
@@ -50,8 +59,8 @@ services:
       - prometheus
     volumes:
       - datos_grafana:/var/lib/grafana
-      - ./grafana/provisioning:/etc/grafana/provisioning:ro,Z
-      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro,Z
+      - ./Backend/grafana/provisioning:/etc/grafana/provisioning:ro,Z
+      - ./Backend/grafana/dashboards:/var/lib/grafana/dashboards:ro,Z
     ports:
       - "3000:3000"
 
