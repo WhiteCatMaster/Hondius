@@ -1,7 +1,10 @@
 <div class="selector-container">
+  <div class="cabecera-con-volver">
+    <button routerLink="" class="btn-volver-atras">⬅ Volver al Inicio</button>
   <h1 class="titulo-selector">Panel editor del Master</h1>
+   </div>
   <p class="subtitulo-master">Selecciona un personaje para modificar sus stats</p>
-
+ 
   <div class="personajes-grid">
     @for (pj of personajesActual(); track pj.nombre) {
       <div class="personaje-card">

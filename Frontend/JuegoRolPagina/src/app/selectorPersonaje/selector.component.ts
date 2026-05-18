@@ -13,7 +13,7 @@ import { Personaje } from '../models/personaje';
 @Component({
   selector: 'app-combate',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule,RouterLink],
   templateUrl: './selector.component.html',
   styleUrl: './selector.component.css',
 })

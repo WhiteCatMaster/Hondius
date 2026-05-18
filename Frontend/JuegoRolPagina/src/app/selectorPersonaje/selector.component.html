@@ -1,6 +1,8 @@
 <div class="selector-container">
-  <h1 class="titulo-selector">Escoje personajes</h1>
-
+  <div class="cabecera-con-volver">
+    <button routerLink="" class="btn-volver-atras">⬅ Volver al Inicio</button>
+    <h1 class="titulo-selector">Escoje personajes</h1>
+  </div>
   <div class="cpu-config">
     <label>
       <input type="checkbox" [(ngModel)]="cpu.usarCpu">
@@ -73,7 +75,6 @@
         </div>
       </div>
     </div>
-
     
     <h2 class="titulo-musica">¿Música?</h2>
     <p><strong>Añade un link de una canción de Youtube para escucharla durante el combate</strong></p>

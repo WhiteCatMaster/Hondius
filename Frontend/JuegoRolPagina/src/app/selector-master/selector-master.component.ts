@@ -1,14 +1,14 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Partida } from '../models/partida';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { DatosPartidaDto, ServicioAPI, toPartida, toPersonaje } from '../servicio-api';
 import { Personaje } from '../models/personaje';
 
 @Component({
   selector: 'app-editor-selector',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './selector-master.component.html',
   styleUrl: './selector-master.component.css'
 })
