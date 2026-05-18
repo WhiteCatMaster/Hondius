@@ -126,13 +126,14 @@ class UsuarioControllerTests {
 
     @Test
     fun testObtenerUsuarioxGoogleId_NoEncontrado() {
-        // ARRANGE
+        // 1. ARRANGE
         val googleIdBuscado = "google-no-existe"
         whenever(usuarioService.findByGoogleId(googleIdBuscado)).thenReturn(Optional.empty())
 
-        // ACT & ASSERT
-        assertThrows<NoSuchElementException> {
-            usuarioController.obtenerUsuarioxGoogleId(googleIdBuscado)
-        }
+        // 2. ACT: Llamamos al controlador de forma normal
+        val resultado = usuarioController.obtenerUsuarioxGoogleId(googleIdBuscado)
+
+        // 3. ASSERT: Verificamos que devuelve el código de error HTTP correcto
+        assertEquals(HttpStatus.NOT_FOUND, resultado.statusCode)
     }
 }
