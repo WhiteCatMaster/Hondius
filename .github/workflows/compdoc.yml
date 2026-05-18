@@ -3,7 +3,7 @@ name: Publicar Documentación Angular 🚀
 on:
   push:
     branches:
-      - frontend 
+      - Frontend 
       - main  
 
 permissions:
