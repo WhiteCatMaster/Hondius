@@ -25,13 +25,13 @@ class Ataque(
     @CollectionTable(name = "ataque_mana_atacante", joinColumns = [JoinColumn(name = "ataque_id")])
     @MapKeyColumn(name = "estadistica_id")
     @Column(name = "valor")
-    val manaAtacante: MutableMap<Estadistica, Int> = mutableMapOf(),
+    var manaAtacante: MutableMap<Estadistica, Int> = mutableMapOf(),
 
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "ataque_estadisticas_defensor", joinColumns = [JoinColumn(name = "ataque_id")])
     @MapKeyColumn(name = "estadistica_id")
     @Column(name = "valor")
-    val estadisticasDefensor: MutableMap<Estadistica, Double> = mutableMapOf(),
+    var estadisticasDefensor: MutableMap<Estadistica, Double> = mutableMapOf(),
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "personaje_id")
@@ -39,9 +39,15 @@ class Ataque(
 
     @Column(nullable = false)
     var dadoBase: Int = 10,
+    @Column(nullable = false)
+    var danioAtaque: Int = 0,
 
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "ataque_ratio_dado", joinColumns = [JoinColumn(name = "ataque_id")])
     @Column(name = "valor")
     var ratioDado: MutableList<Int> = mutableListOf()
-)
+) {
+    override fun toString(): String {
+        return "Ataque(id=$id, nombre='$nombre', manaAtacante=${manaAtacante.size}, estadisticasDefensor=${estadisticasDefensor.size}, ownerId=${owner?.id}, dadoBase=$dadoBase, ratioDado=$ratioDado)"
+    }
+}

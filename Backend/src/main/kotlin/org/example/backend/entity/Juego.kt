@@ -6,6 +6,7 @@ import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
+import jakarta.persistence.JoinColumn
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 
@@ -14,7 +15,7 @@ import jakarta.persistence.Table
 class Juego(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
+    var id: Long? = null,
 
     @Column(nullable = false)
     var nombre: String,
@@ -25,7 +26,13 @@ class Juego(
 
     var maximoJugadores: Int? = null,
 
-    @OneToMany(mappedBy = "juego", fetch = FetchType.LAZY)
-    var jugadores: MutableList<JugadorJuego> = mutableListOf()
-)
+    @OneToMany
+    @JoinColumn(name = "juego_id")
+    var personajes : MutableList<Personaje> = mutableListOf()   ,
 
+    @OneToMany(mappedBy = "juego", fetch = FetchType.LAZY)
+    var jugadores: MutableList<JugadorJuego> = mutableListOf(),
+
+    @OneToMany(mappedBy = "juego", fetch = FetchType.LAZY)
+    var combates: MutableList<Combate> = mutableListOf(),
+)

@@ -1,7 +1,6 @@
 services:
   base-de-datos:
     image: mysql:9.6.0
-    container_name: juegorol-mysql
     environment:
       MYSQL_DATABASE: juegorol_db
       MYSQL_USER: equipo10
@@ -11,6 +10,52 @@ services:
       - "3307:3306"
     volumes:
       - datos_mysql:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot_password_secreta"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      base-de-datos:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:mysql://base-de-datos:3306/juegorol_db?createDatabaseIfNotExist=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: equipo10
+      SPRING_DATASOURCE_PASSWORD: password123
+    ports:
+      - "8081:8081"
+
+  prometheus:
+    image: prom/prometheus:v3.5.0
+    depends_on:
+      - backend
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro,Z
+      - datos_prometheus:/prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+    ports:
+      - "9090:9090"
+
+  grafana:
+    image: grafana/grafana-oss:12.1.1
+    depends_on:
+      - prometheus
+    volumes:
+      - datos_grafana:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro,Z
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro,Z
+    ports:
+      - "3000:3000"
 
 volumes:
   datos_mysql:
+  datos_prometheus:
+  datos_grafana:

@@ -1,7 +1,6 @@
 package org.example.backend.dto
 
 import org.example.backend.entity.Estadistica
-import org.example.backend.entity.RolJugador
 import java.io.Serializable
 
 
@@ -10,7 +9,8 @@ data class CrearPartidaDto(
     val descripcion: String? = null,
     val idioma: String? = null,
     val maximoJugadores: Int? = null,
-    val jugadores: MutableList<PersonajeDto> = mutableListOf()
+    val jugadores: MutableList<PersonajeDto> = mutableListOf(),
+    val adminId: Long? = null,
 ) : Serializable {
 
     data class PersonajeDto(
@@ -18,7 +18,8 @@ data class CrearPartidaDto(
         val personajeVida: Int? = null,
         val personajeFotoUrl: String? = null,
         val personajeEstadisticas: MutableList<EstadisticaDto> = mutableListOf(),
-        val personajeAtaques: MutableList<AtaqueDto> = mutableListOf()
+        val personajeAtaques: MutableList<AtaqueDto> = mutableListOf(),
+        val personajeInventario: MutableList<ObjetoDto> = mutableListOf()
     ) : Serializable {
 
         data class EstadisticaDto(
@@ -31,10 +32,22 @@ data class CrearPartidaDto(
         data class AtaqueDto(
             //val id: Long? = null,
             val nombre: String? = null,
-            val manaAtacante: MutableMap<String, Double> = mutableMapOf(),
-            val estadisticasDefensor: MutableMap<String, Int> = mutableMapOf(),
+            val manaAtacante: MutableMap<String, Int> = mutableMapOf(),
+            val estadisticasDefensor: MutableMap<String, Double> = mutableMapOf(),
             val dadoBase: Int = 10,
-            val ratioDado: MutableList<Int>
+            val ratioDado: MutableList<Int> = mutableListOf(),
+            val danoAtaque: Int = 0
+        ) : Serializable
+
+        data class ObjetoDto(
+            val nombre: String? = null,
+            val descripcion: String? = null,
+            var imagen: String,
+            var efectosPropios: MutableMap<String, Double> = mutableMapOf(),
+            var efectosRival: MutableMap<String, Double> = mutableMapOf(),
+            var usos: Int
+
+
         ) : Serializable
     }
 }
