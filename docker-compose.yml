@@ -29,6 +29,9 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://base-de-datos:3306/juegorol_db?createDatabaseIfNotExist=true&serverTimezone=UTC
       SPRING_DATASOURCE_USERNAME: equipo10
       SPRING_DATASOURCE_PASSWORD: password123
+      FIREBASE_CREDENTIALS_PATH: /app/firebase-adminsdk.json
+    volumes:
+      - ./Backend/src/main/resources/firebase-adminsdk.json:/app/firebase-adminsdk.json:ro
     ports:
       - "8081:8081"
 
