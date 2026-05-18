@@ -16,10 +16,10 @@ import org.example.backend.dto.UsuarioDto
 class Usuario(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
+    var id: Long? = null,
 
     @Column(unique = true, nullable = false)
-    val googleId: String,
+    var googleId: String,
 
     @Column(unique = true, nullable = false)
     var email: String,
@@ -30,7 +30,7 @@ class Usuario(
     var fotoUrl: String? = null,
 
     @OneToMany(mappedBy = "usuario", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.LAZY)
-    val partidasParticipa: MutableList<JugadorJuego> = mutableListOf()
+    var partidasParticipa: MutableList<JugadorJuego> = mutableListOf()
 ){
     fun usuarioToDto(): UsuarioDto{
         val partidasDto = mutableListOf<UsuarioDto.JugadorJuegoDto>()

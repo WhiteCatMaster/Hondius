@@ -76,12 +76,16 @@ class UsuarioController(
     ])
     @GetMapping("/{googleId}")
     fun obtenerUsuarioxGoogleId(
-        @Parameter(description = "El ID único proporcionado por Google al iniciar sesión") @PathVariable googleId: String
+        @Parameter(description = "El ID único proporcionado por Google al iniciar sesión")
+        @PathVariable googleId: String
     ): ResponseEntity<UsuarioDto> {
-        val usuario = usuarioService.findByGoogleId(googleId).get()
-        println(usuario)
-        val resultado = usuario.usuarioToDto()
-        return ResponseEntity.ok(resultado)
+        val usuario = usuarioService.findByGoogleId(googleId).orElse(null)
+        if (usuario != null) {
+            val resultado = usuario.usuarioToDto()
+            return ResponseEntity.ok(resultado)
+        } else {
+            return ResponseEntity.notFound().build()
+        }
     }
 
     @Operation(
