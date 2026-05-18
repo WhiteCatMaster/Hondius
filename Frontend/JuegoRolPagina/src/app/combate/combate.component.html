@@ -58,31 +58,35 @@
     <div class="PantallaDatos">
 
       <!-- MENU ATAQUES IZQUIERDA -->
-      <div class="ClaseIzquierda" [class.inactivo]="!TuTurno">
-        <div class="IzquierdaIzquierda">
-          <h1 class="Ataques">ATAQUES de {{ personajeTuyo().nombre }}:</h1>   
-          @for (ataque of personajeTuyo().ataquesDelPersonaje; track ataque.nombre) {
-  
-            @if (ataqueSeleccionado() == null) {
-              <button (click)="seleccionarAtaque(ataque)" class="AtaqueBoton">{{ ataque.nombre }}</button>
-            } @else {
-                @if (ataqueSeleccionado() === ataque) {
-                  <button (click)="seleccionarAtaque(ataque)" class="AtaqueBoton"><strong>{{ ataque.nombre }}</strong></button>
-                } @else {
-                  <button (click)="seleccionarAtaque(ataque)" class="AtaqueBotonNoSeleccionado"><strong>{{ ataque.nombre }}</strong></button>
-                } 
-            }  
-          }
-        </div>
+      <div class="ClaseIzquierda" [class.inactivo]="!TuTurno" [class.activo]="TuTurno">
+        <div class="IzquierdaGrande">
+          <div class="IzquierdaIzquierda">
+            <h1 class="Ataques">ATAQUES de {{ personajeTuyo().nombre }}:</h1> 
+            <div class="ContenedorAtaques">  
+            @for (ataque of personajeTuyo().ataquesDelPersonaje; track ataque.nombre) {
     
-        <div class="IzquierdaDerecha">
-          <app-lanzador-dados (dadoLanzado)="ejecutarTurnoConDado($event)"></app-lanzador-dados>
+              @if (ataqueSeleccionado() == null) {
+                <button (click)="seleccionarAtaque(ataque)" class="AtaqueBoton">{{ ataque.nombre }}</button>
+              } @else {
+                  @if (ataqueSeleccionado() === ataque) {
+                    <button (click)="seleccionarAtaque(ataque)" class="AtaqueBoton"><strong>{{ ataque.nombre }}</strong></button>
+                  } @else {
+                    <button (click)="seleccionarAtaque(ataque)" class="AtaqueBotonNoSeleccionado"><strong>{{ ataque.nombre }}</strong></button>
+                  } 
+              }  
+            }
+
+          </div>
+          </div><div class="IzquierdaDerecha">
+            <app-lanzador-dados (dadoLanzado)="ejecutarTurnoConDado($event)"></app-lanzador-dados>
+          </div>
         </div>
       </div>
 
       <!-- MENU ATAQUES DERECHA -->
-      <div class="ClaseDerecha" [class.inactivo]="TuTurno || usarCpu">
-
+      <div class="ClaseDerecha" [class.inactivo]="TuTurno  || usarCpu">
+      
+      <div class="DerechaGrande">
         <div class="IzquierdaIzquierda">
           <h1 class="Ataques">ATAQUES de {{ rival().nombre }}</h1>   
           @for (ataque of rival().ataquesDelPersonaje; track ataque.nombre) {
@@ -105,7 +109,7 @@
         </div>
 
       </div>
-
+    </div>
     </div>
 
   }
