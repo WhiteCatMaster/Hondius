@@ -31,7 +31,7 @@ services:
       SPRING_DATASOURCE_PASSWORD: password123
       FIREBASE_CREDENTIALS_PATH: /app/firebase-adminsdk.json
     volumes:
-      - ./Backend/src/main/resources/firebase-adminsdk.json:/app/firebase-adminsdk.json:ro
+      - ./Backend/src/main/resources/firebase-adminsdk.json:/app/firebase-adminsdk.json:ro,Z
     ports:
       - "8081:8081"
 
