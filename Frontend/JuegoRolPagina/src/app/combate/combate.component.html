@@ -77,7 +77,7 @@
               <h1 class="Ataques">ATAQUES de {{ personajeTuyo().nombre }}:</h1>
               <div class="ContenedorAtaques">
                 @for (ataque of personajeTuyo().ataquesDelPersonaje; track ataque.nombre) {
-                  @if (ataqueSeleccionado() == null) {
+                  @if (ataqueSeleccionado().nombre === "") {
                     <button (click)="seleccionarAtaque(ataque)" class="AtaqueBoton">{{ ataque.nombre }}</button>
                   } @else {
                     @if (ataqueSeleccionado() === ataque) {
@@ -151,9 +151,9 @@
       </div>
 
       <!-- MENU ATAQUES DERECHA -->
-      <div class="ClaseDerecha" [class.inactivo]="TuTurno  || usarCpu">
+      <div class="ClaseDerecha" [class.inactivo]="TuTurno" [class.activo]="!TuTurno  || usarCpu">
 
-      <div class="DerechaGrande">
+        <!-- Cosas para lo de los objetos-->
         <button class="BtnToggleObjetos" (click)="togglePanelObjetosRival()" [title]="mostrarObjetosRival ? 'Ver ataques' : 'Ver objetos'">
           <span class="LabelToggle">{{ mostrarObjetosRival ? 'Ataques' : 'Objetos' }}</span>
         </button>
@@ -161,28 +161,30 @@
         @if (objetoUsadoAnimacionRival) {
           <div class="ToastObjeto">{{ mensajeObjetoRival }}</div>
         }
-        <div class="IzquierdaIzquierda">
-          <h1 class="Ataques">ATAQUES de {{ rival().nombre }}</h1>
-          @for (ataque of rival().ataquesDelPersonaje; track ataque.nombre) {
+  
+        <div class="DerechaGrande">
+          <div class="IzquierdaIzquierda">
+            <h1 class="Ataques">ATAQUES de {{ rival().nombre }}</h1>
+            <div class="ContenedorAtaques">
+              @for (ataque of rival().ataquesDelPersonaje; track ataque.nombre) {
 
-            @if (ataqueSeleccionado() == null) {
-              <button (click)="seleccionarAtaque(ataque)" class="AtaqueBoton">{{ ataque.nombre }}</button>
-            } @else {
-                @if (ataqueSeleccionado() === ataque) {
-                  <button (click)="seleccionarAtaque(ataque)" class="AtaqueBoton"><strong>{{ ataque.nombre }}</strong></button>
+                @if (ataqueSeleccionado().nombre === "") {
+                  <button (click)="seleccionarAtaque(ataque)" class="AtaqueBoton">{{ ataque.nombre }}</button>
                 } @else {
-                  <button (click)="seleccionarAtaque(ataque)" class="AtaqueBotonNoSeleccionado"><strong>{{ ataque.nombre }}</strong></button>
+                    @if (ataqueSeleccionado() === ataque) {
+                      <button (click)="seleccionarAtaque(ataque)" class="AtaqueBoton"><strong>{{ ataque.nombre }}</strong></button>
+                    } @else {
+                      <button (click)="seleccionarAtaque(ataque)" class="AtaqueBotonNoSeleccionado"><strong>{{ ataque.nombre }}</strong></button>
+                    }
                 }
-            }
 
-          }
+              }
+            </div>
+          </div>
+          <div class="IzquierdaDerecha">
+            <app-lanzador-dados (dadoLanzado)="ejecutarTurnoConDado($event)"></app-lanzador-dados>
+          </div>
         </div>
-
-        <div class="IzquierdaDerecha">
-          <app-lanzador-dados (dadoLanzado)="ejecutarTurnoConDado($event)"></app-lanzador-dados>
-        </div>
-
-      </div>
     </div>
     </div>
 
